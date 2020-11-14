@@ -119,6 +119,11 @@
 /* ---------------------------------- */
 /* Forms Reset & Styles
 ------------------------------------- */
+.disabled {
+	pointer-events: none;
+	cursor: default;
+}
+
 input,
 input[type="text"],
 input[type="password"],

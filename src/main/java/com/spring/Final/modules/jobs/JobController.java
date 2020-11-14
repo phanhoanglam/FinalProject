@@ -35,7 +35,7 @@ public class JobController extends ApiController {
     ) {
         Page<JobList> data = service.list(page, size, model);
 
-        return ;
+        return buildResponse(data);
     }
 
     @GetMapping("/{slug}")
