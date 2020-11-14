@@ -15,7 +15,8 @@ public class JobClientController {
 
     private final JobService service;
 
-    public JobClientController(JobService service) {
+    public JobClientController(
+            JobService service) {
         this.service = service;
     }
 
@@ -25,13 +26,8 @@ public class JobClientController {
                              @RequestParam(defaultValue = "12") int size,
                              SearchJobDTO model
     ) {
-        Page<JobList> data = service.list(page, size, model);
-        if(data.getTotalPages() > 0){
-
-        }
+        Page<JobList> data = service.list(page, size, model, modelView);
         modelView.addAttribute("listJobs", data);
-        modelView.addAttribute("totalPage", data.getTotalPages());
-        modelView.addAttribute("pageNumber", data.getPageable().getPageNumber());
 
         return "client/modules/jobs/job";
     }
