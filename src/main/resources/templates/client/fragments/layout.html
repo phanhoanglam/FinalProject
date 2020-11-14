@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hireo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link th:href="@{/client/css/style.css}" rel="stylesheet">
+    <link th:href="@{/client/css/colors/blue.css}" rel="stylesheet">
+</head>
+<body>
+<div id="wrapper">
+
+    <header th:insert="client/fragments/header.html"></header>
+
+    <div class="clearfix"></div>
+
+    <div layout:fragment="titlebar"></div>
+
+    <div layout:fragment="body">
+    ...
+    </div>
+
+    <div th:insert="client/fragments/footer.html"></div>
+</div>
+
+<script th:src="@{/client/js/jquery-3.4.1.min.js}"></script>
+<script th:src="@{/client/js/jquery-migrate-3.1.0.min.js}"></script>
+<script th:src="@{/client/js/mmenu.min.js}"></script>
+<script th:src="@{/client/js/tippy.all.min.js}"></script>
+<script th:src="@{/client/js/simplebar.min.js}"></script>
+<script th:src="@{/client/js/bootstrap-slider.min.js}"></script>
+<script th:src="@{/client/js/bootstrap-select.min.js}"></script>
+<script th:src="@{/client/js/snackbar.js}"></script>
+<script th:src="@{/client/js/clipboard.min.js}"></script>
+<script th:src="@{/client/js/counterup.min.js}"></script>
+<script th:src="@{/client/js/magnific-popup.min.js}"></script>
+<script th:src="@{/client/js/slick.min.js}"></script>
+<script th:src="@{/client/js/custom.js}"></script>
+
+<script>
+    $('#snackbar-user-status label').click(function () {
+        Snackbar.show({
+            text: 'Your status has been changed!',
+            pos: 'bottom-center',
+            showAction: false,
+            actionText: "Dismiss",
+            duration: 3000,
+            textColor: '#fff',
+            backgroundColor: '#383838'
+        });
+    });
+</script>
+
+</body>
+</html>
