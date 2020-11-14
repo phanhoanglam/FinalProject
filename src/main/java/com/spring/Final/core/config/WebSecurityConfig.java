@@ -1,4 +1,4 @@
-package com.spring.Final.core.security;
+package com.spring.Final.core.config;
 
 import com.spring.Final.modules.auth.CustomUserDetailsService;
 import org.modelmapper.ModelMapper;
@@ -56,37 +56,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/client/**",
-                        "/employees/register",
-                        "/employers/register"
+                        "/auth/register"
                 ).permitAll()
                 .and()
                 .formLogin()
-                    .loginPage("/employees/login")
-                    .loginProcessingUrl("/employees/login")
+                    .loginPage("/auth/login")
+                    .loginProcessingUrl("/auth/login")
                     .usernameParameter("email")
                     .passwordParameter("password")
                     .defaultSuccessUrl("/")
-                    .failureUrl("/employees/login")
+                    .failureUrl("/auth/login")
                     .and()
                     .logout()
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/employees/logout"))
-                        .logoutSuccessUrl("/employees/login")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
+                        .logoutSuccessUrl("/auth/login")
                         .permitAll();
-//                .and()
-//                .formLogin()
-//                    .loginPage("/employers/login")
-//                    .loginProcessingUrl("/employers/login")
-//                    .usernameParameter("email")
-//                    .passwordParameter("password")
-//                    .defaultSuccessUrl("/dashboard")
-//                    .and()
-//                    .logout()
-//                                .invalidateHttpSession(true)
-//                                .clearAuthentication(true)
-//                                .logoutRequestMatcher(new AntPathRequestMatcher("/employers/logout"))
-//                                .logoutSuccessUrl("/employers/login")
-//                                .permitAll();
     }
 }
