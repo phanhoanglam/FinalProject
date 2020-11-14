@@ -52,13 +52,13 @@
                         <input type="password" class="input-text with-border" id="password" th:field="*{password}"
                                placeholder="Password" required/>
                     </div>
-<!--                    <a href="#" class="forgot-password">Forgot Password?</a>-->
-                </form>
+
+                    <p th:text="${errorMessage}" class="color-red"></p>
 
                 <!-- Button -->
-                <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit"
-                        form="login-form">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
-
+                    <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit"
+                            form="login-form">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
+                </form>
             </div>
         </div>
     </div>

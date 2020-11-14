@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -38,17 +39,21 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (isEmployee) {
             if (employee != null) {
-                return new org.springframework.security.core.userdetails.User(employee.getEmail(), employee.getPassword(), new ArrayList<>());
+                HashMap<String, Object> information = new HashMap<>();
+                information.put("id", employee.getId());
+                information.put("role", "employee");
+
+                return new CustomUserDetails(employee.getEmail(), employee.getPassword(), information, new ArrayList<>());
             }
             throw new UsernameNotFoundException(email);
         }
         if (employer != null) {
-            return new org.springframework.security.core.userdetails.User(employer.getEmail(), employer.getPassword(), new ArrayList<>());
+            HashMap<String, Object> information = new HashMap<>();
+            information.put("id", employer.getId());
+            information.put("role", "employer");
+
+            return new CustomUserDetails(employer.getEmail(), employer.getPassword(), information, new ArrayList<>());
         }
         throw new UsernameNotFoundException(email);
-    }
-
-    private UserDetails buildUserForAuthentication(EmployeeEntity employee) {
-        return new org.springframework.security.core.userdetails.User(employee.getEmail(), employee.getPassword(), new ArrayList<>());
     }
 }

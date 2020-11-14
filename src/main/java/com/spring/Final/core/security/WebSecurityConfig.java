@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -25,9 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-                auth
-                    .userDetailsService(userDetailsService)
-                    .passwordEncoder(this.passwordEncoder());
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(this.passwordEncoder());
     }
 
     @Bean
@@ -48,44 +49,44 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests()
-				.antMatchers("/client/**", "/index", "/employees/register", "/employers/register", "/employees/login", "/employees/login123").permitAll()
-				.and()
-			.formLogin()
-				.loginPage("/employees/login")
-                .loginProcessingUrl("/employees/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/")
-                .and()
-                .logout()
-                            .invalidateHttpSession(true)
-                            .clearAuthentication(true)
-                            .logoutRequestMatcher(new AntPathRequestMatcher("/employees/logout"))
-                            .logoutSuccessUrl("/employees/login")
-                            .permitAll();
-//                .and()
-//            .formLogin()
-//				.loginPage("/employers/login")
-//                .loginProcessingUrl("/employers/login")
-//                .usernameParameter("email")
-//                .passwordParameter("password")
-//                .defaultSuccessUrl("/dashboard")
-//                .and()
-//                .logout()
-//                            .invalidateHttpSession(true)
-//                            .clearAuthentication(true)
-//                            .logoutRequestMatcher(new AntPathRequestMatcher("/employers/logout"))
-//                            .logoutSuccessUrl("/employers/login")
-//                            .permitAll();
-	}
+    protected void configure(HttpSecurity http) throws Exception {
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-			.inMemoryAuthentication()
-				.withUser("user").password("password").roles("USER");
-	}
+        http
+                .authorizeRequests()
+                .antMatchers(
+                        "/client/**",
+                        "/employees/register",
+                        "/employers/register"
+                ).permitAll()
+                .and()
+                .formLogin()
+                    .loginPage("/employees/login")
+                    .loginProcessingUrl("/employees/login")
+                    .usernameParameter("email")
+                    .passwordParameter("password")
+                    .defaultSuccessUrl("/")
+                    .failureUrl("/employees/login")
+                    .and()
+                    .logout()
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/employees/logout"))
+                        .logoutSuccessUrl("/employees/login")
+                        .permitAll();
+//                .and()
+//                .formLogin()
+//                    .loginPage("/employers/login")
+//                    .loginProcessingUrl("/employers/login")
+//                    .usernameParameter("email")
+//                    .passwordParameter("password")
+//                    .defaultSuccessUrl("/dashboard")
+//                    .and()
+//                    .logout()
+//                                .invalidateHttpSession(true)
+//                                .clearAuthentication(true)
+//                                .logoutRequestMatcher(new AntPathRequestMatcher("/employers/logout"))
+//                                .logoutSuccessUrl("/employers/login")
+//                                .permitAll();
+    }
 }

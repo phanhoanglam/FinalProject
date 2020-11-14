@@ -17004,3 +17004,11 @@ ul.dashboard-box-list > li:hover {
 	.padding-left-90 { padding-left: 90px !important; }
 	.padding-left-95 { padding-left: 95px !important; }
 	.padding-left-100 { padding-left: 100px !important; }
+
+	.color-red {
+		color: #ea5252
+	}
+
+	.text-center {
+		text-align: center;
+	}
