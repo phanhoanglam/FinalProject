@@ -2,7 +2,6 @@ package com.spring.Final.modules.employee;
 
 import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
-import com.spring.Final.modules.employee.dtos.LoginDTO;
 import com.spring.Final.modules.employee.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
 import com.spring.Final.modules.employee.projections.EmployeeDetail;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 
 @RestController
 @CrossOrigin
@@ -25,13 +23,6 @@ public class EmployeeController extends ApiController {
 
     public EmployeeController(EmployeeService service) {
         this.service = service;
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<ApiResult> login(@Valid @RequestBody LoginDTO model) {
-        HashMap<String, Object> data = service.login(model.getEmail(), model.getPassword());
-
-        return buildResponse(data);
     }
 
     @PostMapping("/register")
