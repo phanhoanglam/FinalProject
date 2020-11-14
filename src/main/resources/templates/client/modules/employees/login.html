@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+
+<div layout:fragment="titlebar">
+    <div id="titlebar" class="gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Log In</h2>
+
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li>Log In</li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div layout:fragment="body">
+    <div class="container">
+    <div class="row">
+        <div class="col-xl-5 offset-xl-3">
+
+
+            <div class="login-register-page">
+                <!-- Welcome Text -->
+                <div class="welcome-text">
+                    <h3>We're glad to see you again!</h3>
+                    <span>Don't have an account? <a href="pages-register.html">Sign Up!</a></span>
+                </div>
+
+                <!-- Form -->
+                <form method="post" id="login-form" th:action="@{/employees/login}" th:object="${loginDTO}">
+                    <div class="input-with-icon-left">
+                        <i class="icon-material-baseline-mail-outline"></i>
+                        <input type="text" class="input-text with-border" id="email" th:field="*{email}"
+                               placeholder="Email Address" required/>
+                    </div>
+
+                    <div class="input-with-icon-left">
+                        <i class="icon-material-outline-lock"></i>
+                        <input type="password" class="input-text with-border" id="password" th:field="*{password}"
+                               placeholder="Password" required/>
+                    </div>
+
+                    <p th:text="${errorMessage}" class="color-red"></p>
+
+                <!-- Button -->
+                    <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit"
+                            form="login-form">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="margin-top-70"></div>
+</div>
+
+</body>
+</html>
