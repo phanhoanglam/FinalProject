@@ -15,8 +15,9 @@ public class PostJobData {
     private Page<NameOnly> skills;
     JobEntity job;
 
-    public PostJobData(List<NameWithJobCount> jobCategories, List<NameOnly> jobTypes) {
+    public PostJobData(List<NameWithJobCount> jobCategories, List<NameOnly> jobTypes, Page<NameOnly> skills) {
         this.jobCategories = jobCategories;
         this.jobTypes = jobTypes;
+        this.skills = skills;
     }
 }

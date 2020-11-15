@@ -21,6 +21,10 @@ public abstract class ApiService<T, R extends JpaRepository<T, Integer>> {
         return this.repository.getOne(id);
     }
 
+    public List<T> getAllByIds(List<Integer> ids) {
+        return this.repository.findAllById(ids);
+    }
+
     protected int getPage(int pageNumber) {
         return pageNumber > 0 ? pageNumber - 1 : 0;
     }

@@ -1,6 +1,7 @@
 package com.spring.Final.modules.auth;
 
 import com.spring.Final.core.exceptions.EntityExistException;
+import com.spring.Final.core.exceptions.InvalidAddressException;
 import com.spring.Final.modules.auth.dtos.LoginDTO;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,8 +81,16 @@ public class AuthClientController {
         try {
             accountType = accountType.split(",")[0];
             this.authService.register(dto, accountType);
-        } catch (EntityExistException | IOException e) {
-            String message = e instanceof IOException ? "Register failed" : "Email is already used";
+        } catch (EntityExistException | IOException | InvalidAddressException e) {
+            String message;
+
+            if (e instanceof InvalidAddressException) {
+                message = e.getMessage();
+            } else if (e instanceof EntityExistException) {
+                message = "Email is already used";
+            } else {
+                message = "Register failed";
+            }
             redirectAttributes.addFlashAttribute("message", message);
             redirectAttributes.addFlashAttribute("accountType", accountType);
             redirectAttributes.addFlashAttribute("registerDTO", dto);
