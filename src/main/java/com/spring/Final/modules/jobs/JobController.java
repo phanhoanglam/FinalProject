@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class JobController extends ApiController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ApiResult> create(@Valid @RequestBody JobDTO model) {
+    public ResponseEntity<ApiResult> create(@Valid @RequestBody JobDTO model) throws IOException {
         HttpServletRequest request = this.getCurrentRequest();
         HashMap<String, Object> employer = this.getCurrentUser(request);
         model.setEmployerId((Integer) employer.get("id"));
@@ -61,7 +62,7 @@ public class JobController extends ApiController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResult> update(@Valid @RequestBody JobDTO model, @PathVariable(value = "id") int id) {
+    public ResponseEntity<ApiResult> update(@Valid @RequestBody JobDTO model, @PathVariable(value = "id") int id) throws IOException {
         model.setId(id);
         JobDetail data = service.updateOne(model);
 

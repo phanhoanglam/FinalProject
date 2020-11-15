@@ -4,9 +4,8 @@ import com.spring.Final.core.common.JwtHelper;
 import com.spring.Final.core.exceptions.*;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
-import com.spring.Final.modules.employee.dtos.RegisterDTO;
+import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
-import com.spring.Final.modules.employee.projections.EmployeeDetail;
 import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
 import com.spring.Final.modules.employee.specifications.EmployeeSpecification;
@@ -73,7 +72,7 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         return data;
     }
 
-    public EmployeeDetail register(RegisterDTO data) {
+    public EmployeeEntity register(RegisterDTO data) {
         EmployeeEntity newEmployee = this.modelMapper.map(data, EmployeeEntity.class);
         EmployeeEntity employee = this.repository.findByEmail(newEmployee.getEmail());
 
@@ -86,9 +85,8 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         newEmployee.setCreatedAt(CommonHelper.getCurrentTime());
         newEmployee.setUpdatedAt(CommonHelper.getCurrentTime());
         newEmployee.setVerified(true);  // TODO: Temporarily for testing
-        newEmployee = this.repository.save(newEmployee);
 
-        return this.modelMapper.map(newEmployee, EmployeeDetail.class);
+        return this.repository.save(newEmployee);
     }
 
     public PageImpl<EmployeeList> list(int pageNumber, int size, SearchEmployeeDTO model) {

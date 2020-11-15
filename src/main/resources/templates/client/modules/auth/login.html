@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+
+<div layout:fragment="titlebar">
+    <div id="titlebar" class="gradient">
+        <div class="container">
+            <h2>Log In</h2>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="body">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-5 offset-xl-3">
+
+
+                <div class="login-register-page">
+                    <!-- Welcome Text -->
+                    <div class="welcome-text">
+                        <h3>We're glad to see you again!</h3>
+                        <span>Don't have an account? <a th:href="@{/auth/register}">Sign Up!</a></span>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" id="login-form" th:action="@{/auth/login}" th:object="${loginDTO}">
+                        <div class="account-type">
+                            <div>
+                                <input type="radio" name="accountType" id="employee-radio" value="employee"
+                                       class="account-type-radio" checked/>
+                                <label for="employee-radio" class="ripple-effect-dark"><i
+                                        class="icon-material-outline-account-circle"></i> Employee</label>
+                            </div>
+
+                            <div>
+                                <input type="radio" name="accountType" id="employer-radio" value="employer"
+                                       class="account-type-radio"/>
+                                <label for="employer-radio" class="ripple-effect-dark"><i
+                                        class="icon-material-outline-business-center"></i> Employer</label>
+                            </div>
+                        </div>
+
+                        <div class="input-with-icon-left">
+                            <i class="icon-material-baseline-mail-outline"></i>
+                            <input type="email" class="input-text with-border" th:field="*{email}"
+                                   placeholder="Email Address" required/>
+                        </div>
+
+                        <div class="input-with-icon-left">
+                            <i class="icon-material-outline-lock"></i>
+                            <input type="password" class="input-text with-border" th:field="*{password}"
+                                   placeholder="Password" required/>
+                        </div>
+
+                        <p th:text="${errorMessage}" class="color-red"></p>
+
+                        <!-- Button -->
+                        <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit"
+                                form="login-form">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="margin-top-70"></div>
+</div>
+
+<script layout:fragment="js">
+    function changeAccountType(self) {
+        const $loginForm = $('#login-form');
+
+        let action = $loginForm.attr('action').split('?')[0];
+        action = `${action}?accountType=${$(self).val()}`;
+
+        $loginForm.attr('action', action);
+    }
+
+    $(document).ready(function () {
+        const $accountType = $('[name="accountType"]');
+
+        changeAccountType($accountType);
+
+        $accountType.on('change', function () {
+            changeAccountType(this);
+        });
+    });
+</script>
+</body>
+</html>

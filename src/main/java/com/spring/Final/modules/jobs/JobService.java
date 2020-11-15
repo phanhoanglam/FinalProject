@@ -1,5 +1,6 @@
 package com.spring.Final.modules.jobs;
 
+import com.spring.Final.core.common.MapUtils;
 import com.spring.Final.core.exceptions.BadRequestException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +91,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
     }
 
     @Transactional
-    public JobDetail createOne(JobDTO data) {
+    public JobDetail createOne(JobDTO data) throws IOException {
         EmployerEntity employer = this.employerService.getOne(data.getEmployerId());
 
         if (employer.getJobsCount() >= this.FREE_JOBS) {
@@ -102,7 +104,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return this.modelMapper.map(job, JobDetail.class);
     }
 
-    public JobDetail updateOne(JobDTO data) {
+    public JobDetail updateOne(JobDTO data) throws IOException {
         JobEntity job = convertToEntity(data);
         job = this.repository.save(job);
 
@@ -135,14 +137,14 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
     }
 
-    private JobEntity convertToEntity(JobDTO data) {
+    private JobEntity convertToEntity(JobDTO data) throws IOException {
         this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
         JobEntity job = this.modelMapper.map(data, JobEntity.class);
 
         job.setJobType(this.jobTypeService.getOne(data.getJobTypeId()));
         job.setEmployer(this.employerService.getOne(data.getEmployerId()));
         job.setJobCategory(this.jobCategoryService.getOne(data.getJobCategoryId()));
-        job.setAddressLocation(CommonHelper.createGeometryPoint(data.getAddressLocation()));
+        job.setAddressLocation(CommonHelper.createGeometryPoint(MapUtils.getCoordinateByText(data.getAddress())));
         job.getAddressLocation().setSRID(4326);
         job.setUpdatedAt(CommonHelper.getCurrentTime());
 

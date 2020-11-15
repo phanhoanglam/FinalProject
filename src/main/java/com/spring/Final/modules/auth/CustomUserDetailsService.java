@@ -9,7 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -27,7 +28,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        boolean isEmployee = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUriString().contains("/employees/login");
+        String accountType = (((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest()).getParameter("accountType");
+
+        boolean isEmployee = accountType.equals("employee");
         EmployeeEntity employee = null;
         EmployerEntity employer = null;
 

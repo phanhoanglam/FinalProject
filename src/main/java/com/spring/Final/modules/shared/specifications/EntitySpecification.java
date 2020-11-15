@@ -1,9 +1,6 @@
 package com.spring.Final.modules.shared.specifications;
 
-import com.google.gson.Gson;
-import com.spring.Final.core.helpers.HttpRequestService;
-import com.spring.Final.modules.shared.dtos.GeoCodeGeometry;
-import com.spring.Final.modules.shared.dtos.GeoCodeResponse;
+import com.spring.Final.core.common.MapUtils;
 import com.spring.Final.modules.shared.dtos.SearchDTO;
 import org.hibernate.spatial.predicate.SpatialPredicates;
 import org.locationtech.jts.geom.Coordinate;
@@ -16,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -24,15 +20,10 @@ import java.util.ArrayList;
  * @Document: https://www.baeldung.com/java-http-request
  */
 public class EntitySpecification<T> implements Specification<T> {
-    private String API_KEY = "AIzaSyBYiHfMlwJdYaxFTkZQAk57bZaLPPW35TY";
-
     protected final SearchDTO dto;
-
-    protected final HttpRequestService httpRequestService;
 
     public EntitySpecification(SearchDTO dto) {
         this.dto = dto;
-        this.httpRequestService = new HttpRequestService();
     }
 
     @Override
@@ -69,16 +60,7 @@ public class EntitySpecification<T> implements Specification<T> {
     }
 
     protected Predicate searchLocation(String location, CriteriaBuilder cb, Root<T> root) throws IOException {
-        String geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(location) + "&key=" + this.API_KEY;
-        String json = httpRequestService.get(geoUrl);
-
-        Gson gson = new Gson();
-        GeoCodeResponse response = gson.fromJson(json, GeoCodeResponse.class);
-        GeoCodeGeometry geometry = response.getResults().get(0).getGeometry();
-
-        double lat = Double.parseDouble(geometry.getLocation().get("lat"));
-        double lng = Double.parseDouble(geometry.getLocation().get("lng"));
-        Coordinate coordinate = new Coordinate(lat, lng);
+        Coordinate coordinate = MapUtils.getCoordinateByText(location);
 
         GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
         shapeFactory.setCentre(coordinate);

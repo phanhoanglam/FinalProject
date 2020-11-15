@@ -2,17 +2,13 @@ package com.spring.Final.modules.employee;
 
 import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
-import com.spring.Final.modules.employee.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
-import com.spring.Final.modules.employee.projections.EmployeeDetail;
 import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
 import com.spring.Final.modules.review.projections.ReviewList;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @CrossOrigin
@@ -25,12 +21,12 @@ public class EmployeeController extends ApiController {
         this.service = service;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResult> register(@Valid @RequestBody RegisterDTO model) {
-        EmployeeDetail data = service.register(model);
-
-        return buildResponse(data);
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<ApiResult> register(@Valid @RequestBody RegisterDTO model) {
+//        EmployeeDetail data = service.register(model);
+//
+//        return buildResponse(data);
+//    }
 
     @GetMapping("")
     public ResponseEntity<ApiResult> list(
