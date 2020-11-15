@@ -67,7 +67,7 @@
                                class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
                         <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
                                 th:href="@{/jobs(page=${i})}" th:utext="${i}"
-                                th:class="${list.getPageable().getPageNumber() + 1==i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
+                                th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
                         </li>
                         <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
                             <a th:href="@{/jobs(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
@@ -125,13 +125,13 @@
             const names = [];
             const [salaryFrom, salaryTo] = $(this).find('[name="salaryRange"]').val().split(',');
 
-            $.each($('.keywords-list .keyword-text'), function(){
+            $.each($('.keywords-list .keyword-text'), function () {
                 names.push($(this).text());
             });
-            $.each($('input[name="jobTypes"]:checked'), function(){
+            $.each($('input[name="jobTypes"]:checked'), function () {
                 jobTypes.push($(this).val());
             });
-            $.each($('input[name="skills"]:checked'), function(){
+            $.each($('input[name="skills"]:checked'), function () {
                 skills.push($(this).val());
             });
             let url = `${window.location.pathname}?`;
