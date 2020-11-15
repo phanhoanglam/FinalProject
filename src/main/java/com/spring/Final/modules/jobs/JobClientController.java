@@ -1,6 +1,7 @@
 package com.spring.Final.modules.jobs;
 
 import com.spring.Final.core.exceptions.InvalidAddressException;
+import com.spring.Final.core.infrastructure.ApiResult;
 import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
@@ -8,6 +9,7 @@ import com.spring.Final.modules.jobs.projections.HomepageData;
 import com.spring.Final.modules.jobs.projections.JobDetail;
 import com.spring.Final.modules.jobs.projections.JobList;
 import com.spring.Final.modules.jobs.projections.PostJobData;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -116,5 +118,13 @@ public class JobClientController {
             return "redirect:" + request.getHeader("Referer");
         }
         return "redirect:/dashboard/edit-job/" + jobDetail.getSlug();
+    }
+
+
+    @GetMapping("/dashboard/delete-job/{slug}")
+    public String delete(@PathVariable String slug) {
+        service.deleteOne(slug);
+
+        return "redirect:/dashboard/manage-jobs";
     }
 }
