@@ -50,16 +50,16 @@ public class JobController extends ApiController {
         return buildResponse(data);
     }
 
-    @PostMapping("")
-    public ResponseEntity<ApiResult> create(@Valid @RequestBody JobDTO model) throws IOException {
-        HttpServletRequest request = this.getCurrentRequest();
-        HashMap<String, Object> employer = this.getCurrentUser(request);
-        model.setEmployerId((Integer) employer.get("id"));
-
-        JobDetail data = service.createOne(model);
-
-        return buildResponse(data);
-    }
+//    @PostMapping("")
+//    public ResponseEntity<ApiResult> create(@Valid @RequestBody JobDTO model) throws IOException {
+//        HttpServletRequest request = this.getCurrentRequest();
+//        HashMap<String, Object> employer = this.getCurrentUser(request);
+//        model.setEmployerId((Integer) employer.get("id"));
+//
+//        JobDetail data = service.createOne(model);
+//
+//        return buildResponse(data);
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResult> update(@Valid @RequestBody JobDTO model, @PathVariable(value = "id") int id) throws IOException {

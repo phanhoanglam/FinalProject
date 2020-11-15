@@ -2,11 +2,11 @@ package com.spring.Final.modules.jobs.dtos;
 
 import com.spring.Final.modules.shared.enums.job_status.JobStatus;
 import lombok.Data;
+import org.locationtech.jts.geom.Coordinate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.HashMap;
 
 @Data
 public class JobDTO implements Serializable {
@@ -19,7 +19,7 @@ public class JobDTO implements Serializable {
     private int jobTypeId;
 
     @NotNull(message = "Status is required")
-    private JobStatus status;
+    private JobStatus status = JobStatus.OPEN;
 
     private int employerId;
 
@@ -35,7 +35,4 @@ public class JobDTO implements Serializable {
 
     @NotBlank(message = "Address is required")
     private String address;
-
-    @NotNull(message = "Address location is required")
-    private HashMap<String, String> addressLocation;
 }

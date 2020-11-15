@@ -98,20 +98,4 @@ public class JobEntity extends BaseEntity implements Serializable {
 //    public Set<JobProposalEntity> getJobProposals() {
 //        return jobProposals;
 //    }
-
-    public void setSalaryFrom(BigDecimal salaryFrom) {
-        if (salaryFrom.compareTo(BigDecimal.ZERO) == 0) {
-            this.salaryFrom = null;
-        } else {
-            this.salaryFrom = salaryFrom;
-        }
-    }
-
-    public void setSalaryTo(BigDecimal salaryTo) {
-         if (salaryTo.compareTo(BigDecimal.ZERO) == 0) {
-            this.salaryTo = null;
-        } else {
-            this.salaryTo = salaryTo;
-        }
-    }
 }
