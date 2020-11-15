@@ -73,6 +73,7 @@
                                                     data-size="7"
                                                     title="Select Category"
                                                     th:field="*{jobCategoryId}"
+                                                    onchange="changeJobCategory()"
                                                     required>
                                                 <option th:each="jobCategory : ${jobCategories}"
                                                         th:value="${jobCategory.id}"
@@ -93,6 +94,8 @@
                                                 </div>
                                                 <i class="icon-material-outline-location-on"></i>
                                             </div>
+
+                                            <p th:text="${addressMessage}" class="color-red"></p>
                                         </div>
                                     </div>
 
@@ -102,13 +105,15 @@
                                             <div class="row">
                                                 <div class="col-xl-6">
                                                     <div class="input-with-icon">
-                                                        <input class="with-border" type="text" placeholder="Min" th:field="*{salaryFrom}" required>
+                                                        <input class="with-border" type="text" placeholder="Min"
+                                                               th:field="*{salaryFrom}" required>
                                                         <i class="currency">USD</i>
                                                     </div>
                                                 </div>
                                                 <div class="col-xl-6">
                                                     <div class="input-with-icon">
-                                                        <input class="with-border" type="text" placeholder="Max" th:field="*{salaryTo}" required>
+                                                        <input class="with-border" type="text" placeholder="Max"
+                                                               th:field="*{salaryTo}" required>
                                                         <i class="currency">USD</i>
                                                     </div>
                                                 </div>
@@ -118,19 +123,24 @@
 
                                     <div class="col-xl-4">
                                         <div class="submit-field">
-                                            <h5>Tags <span>(optional)</span></h5>
+                                            <h5>Skills</h5>
 
-                                            <div class="keywords-container">
-                                                <div class="keyword-input-container">
-                                                    <input type="text" class="keyword-input with-border"
-                                                           placeholder="e.g. job title, responsibilites"/>
-                                                    <button class="keyword-input-button ripple-effect"><i
-                                                            class="icon-material-outline-add"></i></button>
+                                            <div class="tags-container" id="tags-element">
+                                                <div class="tag" th:each="skill : ${skills}">
+                                                    <input type="checkbox"
+                                                           name="skills"
+                                                           onclick="changeSkills()"
+                                                           th:checked="${jobDTO.skillIds.contains(skill.id)}"
+                                                           th:id="${'tag' + skill.id}"
+                                                           th:value="${skill.id}"/>
+                                                    <label th:for="${'tag' + skill.id}" th:text="${skill.name}"></label>
                                                 </div>
-                                                <div class="keywords-list"><!-- keywords go here --></div>
-                                                <div class="clearfix"></div>
                                             </div>
 
+                                            <div class="skills-group">
+                                                <input th:each="skill : ${jobDTO.skillIds}" th:value="${skill}"
+                                                       type="hidden" name="skillIds[]">
+                                            </div>
                                         </div>
                                     </div>
 
@@ -138,7 +148,8 @@
                                         <div class="submit-field">
                                             <h5>Job Description</h5>
 
-                                            <textarea cols="30" rows="5" class="with-border" th:field="*{description}" required></textarea>
+                                            <textarea cols="30" rows="5" class="with-border" th:field="*{description}"
+                                                      required></textarea>
                                         </div>
                                     </div>
 
@@ -160,40 +171,52 @@
 
             <!-- Footer -->
             <div class="dashboard-footer-spacer"></div>
-            <div class="small-footer margin-top-15">
-                <div class="small-footer-copyrights">
-                    © 2019 <strong>Hireo</strong>. All Rights Reserved.
-                </div>
-                <ul class="footer-social-links">
-                    <li>
-                        <a href="#" title="Facebook" data-tippy-placement="top">
-                            <i class="icon-brand-facebook-f"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" title="Twitter" data-tippy-placement="top">
-                            <i class="icon-brand-twitter"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" title="Google Plus" data-tippy-placement="top">
-                            <i class="icon-brand-google-plus-g"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" title="LinkedIn" data-tippy-placement="top">
-                            <i class="icon-brand-linkedin-in"></i>
-                        </a>
-                    </li>
-                </ul>
-                <div class="clearfix"></div>
-            </div>
-            <!-- Footer / End -->
 
+            <div th:replace="client/fragments/footer2.html :: div"></div>
         </div>
     </div>
     <!-- Dashboard Content / End -->
-
 </div>
+
+<script layout:fragment="js">
+    function changeJobCategory() {
+        const change = $('[name="jobCategoryId"]').val();
+        $('.skills-group').html('');
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '/api/skills',
+            data: {
+                page: 1,
+                size: 100,
+                jobCategories: change
+            },
+            success: function (res) {
+                document.getElementById("tags-element").innerHTML = "";
+                $.each(res.data.content, function (index, value) {
+                    if (res.data.content !== []) {
+                        document.getElementById("tags-element").innerHTML += `
+                            <div class="tag">
+                                <input type="checkbox" name="skills" id="tag${index}" value="${value.id}" onclick="changeSkills()"/>
+                                <label for="tag${index}">${value.name}</label>
+                            </div>
+                        `;
+                    }
+                })
+            }
+        })
+    }
+
+    function changeSkills() {
+        $('.skills-group').html('');
+
+        $('[name="skills"]:checked').each((index, element) => {
+            $('.skills-group').append(`
+                <input value="${$(element).val()}" type="hidden" name="skillIds[]">
+           `);
+        });
+    }
+</script>
 </body>
 </html>

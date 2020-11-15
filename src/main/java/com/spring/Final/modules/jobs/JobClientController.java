@@ -1,16 +1,17 @@
 package com.spring.Final.modules.jobs;
 
+import com.spring.Final.core.exceptions.InvalidAddressException;
 import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.jobs.projections.HomepageData;
 import com.spring.Final.modules.jobs.projections.JobList;
 import com.spring.Final.modules.jobs.projections.PostJobData;
-import com.spring.Final.modules.shared.enums.job_status.JobStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -43,23 +44,33 @@ public class JobClientController {
 
     @GetMapping("/dashboard/post-job")
     public String postJob(Model modelView) {
-        PostJobData data = this.service.getPostJobData();
-        modelView.addAttribute("jobCategories", data.getJobCategories());
-        modelView.addAttribute("jobTypes", data.getJobTypes());
-
         if (!modelView.containsAttribute("jobDTO")) {
             modelView.addAttribute("jobDTO", new JobDTO());
         }
+        if (!modelView.containsAttribute("addressMessage")) {
+            modelView.addAttribute("addressMessage", "");
+        }
+        PostJobData data = this.service.getPostJobData(((JobDTO) modelView.getAttribute("jobDTO")).getJobCategoryId());
+        modelView.addAttribute("jobCategories", data.getJobCategories());
+        modelView.addAttribute("jobTypes", data.getJobTypes());
+        modelView.addAttribute("skills", data.getSkills());
 
         return "client/modules/employers/post-job";
     }
 
     @PostMapping("/dashboard/post-job")
-    public String postJobSubmit(@Valid JobDTO model, Authentication authentication) throws IOException {
+    public String postJobSubmit(@Valid JobDTO dto, Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        model.setEmployerId((int) user.getInformation().get("id"));
+        dto.setEmployerId((int) user.getInformation().get("id"));
 
-        service.createOne(model);
+        try {
+            service.createOne(dto);
+        } catch (InvalidAddressException e) {
+            redirectAttributes.addFlashAttribute("addressMessage", "Invalid address");
+            redirectAttributes.addFlashAttribute("jobDTO", dto);
+
+            return "redirect:/dashboard/post-job";
+        }
 
         return "redirect:/dashboard/manage-jobs";
     }

@@ -65,7 +65,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return new HomepageData(
                 jobCategoryService.findAllAsNameOnly(),
                 jobTypeService.findAllAsNameOnly(),
-                skillService.findAllAsNameOnly(1, 20, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
+                skillService.findAllAsNameOnly(1, 100, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
                 new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
         );
     }
@@ -145,6 +145,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         job.setJobType(this.jobTypeService.getOne(data.getJobTypeId()));
         job.setEmployer(this.employerService.getOne(data.getEmployerId()));
         job.setJobCategory(this.jobCategoryService.getOne(data.getJobCategoryId()));
+        job.setSkills(this.skillService.getAllByIds(data.getSkillIds()));
         job.setAddressLocation(CommonHelper.createGeometryPoint(MapUtils.getCoordinateByText(data.getAddress())));
         job.getAddressLocation().setSRID(4326);
         job.setUpdatedAt(CommonHelper.getCurrentTime());
@@ -173,10 +174,11 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return job;
     }
 
-    public PostJobData getPostJobData() {
+    public PostJobData getPostJobData(int jobCategoryId) {
         return new PostJobData(
                 jobCategoryService.findAllAsNameOnly(),
-                jobTypeService.findAllAsNameOnly()
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId})
         );
     }
 }
