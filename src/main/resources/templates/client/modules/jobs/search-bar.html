@@ -39,7 +39,7 @@
                 <!-- Category -->
                 <div class="sidebar-widget">
                     <h3>Category</h3>
-                    <select onchange="state_change()" id="category" class="selectpicker default" multiple name="jobCategories"
+                    <select onchange="changeJobCategory()" id="category" class="selectpicker default" multiple name="jobCategories"
                             data-selected-text-format="count" data-size="3" title="All Categories">
                         <option th:each="jobCategory : ${jobCategories}" th:value="${jobCategory.id}"
                                 th:selected="${searchJobDTO.jobCategories.contains(jobCategory.id)}"

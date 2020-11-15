@@ -7,6 +7,8 @@ import org.locationtech.jts.geom.Coordinate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class JobDTO implements Serializable {
@@ -17,6 +19,8 @@ public class JobDTO implements Serializable {
 
     @NotNull(message = "Job type is required")
     private int jobTypeId;
+
+    private List<Integer> skillIds = new ArrayList<>();
 
     @NotNull(message = "Status is required")
     private JobStatus status = JobStatus.OPEN;

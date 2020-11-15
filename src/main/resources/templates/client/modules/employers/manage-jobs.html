@@ -49,7 +49,7 @@
                                             <!-- Details -->
                                             <div class="job-listing-description">
                                                 <h3 class="job-listing-title">
-                                                    <a th:href="${'/dashboard/jobs/' + item.slug}">[[${item.name}]]</a>
+                                                    <a th:href="${'/dashboard/edit-job/' + item.slug}">[[${item.name}]]</a>
                                                     <th:inline th:switch="${item.status.toString()}">
                                                         <span th:case="'OPEN'" class="dashboard-status-button green">Open</span>
                                                         <span th:case="'PROGRESSING'" class="dashboard-status-button yellow">Progressing</span>

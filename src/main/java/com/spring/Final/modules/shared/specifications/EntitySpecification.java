@@ -1,6 +1,7 @@
 package com.spring.Final.modules.shared.specifications;
 
 import com.spring.Final.core.common.MapUtils;
+import com.spring.Final.core.exceptions.InvalidAddressException;
 import com.spring.Final.modules.shared.dtos.SearchDTO;
 import org.hibernate.spatial.predicate.SpatialPredicates;
 import org.locationtech.jts.geom.Coordinate;
@@ -50,9 +51,11 @@ public class EntitySpecification<T> implements Specification<T> {
         }
         if (dto.getLocation() != null) {
             try {
-                andPredicates.add(
-                        this.searchLocation(dto.getLocation(), cb, root)
-                );
+                Predicate location = this.searchLocation(dto.getLocation(), cb, root);
+
+                if (location != null) {
+                    andPredicates.add(location);
+                }
             } catch (IOException ignored) {}
         }
 
@@ -60,8 +63,13 @@ public class EntitySpecification<T> implements Specification<T> {
     }
 
     protected Predicate searchLocation(String location, CriteriaBuilder cb, Root<T> root) throws IOException {
-        Coordinate coordinate = MapUtils.getCoordinateByText(location);
+        Coordinate coordinate;
 
+        try {
+            coordinate = MapUtils.getCoordinateByText(location);
+        } catch (InvalidAddressException e) {
+            return null;
+        }
         GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
         shapeFactory.setCentre(coordinate);
         shapeFactory.setHeight(0.0452185866);  // TODO: Set temporarily, refactor later

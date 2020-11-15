@@ -3,11 +3,13 @@ package com.spring.Final.modules.jobs;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.helpers.CommonHelper;
+import com.spring.Final.modules.employee.EmployeeEntity;
 import com.spring.Final.modules.employer.EmployerEntity;
 import com.spring.Final.modules.job_category.JobCategoryEntity;
 import com.spring.Final.modules.job_type.JobTypeEntity;
 import com.spring.Final.modules.shared.enums.job_status.JobStatus;
 import com.spring.Final.modules.shared.enums.job_status.JobStatusAttributeConverter;
+import com.spring.Final.modules.skill.SkillEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +20,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -78,6 +81,12 @@ public class JobEntity extends BaseEntity implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = CommonHelper.getCurrentTime();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "job_skill",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<SkillEntity> skills;
 
     @JsonIgnore
     public EmployerEntity getEmployer() {

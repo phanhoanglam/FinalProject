@@ -1,5 +1,6 @@
 package com.spring.Final.modules.jobs;
 
+import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.common.MapUtils;
 import com.spring.Final.core.exceptions.BadRequestException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
@@ -73,7 +74,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return new HomepageData(
                 jobCategoryService.findAllAsNameOnly(),
                 jobTypeService.findAllAsNameOnly(),
-                skillService.findAllAsNameOnly(1, 20, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
+                skillService.findAllAsNameOnly(1, 100, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
                 new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
         );
     }
@@ -126,7 +127,6 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         if (employer.getJobsCount() >= this.FREE_JOBS) {
             throw new ExceedFreeJobsAvailableException();
         }
-        // create || map skills
         JobEntity job = convertToEntity(data);
         this.employerService.increaseJobsCount(data.getEmployerId());
         job = this.repository.save(job);
@@ -174,6 +174,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         job.setJobType(this.jobTypeService.getOne(data.getJobTypeId()));
         job.setEmployer(this.employerService.getOne(data.getEmployerId()));
         job.setJobCategory(this.jobCategoryService.getOne(data.getJobCategoryId()));
+        job.setSkills(this.skillService.getAllByIds(data.getSkillIds()));
         job.setAddressLocation(CommonHelper.createGeometryPoint(MapUtils.getCoordinateByText(data.getAddress())));
         job.getAddressLocation().setSRID(4326);
         job.setUpdatedAt(CommonHelper.getCurrentTime());
@@ -202,10 +203,31 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return job;
     }
 
-    public PostJobData getPostJobData() {
+    public PostJobData getPostJobData(int jobCategoryId) {
         return new PostJobData(
                 jobCategoryService.findAllAsNameOnly(),
-                jobTypeService.findAllAsNameOnly()
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId})
+        );
+    }
+
+    public PostJobData getEditJobData(String slug, int jobCategoryId) {
+        System.out.println(slug);
+        JobEntity data = this.repository.findBySlug(slug);
+
+        if (data == null) {
+            throw new ResourceNotFoundException();
+        }
+        jobCategoryId = jobCategoryId == 0 ? data.getJobCategory().getId() : jobCategoryId;
+        JobDTO jobDTO = this.modelMapper.map(data, JobDTO.class);
+        jobDTO.setSkillIds(data.getSkills().stream().map(BaseEntity::getId).collect(Collectors.toList()));
+
+        return new PostJobData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId}),
+                jobDTO,
+                new JobStatus[]{JobStatus.OPEN, JobStatus.PROGRESSING, JobStatus.CLOSED}
         );
     }
 }
