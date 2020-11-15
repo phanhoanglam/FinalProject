@@ -889,8 +889,11 @@ $(document).ready(function(){
 
 	// Default Bootstrap Range Slider
 	var currencyAttr = $(".range-slider").attr('data-slider-currency');
+	let value = [0, 0];
 
-	const value = $(".range-slider").val().split(',');
+	if ($(".range-slider").val()) {
+		value = $(".range-slider").val().split(',');
+	}
 
 	$(".range-slider").slider({
 		formatter: function(value) {

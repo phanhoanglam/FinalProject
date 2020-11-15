@@ -14,10 +14,7 @@ import com.spring.Final.modules.job_type.JobTypeService;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.jobs.exceptions.ExceedFreeJobsAvailableException;
-import com.spring.Final.modules.jobs.projections.HomepageData;
-import com.spring.Final.modules.jobs.projections.JobDetail;
-import com.spring.Final.modules.jobs.projections.JobList;
-import com.spring.Final.modules.jobs.projections.JobManage;
+import com.spring.Final.modules.jobs.projections.*;
 import com.spring.Final.modules.jobs.specifications.JobSpecification;
 import com.spring.Final.modules.shared.enums.job_status.JobStatus;
 import com.spring.Final.modules.skill.SkillService;
@@ -100,6 +97,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         if (employer.getJobsCount() >= this.FREE_JOBS) {
             throw new ExceedFreeJobsAvailableException();
         }
+        // create || map skills
         JobEntity job = convertToEntity(data);
         this.employerService.increaseJobsCount(data.getEmployerId());
         job = this.repository.save(job);
@@ -173,5 +171,12 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         }
 
         return job;
+    }
+
+    public PostJobData getPostJobData() {
+        return new PostJobData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly()
+        );
     }
 }

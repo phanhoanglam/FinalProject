@@ -1,6 +1,7 @@
 package com.spring.Final.modules.jobs;
 
 import com.spring.Final.modules.employer.EmployerEntity;
+import com.spring.Final.modules.job_category.JobCategoryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
