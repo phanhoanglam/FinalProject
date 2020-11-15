@@ -4,6 +4,8 @@
     <title>Hireo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link th:href="@{/client/css/style.css}" rel="stylesheet">
     <link th:href="@{/client/css/colors/blue.css}" rel="stylesheet">
 </head>

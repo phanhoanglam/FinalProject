@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
-import com.spring.Final.modules.jobs.projections.PostJobData;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -53,7 +53,12 @@ public class JobClientController {
     }
 
     @GetMapping("/{slug}")
-    public String getDetail(Authentication authentication , HttpServletResponse response, Model modelView, @PathVariable(value = "slug") String slug) throws IOException {
+    public String getDetail(
+            Authentication authentication,
+            HttpServletResponse response,
+            Model modelView,
+            @PathVariable(value = "slug") String slug
+    ) throws IOException {
         if (authentication == null) {
             response.sendRedirect("/auth/login");
         }
@@ -62,7 +67,8 @@ public class JobClientController {
         modelView.addAttribute("detail", data.getJobDetails());
         modelView.addAttribute("proposal", data.getProposal());
         modelView.addAttribute("listSimilar", data.getJobLists());
-        return "client/modules/job-details/job-detail";
+
+        return "client/modules/jobs/detail";
     }
 
     @GetMapping("/dashboard/post-job")
@@ -137,5 +143,13 @@ public class JobClientController {
             return "redirect:" + request.getHeader("Referer");
         }
         return "redirect:/dashboard/edit-job/" + jobDetail.getSlug();
+    }
+
+
+    @GetMapping("/dashboard/delete-job/{slug}")
+    public String delete(@PathVariable String slug) {
+        service.deleteOne(slug);
+
+        return "redirect:/dashboard/manage-jobs";
     }
 }
