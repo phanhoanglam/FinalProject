@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="dashboard-container" layout:fragment="body">
+    <div th:replace="client/fragments/dashboard-sidebar.html :: div"></div>
+
+
+    <!-- Dashboard Content
+    ================================================== -->
+    <div class="dashboard-content-container" data-simplebar>
+        <div class="dashboard-content-inner">
+
+            <!-- Dashboard Headline -->
+            <div class="dashboard-headline">
+                <h3>Edit Job</h3>
+
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li>Edit Job</li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Row -->
+            <div class="row">
+
+                <form th:action="${'/dashboard/edit-job/' + jobDTO.id}" method="post" th:object="${jobDTO}"
+                      id="edit-job-form"
+                      th:data-status="${jobDTO.status}">
+                    <!-- Dashboard Box -->
+                    <div class="col-xl-12">
+                        <div class="dashboard-box margin-top-0">
+
+                            <!-- Headline -->
+                            <div class="headline">
+                                <h3><i class="icon-feather-folder-plus"></i> Job Submission Form</h3>
+                            </div>
+
+                            <div class="content with-padding padding-bottom-10">
+
+                                <div class="row">
+                                    <div class="col-xl-4">
+                                        <div class="submit-field">
+                                            <h5>Job Title</h5>
+                                            <input type="text" class="with-border" th:field="*{name}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-4">
+                                        <div class="submit-field">
+                                            <h5>Job Type</h5>
+                                            <select class="selectpicker with-border"
+                                                    data-size="7"
+                                                    title="Select Job Type"
+                                                    th:field="*{jobTypeId}"
+                                                    required>
+                                                <option th:each="jobType : ${jobTypes}" th:value="${jobType.id}"
+                                                        th:selected="${jobDTO.jobTypeId == jobType.id}">
+                                                    [[${jobType.name}]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-4">
+                                        <div class="submit-field">
+                                            <h5>Job Category</h5>
+                                            <select class="selectpicker with-border"
+                                                    data-size="7"
+                                                    title="Select Category"
+                                                    th:field="*{jobCategoryId}"
+                                                    onchange="changeJobCategory()"
+                                                    required>
+                                                <option th:each="jobCategory : ${jobCategories}"
+                                                        th:value="${jobCategory.id}"
+                                                        th:selected="${jobDTO.jobCategoryId == jobCategory.id}">
+                                                    [[${jobCategory.name}]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-4">
+                                        <div class="submit-field">
+                                            <h5>Address</h5>
+                                            <div class="input-with-icon">
+                                                <div id="autocomplete-container">
+                                                    <input id="autocomplete-input" class="with-border" type="text"
+                                                           placeholder="Type Address" th:field="*{address}" required>
+                                                </div>
+                                                <i class="icon-material-outline-location-on"></i>
+                                            </div>
+
+                                            <p th:text="${addressMessage}" class="color-red"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-4">
+                                        <div class="submit-field">
+                                            <h5>Salary</h5>
+                                            <div class="row">
+                                                <div class="col-xl-6">
+                                                    <div class="input-with-icon">
+                                                        <input class="with-border" type="text" placeholder="Min"
+                                                               th:field="*{salaryFrom}" required>
+                                                        <i class="currency">USD</i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <div class="input-with-icon">
+                                                        <input class="with-border" type="text" placeholder="Max"
+                                                               th:field="*{salaryTo}" required>
+                                                        <i class="currency">USD</i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-4">
+                                        <div class="submit-field">
+                                            <h5>Skills</h5>
+
+                                            <div class="tags-container" id="tags-element">
+                                                <div class="tag" th:each="skill : ${skills}">
+                                                    <input type="checkbox"
+                                                           name="skills"
+                                                           onclick="changeSkills()"
+                                                           th:checked="${jobDTO.skillIds.contains(skill.id)}"
+                                                           th:id="${'tag' + skill.id}"
+                                                           th:value="${skill.id}"/>
+                                                    <label th:for="${'tag' + skill.id}" th:text="${skill.name}"></label>
+                                                </div>
+                                            </div>
+
+                                            <div class="skills-group">
+                                                <input th:each="skill : ${jobDTO.skillIds}" th:value="${skill}"
+                                                       type="hidden" name="skillIds[]">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-2">
+                                        <div class="submit-field">
+                                            <h5>Status</h5>
+                                            <select class="selectpicker with-border"
+                                                    data-size="7"
+                                                    title="Select Status"
+                                                    th:field="*{status}"
+                                                    required>
+                                                <option th:each="element : ${status}"
+                                                        th:value="${element}"
+                                                        th:selected="${status == jobDTO.status}">
+                                                    [[${element}]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12">
+                                        <div class="submit-field">
+                                            <h5>Job Description</h5>
+
+                                            <textarea cols="30" rows="5" class="with-border" th:field="*{description}"
+                                                      required></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-12">
+                        <button class="button ripple-effect big margin-top-30">
+                            <i class="icon-feather-plus"></i>
+                            Update job
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+            <!-- Row / End -->
+
+            <!-- Footer -->
+            <div class="dashboard-footer-spacer"></div>
+
+            <div th:replace="client/fragments/footer2.html :: div"></div>
+        </div>
+    </div>
+    <!-- Dashboard Content / End -->
+</div>
+
+<script layout:fragment="js">
+    function changeJobCategory() {
+        const change = $('[name="jobCategoryId"]').val();
+        $('.skills-group').html('');
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '/api/skills',
+            data: {
+                page: 1,
+                size: 100,
+                jobCategories: change
+            },
+            success: function (res) {
+                document.getElementById("tags-element").innerHTML = "";
+                $.each(res.data.content, function (index, value) {
+                    if (res.data.content !== []) {
+                        document.getElementById("tags-element").innerHTML += `
+                            <div class="tag">
+                                <input type="checkbox" name="skills" id="tag${index}" value="${value.id}" onclick="changeSkills()"/>
+                                <label for="tag${index}">${value.name}</label>
+                            </div>
+                        `;
+                    }
+                })
+            }
+        })
+    }
+
+    function changeSkills() {
+        $('.skills-group').html('');
+
+        $('[name="skills"]:checked').each((index, element) => {
+            $('.skills-group').append(`
+                <input value="${$(element).val()}" type="hidden" name="skillIds[]">
+           `);
+        });
+    }
+
+    $(document).ready(function () {
+        const $form = $('#edit-job-form')
+        const isClosed = $form.data('status') === 'CLOSED';
+
+        if (isClosed) {
+            $form.find('input').prop('disabled', true);
+            $form.find('select').prop('disabled', true);
+            $form.find('textarea').prop('disabled', true);
+            $form.find('button').prop('disabled', true);
+        }
+    });
+</script>
+</body>
+</html>

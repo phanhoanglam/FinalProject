@@ -1,5 +1,6 @@
 package com.spring.Final.modules.jobs;
 
+import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.common.MapUtils;
 import com.spring.Final.core.exceptions.BadRequestException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
@@ -97,7 +98,6 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         if (employer.getJobsCount() >= this.FREE_JOBS) {
             throw new ExceedFreeJobsAvailableException();
         }
-        // create || map skills
         JobEntity job = convertToEntity(data);
         this.employerService.increaseJobsCount(data.getEmployerId());
         job = this.repository.save(job);
@@ -179,6 +179,26 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
                 jobCategoryService.findAllAsNameOnly(),
                 jobTypeService.findAllAsNameOnly(),
                 skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId})
+        );
+    }
+
+    public PostJobData getEditJobData(String slug, int jobCategoryId) {
+        System.out.println(slug);
+        JobEntity data = this.repository.findBySlug(slug);
+
+        if (data == null) {
+            throw new ResourceNotFoundException();
+        }
+        jobCategoryId = jobCategoryId == 0 ? data.getJobCategory().getId() : jobCategoryId;
+        JobDTO jobDTO = this.modelMapper.map(data, JobDTO.class);
+        jobDTO.setSkillIds(data.getSkills().stream().map(BaseEntity::getId).collect(Collectors.toList()));
+
+        return new PostJobData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId}),
+                jobDTO,
+                new JobStatus[]{JobStatus.OPEN, JobStatus.PROGRESSING, JobStatus.CLOSED}
         );
     }
 }
