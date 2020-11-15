@@ -19,10 +19,12 @@ import com.spring.Final.modules.jobs.projections.JobList;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import com.spring.Final.modules.jobs.specifications.JobSpecification;
 import com.spring.Final.modules.shared.enums.job_status.JobStatus;
+import com.spring.Final.modules.skill.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -43,6 +45,9 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
     @Autowired
     private JobProposalService jobProposalService;
 
+    @Autowired
+    private SkillService skillService;
+
     private final long EXPIRED_DAYS = 60;
     private final int FREE_JOBS = 100;
 
@@ -50,7 +55,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         this.repository = repository;
     }
 
-    public PageImpl<JobList> list(int pageNumber, int size, SearchJobDTO model) {
+    public PageImpl<JobList> list(int pageNumber, int size, SearchJobDTO model, Model modelView) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         JobSpecification search = new JobSpecification(model);
 
@@ -58,6 +63,9 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         List<JobList> resultList = results.stream()
                 .map(e -> this.modelMapper.map(e, JobList.class))
                 .collect(Collectors.toList());
+
+        modelView.addAttribute("categories", jobCategoryService.findAll());
+        modelView.addAttribute("jobTypes", jobTypeService.findAll());
 
         return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
     }

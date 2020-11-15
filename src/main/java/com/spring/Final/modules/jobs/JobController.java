@@ -4,10 +4,7 @@ import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
 import com.spring.Final.modules.job_proposal.projections.JobProposalList;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
-import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.jobs.projections.JobDetail;
-import com.spring.Final.modules.jobs.projections.JobList;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,16 +25,16 @@ public class JobController extends ApiController {
         this.service = service;
     }
 
-    @GetMapping("")
-    public ResponseEntity<ApiResult> list(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            SearchJobDTO model
-    ) {
-        Page<JobList> data = service.list(page, size, model);
-
-        return buildResponse(data);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<ApiResult> list(
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            SearchJobDTO model
+//    ) {
+//        Page<JobList> data = service.list(page, size, model);
+//
+//        return buildResponse(data);
+//    }
 
     @GetMapping("/{slug}")
     public ResponseEntity<ApiResult> getDetail(@PathVariable(value = "slug") String slug) {

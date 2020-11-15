@@ -8,131 +8,82 @@
 
     <div class="full-page-sidebar">
         <div class="full-page-sidebar-inner" data-simplebar>
-            <div class="sidebar-container">
+            <form>
+                <div class="sidebar-container">
 
-                <!-- Location -->
-                <div class="sidebar-widget">
-                    <h3>Location</h3>
-                    <div class="input-with-icon">
-                        <div id="autocomplete-container">
-                            <input id="autocomplete-input" type="text" placeholder="Location">
+                    <!-- Location -->
+                    <div class="sidebar-widget">
+                        <h3>Location</h3>
+                        <div class="input-with-icon">
+                            <div id="autocomplete-container">
+                                <input id="autocomplete-input" type="text" placeholder="Location">
+                            </div>
+                            <i class="icon-material-outline-location-on"></i>
                         </div>
-                        <i class="icon-material-outline-location-on"></i>
                     </div>
-                </div>
 
 
-                <!-- Keywords -->
-                <div class="sidebar-widget">
-                    <h3>Keywords</h3>
-                    <div class="keywords-container">
-                        <div class="keyword-input-container">
-                            <input type="text" class="keyword-input" placeholder="e.g. job title"/>
-                            <button class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>
+                    <!-- Keywords -->
+                    <div class="sidebar-widget">
+                        <h3>Keywords</h3>
+                        <div class="keywords-container">
+                            <div class="keyword-input-container">
+                                <input type="text" class="keyword-input" placeholder="e.g. job title"/>
+                                <button class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>
+                            </div>
+                            <div class="keywords-list"><!-- keywords go here --></div>
+                            <div class="clearfix"></div>
                         </div>
-                        <div class="keywords-list"><!-- keywords go here --></div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="sidebar-widget">
+                        <h3>Category</h3>
+                        <select onchange="state_change()" id="category" class="selectpicker default" multiple data-selected-text-format="count" data-size="3" title="All Categories" >
+                            <option th:each="category : ${categories}" th:value="${category.id}" th:utext="${category.name}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Job Types -->
+                    <div class="sidebar-widget">
+                        <h3>Job Type</h3>
+
+                        <div class="switches-list">
+                            <div th:each="jobType : ${jobTypes}" class="switch-container">
+                                <label class="switch"><input type="checkbox"><span class="switch-button"></span> [[${jobType.name}]]</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Salary -->
+                    <div class="sidebar-widget">
+                        <h3>Salary</h3>
+                        <div class="margin-top-55"></div>
+
+                        <!-- Range Slider -->
+                        <input class="range-slider" type="text" value="" data-slider-currency="$" data-slider-min="1500" data-slider-max="15000" data-slider-step="100" data-slider-value="[1500,15000]"/>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="sidebar-widget">
+                        <h3>Tags</h3>
+
+                        <div class="tags-container" id="tags-element">
+
+                        </div>
                         <div class="clearfix"></div>
                     </div>
-                </div>
-
-                <!-- Category -->
-                <div class="sidebar-widget">
-                    <h3>Category</h3>
-                    <select class="selectpicker default" multiple data-selected-text-format="count" data-size="7" title="All Categories" >
-                        <option>Admin Support</option>
-                        <option>Customer Service</option>
-                        <option>Data Analytics</option>
-                        <option>Design & Creative</option>
-                        <option>Legal</option>
-                        <option>Software Developing</option>
-                        <option>IT & Networking</option>
-                        <option>Writing</option>
-                        <option>Translation</option>
-                        <option>Sales & Marketing</option>
-                    </select>
-                </div>
-
-                <!-- Job Types -->
-                <div class="sidebar-widget">
-                    <h3>Job Type</h3>
-
-                    <div class="switches-list">
-                        <div class="switch-container">
-                            <label class="switch"><input type="checkbox"><span class="switch-button"></span> Freelance</label>
-                        </div>
-
-                        <div class="switch-container">
-                            <label class="switch"><input type="checkbox"><span class="switch-button"></span> Full Time</label>
-                        </div>
-
-                        <div class="switch-container">
-                            <label class="switch"><input type="checkbox"><span class="switch-button"></span> Part Time</label>
-                        </div>
-
-                        <div class="switch-container">
-                            <label class="switch"><input type="checkbox"><span class="switch-button"></span> Internship</label>
-                        </div>
-                        <div class="switch-container">
-                            <label class="switch"><input type="checkbox"><span class="switch-button"></span> Temporary</label>
-                        </div>
-                    </div>
 
                 </div>
+                <!-- Sidebar Container / End -->
 
-                <!-- Salary -->
-                <div class="sidebar-widget">
-                    <h3>Salary</h3>
-                    <div class="margin-top-55"></div>
-
-                    <!-- Range Slider -->
-                    <input class="range-slider" type="text" value="" data-slider-currency="$" data-slider-min="1500" data-slider-max="15000" data-slider-step="100" data-slider-value="[1500,15000]"/>
+                <!-- Search Button -->
+                <div class="sidebar-search-button-container">
+                    <button type="submit" class="button ripple-effect">Search</button>
                 </div>
-
-                <!-- Tags -->
-                <div class="sidebar-widget">
-                    <h3>Tags</h3>
-
-                    <div class="tags-container">
-                        <div class="tag">
-                            <input type="checkbox" id="tag1"/>
-                            <label for="tag1">front-end dev</label>
-                        </div>
-                        <div class="tag">
-                            <input type="checkbox" id="tag2"/>
-                            <label for="tag2">angular</label>
-                        </div>
-                        <div class="tag">
-                            <input type="checkbox" id="tag3"/>
-                            <label for="tag3">react</label>
-                        </div>
-                        <div class="tag">
-                            <input type="checkbox" id="tag4"/>
-                            <label for="tag4">vue js</label>
-                        </div>
-                        <div class="tag">
-                            <input type="checkbox" id="tag5"/>
-                            <label for="tag5">web apps</label>
-                        </div>
-                        <div class="tag">
-                            <input type="checkbox" id="tag6"/>
-                            <label for="tag6">design</label>
-                        </div>
-                        <div class="tag">
-                            <input type="checkbox" id="tag7"/>
-                            <label for="tag7">wordpress</label>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-
-            </div>
-            <!-- Sidebar Container / End -->
-
-            <!-- Search Button -->
-            <div class="sidebar-search-button-container">
-                <button class="button ripple-effect">Search</button>
-            </div>
-            <!-- Search Button / End-->
+                <!-- Search Button / End-->
+            </form>
 
         </div>
     </div>
@@ -195,12 +146,12 @@
 
             <!-- Pagination -->
             <div class="clearfix"></div>
-            <div th:if="${totalPage > 0}" class="pagination-container margin-top-20 margin-bottom-20">
+            <div th:if="${listJobs.getTotalPages() > 0}" class="pagination-container margin-top-20 margin-bottom-20">
                 <nav class="pagination">
                     <ul>
-                        <li th:class="${pageNumber == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}"><a th:href="@{/jobs(page=${(pageNumber + 1) - 1})}" class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
-                        <li th:each="i : ${#numbers.sequence(1, totalPage)}"><a th:href="@{/jobs(page=${i})}" th:utext="${i}" th:class="${pageNumber + 1==i} ? 'ripple-effect current-page' : 'ripple-effect'"></a></li>
-                        <li th:class="${pageNumber == totalPage - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}"><a th:href="@{/jobs(page=${(pageNumber + 1) + 1})}" class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+                        <li th:class="${listJobs.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}"><a th:href="@{/jobs(page=${(listJobs.getPageable().getPageNumber() + 1) - 1})}" class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+                        <li th:each="i : ${#numbers.sequence(1, listJobs.getTotalPages())}"><a th:href="@{/jobs(page=${i})}" th:utext="${i}" th:class="${listJobs.getPageable().getPageNumber() + 1==i} ? 'ripple-effect current-page' : 'ripple-effect'"></a></li>
+                        <li th:class="${listJobs.getPageable().getPageNumber() == listJobs.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}"><a th:href="@{/jobs(page=${(listJobs.getPageable().getPageNumber() + 1) + 1})}" class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
                     </ul>
                 </nav>
             </div>
@@ -243,6 +194,31 @@
     <!-- Full Page Content / End -->
 
 </div>
-
 </body>
+<script layout:fragment="js">
+    function state_change() {
+        var change = $("#category").val();
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '/api/skills',
+            data: {
+                page: 1,
+                size: 100,
+                jobCategories: change.join(',')
+            },
+            success: function (res) {
+                document.getElementById("tags-element").innerHTML = "";
+                $.each(res.data.content, function(index, value){
+                   if(res.data.content !== []){
+                       document.getElementById("tags-element").innerHTML += "<div class=\"tag\">\n" +
+                           "        <input type=\"checkbox\" id=\"tag" + index + "\"/>\n" +
+                           "        <label for=\"tag" + index + "\">" + value.name + "</label>\n" +
+                           "    </div>";
+                   }
+                })
+            }
+        })
+    }
+</script>
 </html>
