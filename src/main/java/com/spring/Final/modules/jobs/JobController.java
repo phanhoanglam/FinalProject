@@ -61,19 +61,18 @@ public class JobController extends ApiController {
 //        return buildResponse(data);
 //    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResult> update(@Valid @RequestBody JobDTO model, @PathVariable(value = "id") int id) throws IOException {
-        model.setId(id);
-        JobDetail data = service.updateOne(model);
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ApiResult> update(@Valid @RequestBody JobDTO model, @PathVariable(value = "id") int id) throws IOException {
+//        model.setId(id);
+//        JobDetail data = service.updateOne(model);
+//
+//        return buildResponse(data);
+//    }
 
-        return buildResponse(data);
-    }
-
-    @DeleteMapping("/{id}")
-    public @ResponseBody
-    ResponseEntity<ApiResult> delete(@PathVariable(value = "id") int id) {
-        service.deleteOne(id);
-
-        return buildResponse(null);
-    }
+//    @DeleteMapping("/{id}")
+//    public @ResponseBody ResponseEntity<ApiResult> delete(@PathVariable(value = "id") int id) {
+//        service.deleteOne(id);
+//
+//        return buildResponse(null);
+//    }
 }

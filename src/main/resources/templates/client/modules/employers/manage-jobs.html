@@ -79,12 +79,15 @@
                                             <span class="button-info" th:text="${item.candidatesCount}"></span>
                                         </a>
 
-                                        <a href="#" class="button gray ripple-effect ico" title="Edit"
+                                        <a th:href="${'/dashboard/edit-job/' + item.slug}" class="button gray ripple-effect ico" title="Edit"
                                            data-tippy-placement="top">
                                             <i class="icon-feather-edit"></i>
                                         </a>
 
-                                        <a href="#" class="button gray ripple-effect ico" title="Remove"
+                                        <a th:if="${item.status.toString() != 'CLOSED'}" th:href="${'/dashboard/delete-job/' + item.slug}"
+                                           onclick="confirm('Are you sure to delete this job? All the proposals will all be deleted!')"
+                                           class="button gray ripple-effect ico"
+                                           title="Remove"
                                            data-tippy-placement="top">
                                             <i class="icon-feather-trash-2"></i>
                                         </a>
