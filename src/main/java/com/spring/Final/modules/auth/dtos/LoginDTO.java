@@ -1,4 +1,4 @@
-package com.spring.Final.modules.employee.dtos;
+package com.spring.Final.modules.auth.dtos;
 
 import lombok.Data;
 

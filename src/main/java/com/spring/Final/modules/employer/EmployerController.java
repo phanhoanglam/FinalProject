@@ -4,11 +4,8 @@ import com.spring.Final.core.exceptions.BaseException;
 import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
 import com.spring.Final.modules.employer.dtos.LoginDTO;
-import com.spring.Final.modules.employer.dtos.RegisterDTO;
-import com.spring.Final.modules.employer.projections.EmployerDetail;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,22 +40,21 @@ public class EmployerController extends ApiController {
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResult> login(@Valid @RequestBody RegisterDTO model) {
-        try {
-            EmployerDetail data = employerService.register(model);
-
-            return buildResponse(data);
-        } catch (BaseException e) {
-            HashMap<String, String> data = new HashMap<>();
-            data.put("message", e.getMessage());
-
-            return buildResponse(e.getHttpStatus(), data, e.getCode());
-        } catch (Exception e) {
-            return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getLocalizedMessage());
-        }
-
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<ApiResult> login(@Valid @RequestBody RegisterDTO model) {
+//        try {
+//            EmployerDetail data = employerService.register(model);
+//
+//            return buildResponse(data);
+//        } catch (BaseException e) {
+//            HashMap<String, String> data = new HashMap<>();
+//            data.put("message", e.getMessage());
+//
+//            return buildResponse(e.getHttpStatus(), data, e.getCode());
+//        } catch (Exception e) {
+//            return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getLocalizedMessage());
+//        }
+//    }
 
     @GetMapping("/me/jobs")
     public ResponseEntity<ApiResult> listJobs(

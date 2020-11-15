@@ -7,8 +7,7 @@ import com.spring.Final.core.exceptions.EntityExistException;
 import com.spring.Final.core.exceptions.InvalidEmailOrPasswordException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
-import com.spring.Final.modules.employer.dtos.RegisterDTO;
-import com.spring.Final.modules.employer.projections.EmployerDetail;
+import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import com.spring.Final.modules.membership.MembershipEntity;
@@ -68,7 +67,7 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         return data;
     }
 
-    public EmployerDetail register(RegisterDTO data) {
+    public EmployerEntity register(RegisterDTO data) {
         EmployerEntity newEmployer = this.modelMapper.map(data, EmployerEntity.class);
         EmployerEntity employer = this.repository.findByEmail(newEmployer.getEmail());
 
@@ -81,9 +80,8 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         newEmployer.setCreatedAt(CommonHelper.getCurrentTime());
         newEmployer.setUpdatedAt(CommonHelper.getCurrentTime());
         newEmployer.setVerified(true);
-        newEmployer = this.repository.save(newEmployer);
 
-        return this.modelMapper.map(newEmployer, EmployerDetail.class);
+        return this.repository.save(newEmployer);
     }
 
     public void increaseJobsCount(int id) {

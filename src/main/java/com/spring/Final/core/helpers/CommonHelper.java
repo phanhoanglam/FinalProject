@@ -9,7 +9,6 @@ import org.locationtech.jts.geom.PrecisionModel;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 
 public class CommonHelper {
     public static String toSlug(String input) {
@@ -42,12 +41,9 @@ public class CommonHelper {
         return gson.toJson(data);
     }
 
-    public static Point createGeometryPoint(HashMap<String, String> data) {
+    public static Point createGeometryPoint(Coordinate coordinate) {
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
-        Point point = geometryFactory.createPoint(new Coordinate(
-                Double.parseDouble(data.get("x")),
-                Double.parseDouble(data.get("y"))
-        ));
+        Point point = geometryFactory.createPoint(coordinate);
         point.setSRID(geometryFactory.getSRID());
 
         return point;
