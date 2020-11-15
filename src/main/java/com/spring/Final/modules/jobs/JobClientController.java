@@ -1,7 +1,6 @@
 package com.spring.Final.modules.jobs;
 
 import com.spring.Final.core.exceptions.InvalidAddressException;
-import com.spring.Final.core.infrastructure.ApiResult;
 import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
@@ -10,7 +9,6 @@ import com.spring.Final.modules.jobs.projections.HomepageData;
 import com.spring.Final.modules.jobs.projections.JobDetail;
 import com.spring.Final.modules.jobs.projections.JobList;
 import com.spring.Final.modules.jobs.projections.PostJobData;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
-import com.spring.Final.modules.jobs.projections.PostJobData;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -55,7 +53,12 @@ public class JobClientController {
     }
 
     @GetMapping("/{slug}")
-    public String getDetail(Authentication authentication , HttpServletResponse response, Model modelView, @PathVariable(value = "slug") String slug) throws IOException {
+    public String getDetail(
+            Authentication authentication,
+            HttpServletResponse response,
+            Model modelView,
+            @PathVariable(value = "slug") String slug
+    ) throws IOException {
         if (authentication == null) {
             response.sendRedirect("/auth/login");
         }
@@ -64,7 +67,8 @@ public class JobClientController {
         modelView.addAttribute("detail", data.getJobDetails());
         modelView.addAttribute("proposal", data.getProposal());
         modelView.addAttribute("listSimilar", data.getJobLists());
-        return "client/modules/job-details/job-detail";
+
+        return "client/modules/jobs/detail";
     }
 
     @GetMapping("/dashboard/post-job")

@@ -5,7 +5,7 @@
 </head>
 <body>
 <div layout:fragment="body">
-    <div th:replace="client/modules/job-details/job-proposal.html :: div"></div>
+    <div th:replace="client/modules/jobs/job-proposal.html :: div"></div>
 
     <div class="single-page-header">
         <div class="container">
@@ -26,10 +26,8 @@
                                         <div class="star-rating" data-rating="4.9"></div>
                                     </li>
                                     <li>
-<!--                                        <img class="flag" src="../../resources/static/client/images/location.svg"-->
-<!--                                             alt=""> -->
-                                        [[${detail.employer.address.substring(0,
-                                        detail.employer.address.indexOf(','))}]]
+                                        <img class="flag" th:src="@{/client/images/flags/gb.svg}" alt="">
+                                        United Kingdom
                                     </li>
                                     <li>
                                         <div class="verified-badge-with-title">Verified</div>
@@ -40,8 +38,8 @@
                         <div class="right-side">
                             <div class="salary-box">
                                 <div class="salary-type">Annual Salary</div>
-                                <div th:if="${detail.salaryFrom > 0}" class="salary-amount">$[[${detail.salaryTo == null
-                                    ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]]
+                                <div th:if="${detail.salaryFrom > 0}" class="salary-amount">
+                                    $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]]
                                 </div>
                                 <div th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"
                                      class="salary-amount">Negotiate
@@ -95,7 +93,10 @@
 
                                 <!-- Details -->
                                 <div class="job-listing-description">
-                                    <h4 class="job-listing-company" th:text="${similar.employer.name}"></h4>
+                                    <h4 class="job-listing-company">
+                                        [[${similar.employer.name}]]
+                                        <span class="verified-badge" data-tippy-placement="top" data-tippy="" data-original-title="Verified Employer"></span>
+                                    </h4>
                                     <h3 class="job-listing-title" th:text="${similar.name}"></h3>
                                 </div>
                             </div>
@@ -104,22 +105,20 @@
                             <div class="job-listing-footer">
                                 <ul>
                                     <li><i class="icon-material-outline-location-on"></i>
-                                        [[${similar.employer.address.substring(0,
-                                        similar.employer.address.indexOf(','))}]]
+                                        [[${similar.address}]]
                                     </li>
                                     <li><i class="icon-material-outline-business-center"></i>
                                         [[${similar.jobType.name}]]
                                     </li>
-                                    <li th:if="${detail.salaryFrom > 0}"><i
-                                            class="icon-material-outline-account-balance-wallet"></i>
-                                        $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom
-                                        == null ? 0 : detail.salaryFrom}]]
+                                    <li th:if="${detail.salaryFrom > 0}">
+                                        <i class="icon-material-outline-account-balance-wallet"></i>
+                                        $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]]
                                     </li>
                                     <li th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"><i
                                             class="icon-material-outline-account-balance-wallet"></i> Negotiate
                                     </li>
                                     <li><i class="icon-material-outline-access-time"></i>
-                                        [[${#dates.format(detail.createdAt, 'dd-MM-yyyy')}]]
+                                        [[${#dates.format(detail.createdAt, 'MM-dd-yyyy')}]]
                                     </li>
                                 </ul>
                             </div>
@@ -149,8 +148,7 @@
                                     <li>
                                         <i class="icon-material-outline-location-on"></i>
                                         <span>Location</span>
-                                        <h5>[[${detail.employer.address.substring(0,
-                                            detail.employer.address.indexOf(','))}]]</h5>
+                                        <h5>[[${detail.address}]]</h5>
                                     </li>
                                     <li>
                                         <i class="icon-material-outline-business-center"></i>
@@ -160,16 +158,15 @@
                                     <li>
                                         <i class="icon-material-outline-local-atm"></i>
                                         <span>Salary</span>
-                                        <h5 th:if="${detail.salaryFrom > 0}">$[[${detail.salaryTo == null ? 0 :
-                                            detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 :
-                                            detail.salaryFrom}]]</h5>
-                                        <h5 th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}">
-                                            Negotiate</h5>
+                                        <h5 th:if="${detail.salaryFrom > 0}">
+                                            $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]]
+                                        </h5>
+                                        <h5 th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}">Negotiate</h5>
                                     </li>
                                     <li>
                                         <i class="icon-material-outline-access-time"></i>
                                         <span>Date Posted</span>
-                                        <h5 th:utext="${#dates.format(detail.createdAt, 'hh:mm dd-MM-yyyy')}"></h5>
+                                        <h5 th:utext="${#dates.format(detail.createdAt, 'dd MMMM, yyyy')}"></h5>
                                     </li>
                                 </ul>
                             </div>
@@ -235,10 +232,13 @@
                 contentType: false,
                 processData: false,
                 url: '/api/job-proposals/resume',
+                headers: {
+                    [$('[name="_csrf_header"]').attr('content')]: $('[name="_csrf"]').attr('content')
+                },
                 enctype: 'multipart/form-data',
                 success: function (res) {
                     console.log('res >>>> ', res);
-                },error : function (error) {
+                }, error: function (error) {
                     console.log('error ', error)
                 }
             });

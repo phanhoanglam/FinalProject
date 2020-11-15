@@ -148,7 +148,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         if (job == null) {
             throw new ResourceNotFoundException();
         } else if (job.getStatus() == JobStatus.CLOSED) {
-            throw new BadRequestException("Job was already closed, cannot edit!");
+            throw new BadRequestException("Job was already closed, cannot delete!");
         }
         // TODO: Create notifications to the proposals of the deleted job
         this.jobProposalService.deleteByJobId(job.getId());
