@@ -245,15 +245,6 @@
         }
     });
 
-    function getBinaryFromFile(file, cb) {
-        const reader = new FileReader();
-
-        reader.addEventListener("load", cb.bind(this, reader.result));
-        reader.addEventListener("error", console.error.bind(this, err));
-
-        reader.readAsBinaryString(file);
-    }
-
     // Initialize and add the map
     function initMap() {
         const location = $('#map').attr('data-location');

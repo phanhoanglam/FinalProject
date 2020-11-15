@@ -90,10 +90,8 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
 
         JobDetail viewModel = this.modelMapper.map(data, JobDetail.class);
 
-        JobCategoryEntity jobCategoryEntity = new JobCategoryEntity();
-        jobCategoryEntity.setId(data.getJobCategory().getId());
         Pageable page = PageRequest.of(this.getPage(1), 2, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<JobEntity> listEntity = this.repository.findAllByIdNotAndJobCategory(data.getId(), jobCategoryEntity, page);
+        Page<JobEntity> listEntity = this.repository.findAllByIdNotAndJobCategory(data.getId(), data.getJobCategory(), page);
         List<JobList> resultList = listEntity.stream()
                 .map(e -> this.modelMapper.map(e, JobList.class))
                 .collect(Collectors.toList());
