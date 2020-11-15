@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+
+<div layout:fragment="titlebar">
+    <div id="titlebar" class="gradient">
+        <div class="container">
+            <h2>Register</h2>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="body">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-5 offset-xl-3">
+
+                <div class="login-register-page">
+                    <!-- Welcome Text -->
+                    <div class="welcome-text">
+                        <h3 style="font-size: 26px;">Let's create your account!</h3>
+                        <span>Already have an account? <a th:href="@{/auth/login}">Log In!</a></span>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" id="register-form" th:action="@{/auth/register}"
+                          th:object="${registerDTO}">
+                        <!-- Account Type -->
+                        <div class="account-type">
+                            <div>
+                                <input type="radio" name="accountType" id="employee-radio" value="employee" th:checked="${accountType == 'employee'}"
+                                       class="account-type-radio" checked/>
+                                <label for="employee-radio" class="ripple-effect-dark"><i
+                                        class="icon-material-outline-account-circle"></i> Employee</label>
+                            </div>
+
+                            <div>
+                                <input type="radio" name="accountType" id="employer-radio" value="employer" th:checked="${accountType == 'employer'}"
+                                       class="account-type-radio"/>
+                                <label for="employer-radio" class="ripple-effect-dark"><i
+                                        class="icon-material-outline-business-center"></i> Employer</label>
+                            </div>
+                        </div>
+
+                        <div class="input-with-icon-left">
+                            <i class="icon-material-baseline-mail-outline"></i>
+                            <input type="email" class="input-text with-border" th:field="*{email}"
+                                   placeholder="Email Address" required/>
+                        </div>
+
+                        <div class="input-with-icon-left">
+                            <i class="icon-material-outline-lock"></i>
+                            <input type="password" class="input-text with-border" th:field="*{password}"
+                                   placeholder="Password" required/>
+                        </div>
+
+                        <div class="input-with-icon-left employee-field">
+                            <i class="icon-material-outline-face"></i>
+                            <input type="text" class="input-text with-border" th:field="*{firstName}"
+                                   placeholder="First name" required/>
+                        </div>
+
+                        <div class="input-with-icon-left employee-field">
+                            <i class="icon-material-outline-face"></i>
+                            <input type="text" class="input-text with-border" th:field="*{lastName}"
+                                   placeholder="Last name" required/>
+                        </div>
+
+                        <div class="input-with-icon-left employer-field">
+                            <i class="icon-material-outline-face"></i>
+                            <input type="text" class="input-text with-border" th:field="*{name}"
+                                   placeholder="Name" required/>
+                        </div>
+
+                        <div class="input-with-icon-left">
+                            <i class="icon-feather-phone"></i>
+                            <input type="text" class="input-text with-border" th:field="*{phone}"
+                                   placeholder="Phone" required/>
+                        </div>
+
+                        <div class="input-with-icon-left">
+                            <i class="icon-material-outline-location-on"></i>
+                            <input type="text" class="input-text with-border" th:field="*{address}"
+                                   placeholder="Address" required/>
+                        </div>
+
+                        <p th:if="${message}" th:text="${message}" class="color-red"></p>
+
+                        <!-- Button -->
+                        <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit">
+                            Register <i class="icon-material-outline-arrow-right-alt"></i></button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="margin-top-70"></div>
+</div>
+
+<script layout:fragment="js">
+    function changeAccountType(self) {
+        const $loginForm = $('#register-form');
+
+        const val = $(self).val();
+        let action = $loginForm.attr('action').split('?')[0];
+        action = `${action}?accountType=${val}`;
+
+        if (val === 'employee') {
+            $('.employee-field').css({display: 'block'});
+            $('.employee-field input').attr('disabled', false)
+
+            $('.employer-field').css({display: 'none'});
+            $('.employer-field input').attr('disabled', true)
+        } else if (val === 'employer') {
+            $('.employer-field').css({display: 'block'});
+            $('.employer-field input').attr('disabled', false)
+
+            $('.employee-field').css({display: 'none'});
+            $('.employee-field input').attr('disabled', true)
+        }
+
+        $loginForm.attr('action', action);
+    }
+
+    $(document).ready(function () {
+        const $accountType = $('[name="accountType"]');
+
+        changeAccountType($accountType);
+
+        $accountType.on('change', function () {
+            changeAccountType(this);
+        });
+    });
+</script>
+</body>
+</html>
