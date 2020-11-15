@@ -21,6 +21,7 @@ public class JobDetail {
     private JobStatus status;
     private Date expiredAt;
     private Date createdAt;
+    private String location;
 
     private JobType jobType;
     private JobCategory jobCategory;
@@ -32,5 +33,9 @@ public class JobDetail {
             this.addressLocation.put("x", point.getX());
             this.addressLocation.put("y", point.getY());
         }
+    }
+
+    public String getAddressLocation() {
+        return addressLocation.get("x") + "," + addressLocation.get("y");
     }
 }

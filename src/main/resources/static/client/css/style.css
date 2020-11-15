@@ -123,6 +123,7 @@
 	pointer-events: none;
 	cursor: default;
 }
+
 input,
 input[type="text"],
 input[type="password"],
@@ -12363,7 +12364,7 @@ body .pac-container {
 	margin-bottom: 60px;
 }
 
-.gmnoprint { margin: 10px; }
+/*.gmnoprint { margin: 10px; }*/
 
 .homepage-map {
     height: 560px;
