@@ -126,6 +126,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         if (employer.getJobsCount() >= this.FREE_JOBS) {
             throw new ExceedFreeJobsAvailableException();
         }
+        // create || map skills
         JobEntity job = convertToEntity(data);
         this.employerService.increaseJobsCount(data.getEmployerId());
         job = this.repository.save(job);
@@ -199,5 +200,12 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         }
 
         return job;
+    }
+
+    public PostJobData getPostJobData() {
+        return new PostJobData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly()
+        );
     }
 }

@@ -1,6 +1,6 @@
 <!-- Apply for a job popup
 ================================================== -->
-<div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs modal fade" role="dialog">
+<div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
 
     <!--Tabs -->
     <div class="sign-in-form">
@@ -20,20 +20,14 @@
                 </div>
 
                 <!-- Form -->
-                <form method="post" id="apply-now-form">
+                <form action="" method="post" id="apply-now-form" enctype="multipart/form-data">
 
                     <div class="input-with-icon-left">
-                        <i class="icon-material-outline-account-circle"></i>
-                        <input type="text" class="input-text with-border" name="name" id="name" placeholder="First and Last Name" required/>
-                    </div>
-
-                    <div class="input-with-icon-left">
-                        <i class="icon-material-baseline-mail-outline"></i>
-                        <input type="text" class="input-text with-border" name="emailaddress" id="emailaddress" placeholder="Email Address" required/>
+                        <textarea class="input-text with-border" name="message" id="message" placeholder="Message"></textarea>
                     </div>
 
                     <div class="uploadButton">
-                        <input class="uploadButton-input" type="file" accept="image/*, application/pdf" id="upload-cv" />
+                        <input class="uploadButton-input" name="uploadfile" type="file" accept="image/*, application/pdf" id="upload-cv" />
                         <label class="uploadButton-button ripple-effect" for="upload-cv">Select File</label>
                         <span class="uploadButton-file-name">Upload your CV / resume relevant file. <br> Max. file size: 50 MB.</span>
                     </div>
@@ -41,7 +35,7 @@
                 </form>
 
                 <!-- Button -->
-                <button class="button margin-top-35 full-width button-sliding-icon ripple-effect" type="submit" form="apply-now-form">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></button>
+                <button id="btnApplyNow" type="button" class="button margin-top-35 full-width button-sliding-icon ripple-effect" form="apply-now-form">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></button>
 
             </div>
 

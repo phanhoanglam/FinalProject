@@ -5,29 +5,47 @@
 </head>
 <body>
 <div layout:fragment="body">
-    <div class="single-page-header" data-background-image="images/single-job.jpg">
+    <div th:replace="client/modules/job-details/job-proposal.html :: div"></div>
+
+    <div class="single-page-header">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="single-page-header-inner">
                         <div class="left-side">
-                            <div class="header-image"><a href="single-company-profile.html"><img th:src="@{${detail.employer.avatar}}" alt=""></a></div>
+                            <div class="header-image"><a href="single-company-profile.html"><img
+                                    th:src="@{${detail.employer.avatar}}" alt=""></a></div>
                             <div class="header-details">
                                 <h3 th:utext="${detail.name}"></h3>
                                 <h5>About the Employer</h5>
                                 <ul>
-                                    <li><a href="single-company-profile.html"><i class="icon-material-outline-business"></i> [[${detail.employer.name}]]</a></li>
-                                    <li><div class="star-rating" data-rating="4.9"></div></li>
-                                    <li><img class="flag" src="../../resources/static/client/images/location.svg" alt=""> [[${detail.employer.address.substring(0, detail.employer.address.indexOf(','))}]]</li>
-                                    <li><div class="verified-badge-with-title">Verified</div></li>
+                                    <li><a href="single-company-profile.html"><i
+                                            class="icon-material-outline-business"></i> [[${detail.employer.name}]]</a>
+                                    </li>
+                                    <li>
+                                        <div class="star-rating" data-rating="4.9"></div>
+                                    </li>
+                                    <li>
+<!--                                        <img class="flag" src="../../resources/static/client/images/location.svg"-->
+<!--                                             alt=""> -->
+                                        [[${detail.employer.address.substring(0,
+                                        detail.employer.address.indexOf(','))}]]
+                                    </li>
+                                    <li>
+                                        <div class="verified-badge-with-title">Verified</div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                         <div class="right-side">
                             <div class="salary-box">
                                 <div class="salary-type">Annual Salary</div>
-                                <div th:if="${detail.salaryFrom > 0}" class="salary-amount">$[[${detail.salaryTo == null ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]]</div>
-                                <div th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}" class="salary-amount">Negotiate</div>
+                                <div th:if="${detail.salaryFrom > 0}" class="salary-amount">$[[${detail.salaryTo == null
+                                    ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]]
+                                </div>
+                                <div th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"
+                                     class="salary-amount">Negotiate
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -53,8 +71,9 @@
                 <div class="single-page-section">
                     <h3 class="margin-bottom-30">Location</h3>
                     <div id="single-job-map-container">
-<!--                        <div id="singleListingMap" data-latitude="51.507717" data-longitude="-0.131095" data-map-icon="im im-icon-Hamburger"></div>-->
-                        <div id="map" th:attr="data-location=${detail.location}" style="width: 100%; height: 400px"></div>
+                        <!--                        <div id="singleListingMap" data-latitude="51.507717" data-longitude="-0.131095" data-map-icon="im im-icon-Hamburger"></div>-->
+                        <div id="map" th:attr="data-location=${detail.location}"
+                             style="width: 100%; height: 400px"></div>
                     </div>
                 </div>
 
@@ -84,11 +103,24 @@
                             <!-- Job Listing Footer -->
                             <div class="job-listing-footer">
                                 <ul>
-                                    <li><i class="icon-material-outline-location-on"></i> [[${similar.employer.address.substring(0, similar.employer.address.indexOf(','))}]]</li>
-                                    <li><i class="icon-material-outline-business-center"></i> [[${similar.jobType.name}]]</li>
-                                    <li th:if="${detail.salaryFrom > 0}"><i class="icon-material-outline-account-balance-wallet"></i> $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]]</li>
-                                    <li th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"><i class="icon-material-outline-account-balance-wallet"></i> Negotiate</li>
-                                    <li><i class="icon-material-outline-access-time"></i> [[${#dates.format(detail.createdAt, 'dd-MM-yyyy')}]]</li>
+                                    <li><i class="icon-material-outline-location-on"></i>
+                                        [[${similar.employer.address.substring(0,
+                                        similar.employer.address.indexOf(','))}]]
+                                    </li>
+                                    <li><i class="icon-material-outline-business-center"></i>
+                                        [[${similar.jobType.name}]]
+                                    </li>
+                                    <li th:if="${detail.salaryFrom > 0}"><i
+                                            class="icon-material-outline-account-balance-wallet"></i>
+                                        $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom
+                                        == null ? 0 : detail.salaryFrom}]]
+                                    </li>
+                                    <li th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"><i
+                                            class="icon-material-outline-account-balance-wallet"></i> Negotiate
+                                    </li>
+                                    <li><i class="icon-material-outline-access-time"></i>
+                                        [[${#dates.format(detail.createdAt, 'dd-MM-yyyy')}]]
+                                    </li>
                                 </ul>
                             </div>
                         </a>
@@ -104,7 +136,10 @@
             <div class="col-xl-4 col-lg-4">
                 <div class="sidebar-container">
 
-                    <a href="#small-dialog" th:class="${proposal == null ? 'apply-now-button popup-with-zoom-anim' : 'applied'}" th:text="${proposal == null ? 'Apply Now' : 'Applied'}"><i class="icon-material-outline-arrow-right-alt"></i></a>
+                    <a href="#small-dialog"
+                       th:class="${proposal == null ? 'apply-now-button popup-with-zoom-anim' : 'applied'}"
+                       th:text="${proposal == null ? 'Apply Now' : 'Applied'}"><i
+                            class="icon-material-outline-arrow-right-alt"></i></a>
                     <!-- Sidebar Widget -->
                     <div class="sidebar-widget">
                         <div class="job-overview">
@@ -114,7 +149,8 @@
                                     <li>
                                         <i class="icon-material-outline-location-on"></i>
                                         <span>Location</span>
-                                        <h5>[[${detail.employer.address.substring(0, detail.employer.address.indexOf(','))}]]</h5>
+                                        <h5>[[${detail.employer.address.substring(0,
+                                            detail.employer.address.indexOf(','))}]]</h5>
                                     </li>
                                     <li>
                                         <i class="icon-material-outline-business-center"></i>
@@ -124,8 +160,11 @@
                                     <li>
                                         <i class="icon-material-outline-local-atm"></i>
                                         <span>Salary</span>
-                                        <h5 th:if="${detail.salaryFrom > 0}">$[[${detail.salaryTo == null ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]]</h5>
-                                        <h5 th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}">Negotiate</h5>
+                                        <h5 th:if="${detail.salaryFrom > 0}">$[[${detail.salaryTo == null ? 0 :
+                                            detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 :
+                                            detail.salaryFrom}]]</h5>
+                                        <h5 th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}">
+                                            Negotiate</h5>
                                     </li>
                                     <li>
                                         <i class="icon-material-outline-access-time"></i>
@@ -151,7 +190,9 @@
                         <!-- Copy URL -->
                         <div class="copy-url">
                             <input id="copy-url" type="text" value="" class="with-border">
-                            <button class="copy-url-button ripple-effect" data-clipboard-target="#copy-url" title="Copy to Clipboard" data-tippy-placement="top"><i class="icon-material-outline-file-copy"></i></button>
+                            <button class="copy-url-button ripple-effect" data-clipboard-target="#copy-url"
+                                    title="Copy to Clipboard" data-tippy-placement="top"><i
+                                    class="icon-material-outline-file-copy"></i></button>
                         </div>
 
                         <!-- Share Buttons -->
@@ -160,10 +201,14 @@
                             <div class="share-buttons-content">
                                 <span>Interesting? <strong>Share It!</strong></span>
                                 <ul class="share-buttons-icons">
-                                    <li><a href="#" data-button-color="#3b5998" title="Share on Facebook" data-tippy-placement="top"><i class="icon-brand-facebook-f"></i></a></li>
-                                    <li><a href="#" data-button-color="#1da1f2" title="Share on Twitter" data-tippy-placement="top"><i class="icon-brand-twitter"></i></a></li>
-                                    <li><a href="#" data-button-color="#dd4b39" title="Share on Google Plus" data-tippy-placement="top"><i class="icon-brand-google-plus-g"></i></a></li>
-                                    <li><a href="#" data-button-color="#0077b5" title="Share on LinkedIn" data-tippy-placement="top"><i class="icon-brand-linkedin-in"></i></a></li>
+                                    <li><a href="#" data-button-color="#3b5998" title="Share on Facebook"
+                                           data-tippy-placement="top"><i class="icon-brand-facebook-f"></i></a></li>
+                                    <li><a href="#" data-button-color="#1da1f2" title="Share on Twitter"
+                                           data-tippy-placement="top"><i class="icon-brand-twitter"></i></a></li>
+                                    <li><a href="#" data-button-color="#dd4b39" title="Share on Google Plus"
+                                           data-tippy-placement="top"><i class="icon-brand-google-plus-g"></i></a></li>
+                                    <li><a href="#" data-button-color="#0077b5" title="Share on LinkedIn"
+                                           data-tippy-placement="top"><i class="icon-brand-linkedin-in"></i></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -175,12 +220,39 @@
     </div>
 </div>
 
-<script layout:fragment="js" th:inline="javascript">
-    // $(document).ready(function(){
-    //     $("#showModal").click(function(){
-    //         $("#small-dialog").modal();
-    //     });
-    // });
+<script layout:fragment="js">
+    $('#btnApplyNow').on('click', function () {
+        var fileUpload = $('#upload-cv')[0].files;
+        console.log(fileUpload)
+        var message = $('#message').val();
+        var fd = new FormData();
+
+        if (fileUpload.length > 0) {
+            fd.append("file", fileUpload[0]);
+            $.ajax({
+                type: 'POST',
+                data: fd,
+                contentType: false,
+                processData: false,
+                url: '/api/job-proposals/resume',
+                enctype: 'multipart/form-data',
+                success: function (res) {
+                    console.log('res >>>> ', res);
+                },error : function (error) {
+                    console.log('error ', error)
+                }
+            });
+        }
+    });
+
+    function getBinaryFromFile(file, cb) {
+        const reader = new FileReader();
+
+        reader.addEventListener("load", cb.bind(this, reader.result));
+        reader.addEventListener("error", console.error.bind(this, err));
+
+        reader.readAsBinaryString(file);
+    }
 
     // Initialize and add the map
     function initMap() {
@@ -189,13 +261,13 @@
         const lat = location.split(',')[0];
         const lng = location.split(',')[1];
         // The location of Uluru
-        const uluru = { lat: parseInt(lat), lng: parseInt(lng) };
+        const uluru = {lat: parseInt(lat), lng: parseInt(lng)};
         // The map, centered at Uluru
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 10,
             center: uluru,
         });
-        const mapMarker= "https://www.mapsmarker.com/wp-content/uploads/leaflet-maps-marker-icons/bar_coktail.png"
+        const mapMarker = "https://www.mapsmarker.com/wp-content/uploads/leaflet-maps-marker-icons/bar_coktail.png"
         // The marker, positioned at Uluru
         const marker = new google.maps.Marker({
             position: uluru,
