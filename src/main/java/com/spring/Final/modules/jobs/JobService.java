@@ -14,6 +14,7 @@ import com.spring.Final.modules.job_type.JobTypeService;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.jobs.exceptions.ExceedFreeJobsAvailableException;
+import com.spring.Final.modules.jobs.projections.HomepageData;
 import com.spring.Final.modules.jobs.projections.JobDetail;
 import com.spring.Final.modules.jobs.projections.JobList;
 import com.spring.Final.modules.jobs.projections.JobManage;
@@ -55,7 +56,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         this.repository = repository;
     }
 
-    public PageImpl<JobList> list(int pageNumber, int size, SearchJobDTO model, Model modelView) {
+    public HomepageData<JobList> list(int pageNumber, int size, SearchJobDTO model) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         JobSpecification search = new JobSpecification(model);
 
@@ -64,10 +65,12 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
                 .map(e -> this.modelMapper.map(e, JobList.class))
                 .collect(Collectors.toList());
 
-        modelView.addAttribute("categories", jobCategoryService.findAll());
-        modelView.addAttribute("jobTypes", jobTypeService.findAll());
-
-        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
+        return new HomepageData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 20, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
+                new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
+        );
     }
 
     public JobDetail getDetail(String slug) {

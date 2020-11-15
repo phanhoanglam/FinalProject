@@ -889,11 +889,14 @@ $(document).ready(function(){
 
 	// Default Bootstrap Range Slider
 	var currencyAttr = $(".range-slider").attr('data-slider-currency');
-	
+
+	const value = $(".range-slider").val().split(',');
+
 	$(".range-slider").slider({
 		formatter: function(value) {
 			return currencyAttr + ThousandSeparator(parseInt(value[0])) + " - " + currencyAttr + ThousandSeparator(parseInt(value[1]));
-		}
+		},
+		value: [parseInt(value[0]), parseInt(value[1])]
 	});
 	
 	$(".range-slider-single").slider();

@@ -20,17 +20,17 @@ public class EmployeeSpecification extends EntitySpecification<EmployeeEntity> {
         Predicate predicate = cb.disjunction();
         ArrayList<Predicate> andPredicates = new ArrayList<>();
 
-        if (dto.getCategories().length != 0) {
+        if (dto.getJobCategories().size() != 0) {
             Subquery<JobCategoryEntity> jcSubQuery = query.subquery(JobCategoryEntity.class);
             Root<JobCategoryEntity> jc = jcSubQuery.from(JobCategoryEntity.class);
             Expression<Collection<EmployeeEntity>> jcEmployees = jc.get("employees");
 
             jcSubQuery.select(jc);
-            jcSubQuery.where(jc.get("id").in(dto.getCategories()), cb.isMember(root, jcEmployees));
+            jcSubQuery.where(jc.get("id").in(dto.getJobCategories()), cb.isMember(root, jcEmployees));
 
             andPredicates.add(cb.exists(jcSubQuery));
         }
-        if (dto.getSkills().length != 0) {
+        if (dto.getSkills().size() != 0) {
             Subquery<SkillEntity> skillSubQuery = query.subquery(SkillEntity.class);
             Root<SkillEntity> jc = skillSubQuery.from(SkillEntity.class);
             Expression<Collection<EmployeeEntity>> skillEmployees = jc.get("employees");
