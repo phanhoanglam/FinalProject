@@ -31,17 +31,17 @@ public class JobSpecification extends EntitySpecification<JobEntity> {
             }
             andPredicates.add(cb.or(predicates));
         }
-        if (dto.getCategories().length != 0) {
+        if (dto.getJobCategories().size() != 0) {
             andPredicates.add(
-                    root.get("jobCategory").in(dto.getCategories())
+                    root.get("jobCategory").in(dto.getJobCategories())
             );
         }
-        if (dto.getTypes().length != 0) {
+        if (dto.getJobTypes().size() != 0) {
             andPredicates.add(
-                    root.get("jobType").in(dto.getTypes())
+                    root.get("jobType").in(dto.getJobTypes())
             );
         }
-        if (dto.getSkills().length != 0) {
+        if (dto.getSkills().size() != 0) {
             Subquery<SkillEntity> skillSubQuery = query.subquery(SkillEntity.class);
             Root<SkillEntity> skill = skillSubQuery.from(SkillEntity.class);
             Expression<Collection<JobEntity>> skillJobs = skill.get("jobs");

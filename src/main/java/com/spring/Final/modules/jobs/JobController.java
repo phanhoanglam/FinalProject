@@ -36,12 +36,12 @@ public class JobController extends ApiController {
 //        return buildResponse(data);
 //    }
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<ApiResult> getDetail(@PathVariable(value = "slug") String slug) {
-        JobDetail data = service.getDetail(slug);
-
-        return buildResponse(data);
-    }
+//    @GetMapping("/{slug}")
+//    public ResponseEntity<ApiResult> getDetail(@PathVariable(value = "slug") String slug) {
+//        JobDetail data = service.getDetail(slug);
+//
+//        return buildResponse(data);
+//    }
 
     @GetMapping("/{slug}/job-proposals")
     public ResponseEntity<ApiResult> listProposals(@PathVariable(value = "slug") String slug) {

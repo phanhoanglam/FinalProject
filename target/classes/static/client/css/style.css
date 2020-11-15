@@ -124,6 +124,20 @@
 	cursor: default;
 }
 
+.applied{
+	background-color: #66676b;
+	text-align: center;
+	font-size: 18px;
+	border-radius: 4px;
+	padding: 14px 20px;
+	margin-bottom: 35px;
+	box-shadow: 0 2px 8px rgba(102, 103, 107, 0.15);
+	transition: 0.3s;
+	display: block;
+	color: white !important;
+	cursor: no-drop;
+}
+
 input,
 input[type="text"],
 input[type="password"],

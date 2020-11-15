@@ -1,0 +1,111 @@
+<div class="full-page-sidebar">
+    <div class="full-page-sidebar-inner" data-simplebar>
+        <form action="" method="GET" id="search-bar">
+            <div class="sidebar-container">
+
+                <!-- Location -->
+                <div class="sidebar-widget">
+                    <h3>Location</h3>
+                    <div class="input-with-icon">
+                        <div id="autocomplete-container">
+                            <input id="autocomplete-input" type="text" placeholder="Location" name="location" th:value="${searchJobDTO.location}">
+                        </div>
+                        <i class="icon-material-outline-location-on"></i>
+                    </div>
+                </div>
+
+                <!-- Keywords -->
+                <div class="sidebar-widget">
+                    <h3>Keywords</h3>
+                    <div class="keywords-container">
+                        <div class="keyword-input-container">
+                            <input type="text" class="keyword-input" placeholder="e.g. job title"/>
+                            <button class="keyword-input-button ripple-effect" type="button">
+                                <i class="icon-material-outline-add"></i>
+                            </button>
+                        </div>
+
+                        <div class="keywords-list">
+                            <span class="keyword" th:each="name : ${searchJobDTO.names}">
+                                <span class="keyword-remove"></span>
+                                <span class="keyword-text" th:text="${name}"></span>
+                            </span>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+                <!-- Category -->
+                <div class="sidebar-widget">
+                    <h3>Category</h3>
+                    <select onchange="state_change()" id="category" class="selectpicker default" multiple name="jobCategories"
+                            data-selected-text-format="count" data-size="3" title="All Categories">
+                        <option th:each="jobCategory : ${jobCategories}" th:value="${jobCategory.id}"
+                                th:selected="${searchJobDTO.jobCategories.contains(jobCategory.id)}"
+                                th:utext="${jobCategory.name}"></option>
+                    </select>
+                </div>
+
+                <!-- Job Types -->
+                <div class="sidebar-widget">
+                    <h3>Job Type</h3>
+
+                    <div class="switches-list">
+                        <div th:each="jobType : ${jobTypes}" class="switch-container">
+                            <label class="switch">
+                                <input type="checkbox" name="jobTypes" th:value="${jobType.id}"
+                                       th:checked="${searchJobDTO.jobTypes.contains(jobType.id)}">
+                                <span class="switch-button"></span>
+                                [[${jobType.name}]]
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Salary -->
+                <div class="sidebar-widget">
+                    <h3>Salary</h3>
+                    <div class="margin-top-35"></div>
+
+                    <!-- Range Slider -->
+                    <input class="range-slider"
+                           name="salaryRange"
+                           type="text"
+                           th:value="${searchJobDTO.salaryFrom + ',' + searchJobDTO.salaryTo}"
+                           data-slider-currency="$"
+                           data-slider-min="0"
+                           data-slider-max="300000" data-slider-step="200" data-slider-value="[0,300000]"/>
+                </div>
+
+                <!-- Tags -->
+                <div class="sidebar-widget">
+                    <h3>Skills</h3>
+
+                    <div class="tags-container" id="tags-element">
+                        <div class="tag" th:each="skill : ${skills}">
+                            <input type="checkbox"
+                                   th:checked="${searchJobDTO.skills.contains(skill.id)}"
+                                   name="skills"
+                                   th:id="${'tag' + skill.id}"
+                                   th:value="${skill.id}"/>
+                            <label th:for="${'tag' + skill.id}" th:text="${skill.name}"></label>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+            <!-- Sidebar Container / End -->
+
+            <!-- Search Button -->
+            <div class="sidebar-search-button-container">
+                <button type="submit" class="button ripple-effect">Search</button>
+            </div>
+            <!-- Search Button / End-->
+        </form>
+
+    </div>
+</div>

@@ -65,60 +65,34 @@
                     <div class="listings-container grid-layout">
 
                         <!-- Job Listing -->
-                        <a href="#" class="job-listing">
+                        <a th:each="similar : ${listSimilar}" th:href="@{${similar.slug}}" class="job-listing">
 
                             <!-- Job Listing Details -->
                             <div class="job-listing-details">
                                 <!-- Logo -->
                                 <div class="job-listing-company-logo">
-                                    <img src="images/company-logo-02.png" alt="">
+                                    <img th:src="@{${similar.employer.avatar}}" alt="">
                                 </div>
 
                                 <!-- Details -->
                                 <div class="job-listing-description">
-                                    <h4 class="job-listing-company">Coffee</h4>
-                                    <h3 class="job-listing-title">Barista and Cashier</h3>
+                                    <h4 class="job-listing-company" th:text="${similar.employer.name}"></h4>
+                                    <h3 class="job-listing-title" th:text="${similar.name}"></h3>
                                 </div>
                             </div>
 
                             <!-- Job Listing Footer -->
                             <div class="job-listing-footer">
                                 <ul>
-                                    <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
-                                    <li><i class="icon-material-outline-business-center"></i> Full Time</li>
-                                    <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
-                                    <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                                    <li><i class="icon-material-outline-location-on"></i> [[${similar.employer.address.substring(0, similar.employer.address.indexOf(','))}]]</li>
+                                    <li><i class="icon-material-outline-business-center"></i> [[${similar.jobType.name}]]</li>
+                                    <li th:if="${detail.salaryFrom > 0}"><i class="icon-material-outline-account-balance-wallet"></i> $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]] - $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]]</li>
+                                    <li th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"><i class="icon-material-outline-account-balance-wallet"></i> Negotiate</li>
+                                    <li><i class="icon-material-outline-access-time"></i> [[${#dates.format(detail.createdAt, 'dd-MM-yyyy')}]]</li>
                                 </ul>
                             </div>
                         </a>
 
-                        <!-- Job Listing -->
-                        <a href="#" class="job-listing">
-
-                            <!-- Job Listing Details -->
-                            <div class="job-listing-details">
-                                <!-- Logo -->
-                                <div class="job-listing-company-logo">
-                                    <img src="images/company-logo-03.png" alt="">
-                                </div>
-
-                                <!-- Details -->
-                                <div class="job-listing-description">
-                                    <h4 class="job-listing-company">King <span class="verified-badge" title="Verified Employer" data-tippy-placement="top"></span></h4>
-                                    <h3 class="job-listing-title">Restaurant Manager</h3>
-                                </div>
-                            </div>
-
-                            <!-- Job Listing Footer -->
-                            <div class="job-listing-footer">
-                                <ul>
-                                    <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
-                                    <li><i class="icon-material-outline-business-center"></i> Full Time</li>
-                                    <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
-                                    <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
-                                </ul>
-                            </div>
-                        </a>
                     </div>
                     <!-- Listings Container / End -->
 
@@ -130,8 +104,7 @@
             <div class="col-xl-4 col-lg-4">
                 <div class="sidebar-container">
 
-                    <a href="#small-dialog" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
-
+                    <a href="#small-dialog" th:class="${proposal == null ? 'apply-now-button popup-with-zoom-anim' : 'applied'}" th:text="${proposal == null ? 'Apply Now' : 'Applied'}"><i class="icon-material-outline-arrow-right-alt"></i></a>
                     <!-- Sidebar Widget -->
                     <div class="sidebar-widget">
                         <div class="job-overview">
@@ -198,11 +171,17 @@
 
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
 <script layout:fragment="js" th:inline="javascript">
+    // $(document).ready(function(){
+    //     $("#showModal").click(function(){
+    //         $("#small-dialog").modal();
+    //     });
+    // });
+
     // Initialize and add the map
     function initMap() {
         const location = $('#map').attr('data-location');
@@ -234,5 +213,4 @@
     }
 </script>
 </body>
-
 </html>

@@ -10,15 +10,13 @@
 <body>
 <div id="wrapper">
 
-    <header th:insert="client/fragments/header.html"></header>
+    <header th:replace="client/fragments/header.html :: header"></header>
 
     <div class="clearfix"></div>
 
     <div layout:fragment="titlebar"></div>
 
     <div layout:fragment="body"></div>
-
-    <div th:insert="client/fragments/footer.html"></div>
 </div>
 
 <script th:src="@{/client/js/jquery-3.4.1.min.js}"></script>
