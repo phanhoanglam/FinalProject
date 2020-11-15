@@ -26,19 +26,19 @@ public class EmployerController extends ApiController {
         this.employerService = employerService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ApiResult> login(@Valid @RequestBody LoginDTO model) {
-        HashMap<String, Object> data = new HashMap<>();
-        try {
-            data = employerService.login(model.getEmail(), model.getPassword());
-
-            return buildResponse(data);
-        } catch (BaseException e) {
-            data.put("message", e.getMessage());
-
-            return buildResponse(e.getHttpStatus(), data, e.getCode());
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<ApiResult> login(@Valid @RequestBody LoginDTO model) {
+//        HashMap<String, Object> data = new HashMap<>();
+//        try {
+//            data = employerService.login(model.getEmail(), model.getPassword());
+//
+//            return buildResponse(data);
+//        } catch (BaseException e) {
+//            data.put("message", e.getMessage());
+//
+//            return buildResponse(e.getHttpStatus(), data, e.getCode());
+//        }
+//    }
 
 //    @PostMapping("/register")
 //    public ResponseEntity<ApiResult> login(@Valid @RequestBody RegisterDTO model) {

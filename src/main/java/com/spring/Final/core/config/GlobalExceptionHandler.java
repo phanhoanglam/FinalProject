@@ -26,6 +26,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiResult> handle(HttpServletRequest request, Exception e) {
         HashMap<String, String> data = new HashMap<String, String>();
         data.put("message", e.getMessage());
+        System.out.println(e);
 
         return new ResponseEntity<>(
                 ApiResult
@@ -41,6 +42,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleExceptions(BaseException e, WebRequest webRequest) {
         HashMap<String, String> data = new HashMap<>();
         data.put("message", e.getMessage());
+        System.out.println(e);
 
         return new ResponseEntity<>(
                 ApiResult
@@ -61,6 +63,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         BindingResult bindingResult = e.getBindingResult();
         List<ObjectError> errorMessages = bindingResult.getAllErrors();
+        System.out.println(e);
 
         return new ResponseEntity<>(
                 ApiResult
@@ -80,6 +83,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         HashMap<String, String> data = new HashMap<>();
         data.put("message", e.getMessage());
+        System.out.println(e);
 
         return new ResponseEntity<>(
                 ApiResult
@@ -95,6 +99,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException e, WebRequest request) {
         HashMap<String, String> data = new HashMap<>();
         data.put("message", "Resource not found");
+        System.out.println(e);
 
         return new ResponseEntity<>(
                 ApiResult
