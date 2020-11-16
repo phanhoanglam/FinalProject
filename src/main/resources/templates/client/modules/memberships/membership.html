@@ -76,7 +76,7 @@
                     <div th:each="monthly :${listMonthly}" class="payment-tab payment-tab-active">
                         <div class="payment-tab-trigger">
                             <input th:checked="${monthly.type == T(com.spring.Final.modules.shared.enums.membership_type.MembershipType).STANDARD ? true : false}" th:id="${monthly.name + monthly.duration}" name="cardTypeMonth" type="radio"
-                                   th:value="${monthly.name}">
+                                   th:value="${monthly.price}">
                             <label th:for="${monthly.name + monthly.duration}" th:text="${monthly.name}"></label>
                             <span class="regular-price-tag price">$[[${monthly.price}]] / month</span>
                         </div>
@@ -89,7 +89,7 @@
                     <div th:each="yearly :${listYearly}" class="payment-tab payment-tab-active">
                         <div class="payment-tab-trigger">
                             <input th:checked="${yearly.type == T(com.spring.Final.modules.shared.enums.membership_type.MembershipType).STANDARD ? true : false}" th:id="${yearly.name + yearly.duration}" name="cardTypeYear" type="radio"
-                                   th:value="${yearly.name}">
+                                   th:value="${yearly.price}">
                             <label th:for="${yearly.name + yearly.duration}" th:text="${yearly.name}"></label>
                             <span class="regular-price-tag price">$[[${yearly.price}]] / month</span>
                         </div>
@@ -136,6 +136,7 @@
 <script layout:fragment="js">
     $(document).ready(function () {
         const $billingType = $('[name="radio-payment-type"]');
+
         $billingType.on('change', function () {
             if($(this).val() == 'monthly'){
                 $('.yearlytype')[0].hidden = true;
