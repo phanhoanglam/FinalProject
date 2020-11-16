@@ -38,7 +38,7 @@ public class StorageService {
             }
             // create directory if not exists
             File directory = new File(uploadDir);
-            if (! directory.exists()){
+            if (!directory.exists()){
                 directory.mkdir();
             }
 

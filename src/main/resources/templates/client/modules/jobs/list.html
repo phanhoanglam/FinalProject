@@ -67,7 +67,7 @@
                             <a th:href="@{(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
                                class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
                         <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
-                                th:href="@{(page=${i})}" th:utext="${i}"
+                                th:href="@{page=${i}}" th:utext="${i}"
                                 th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
                         </li>
                         <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
