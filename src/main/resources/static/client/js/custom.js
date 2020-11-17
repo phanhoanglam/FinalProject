@@ -501,7 +501,8 @@ $(document).ready(function(){
 			var oneHalfStar = starsOutput('star','star half','star empty','star empty','star empty');
 			var oneStar = starsOutput('star','star empty','star empty','star empty','star empty');
 
-			var emptyStar = starsOutput('star empty','star empty','star empty','star empty','star empty');
+			var zeroStar = starsOutput('star empty','star empty','star empty','star empty','star empty');
+
 			// Rules
 	        if (dataRating >= 4.75) {
 	            $(this).append(fiveStars);
@@ -522,7 +523,7 @@ $(document).ready(function(){
 	        } else if (dataRating < 1.25 && dataRating >= 0.5) {
 	            $(this).append(oneStar);
 	        } else if (dataRating < 0.5) {
-				$(this).append(emptyStar);
+				$(this).append(zeroStar);
 			}
 		});
 

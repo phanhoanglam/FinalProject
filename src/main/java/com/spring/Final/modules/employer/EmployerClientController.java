@@ -33,6 +33,6 @@ public class EmployerClientController {
         Page<JobManage> list = this.service.listJobs(page, size, id);
         model.addAttribute("list", list);
 
-        return "client/modules/employers/manage-jobs";
+        return "client/modules/jobs/manage-jobs";
     }
 }

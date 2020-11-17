@@ -108,14 +108,12 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         );
     }
 
-    public List<JobProposalList> listProposals(String slug) {
-        JobEntity data = this.repository.findBySlug(slug);
-
-        if (data == null) {
-            throw new ResourceNotFoundException();
-        }
-
-        return this.jobProposalService.listByJob(data);
+    public PostJobData getPostJobData(int jobCategoryId) {
+        return new PostJobData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId})
+        );
     }
 
     @Transactional
@@ -132,8 +130,32 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return this.modelMapper.map(job, JobDetail.class);
     }
 
+    public PostJobData getEditJobData(String slug, int jobCategoryId) {
+        JobEntity data = this.repository.findBySlug(slug);
+
+        if (data == null) {
+            throw new ResourceNotFoundException();
+        }
+        jobCategoryId = jobCategoryId == 0 ? data.getJobCategory().getId() : jobCategoryId;
+        JobDTO jobDTO = this.modelMapper.map(data, JobDTO.class);
+        jobDTO.setSkillIds(data.getSkills().stream().map(BaseEntity::getId).collect(Collectors.toList()));
+
+        return new PostJobData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId}),
+                jobDTO,
+                new JobStatus[]{JobStatus.OPEN, JobStatus.PROGRESSING, JobStatus.CLOSED}
+        );
+    }
+
+    @Transactional
     public JobDetail updateOne(JobDTO data) throws IOException {
         JobEntity job = convertToEntity(data);
+
+        if (job.getStatus() == JobStatus.CLOSED) {
+            this.jobProposalService.setStatusSucceeded(job);
+        }
         job = this.repository.save(job);
 
         return this.modelMapper.map(job, JobDetail.class);
@@ -165,6 +187,18 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         }
 
         return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
+    }
+
+    public ManageCandidatesData listProposals(String slug) {
+        JobEntity data = this.repository.findBySlug(slug);
+
+        if (data == null) {
+            throw new ResourceNotFoundException();
+        }
+        JobManage jobManage = this.modelMapper.map(data, JobManage.class);
+        jobManage.setCandidatesCount(this.jobProposalService.countJobCandidates(jobManage.getId()));
+
+        return new ManageCandidatesData(jobManage, this.jobProposalService.listByJob(data));
     }
 
     private JobEntity convertToEntity(JobDTO data) throws IOException {
@@ -201,32 +235,5 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         }
 
         return job;
-    }
-
-    public PostJobData getPostJobData(int jobCategoryId) {
-        return new PostJobData(
-                jobCategoryService.findAllAsNameOnly(),
-                jobTypeService.findAllAsNameOnly(),
-                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId})
-        );
-    }
-
-    public PostJobData getEditJobData(String slug, int jobCategoryId) {
-        JobEntity data = this.repository.findBySlug(slug);
-
-        if (data == null) {
-            throw new ResourceNotFoundException();
-        }
-        jobCategoryId = jobCategoryId == 0 ? data.getJobCategory().getId() : jobCategoryId;
-        JobDTO jobDTO = this.modelMapper.map(data, JobDTO.class);
-        jobDTO.setSkillIds(data.getSkills().stream().map(BaseEntity::getId).collect(Collectors.toList()));
-
-        return new PostJobData(
-                jobCategoryService.findAllAsNameOnly(),
-                jobTypeService.findAllAsNameOnly(),
-                skillService.findAllAsNameOnly(1, 100, new int[]{jobCategoryId}),
-                jobDTO,
-                new JobStatus[]{JobStatus.OPEN, JobStatus.PROGRESSING, JobStatus.CLOSED}
-        );
     }
 }

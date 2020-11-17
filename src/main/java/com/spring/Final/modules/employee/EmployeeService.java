@@ -120,4 +120,13 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
 
         return results;
     }
+
+    public void updateRating(int id, float rating) {
+        EmployeeEntity employee = this.repository.findById(id).orElse(null);
+
+        if (employee != null) {
+            employee.setRating(rating);
+            this.repository.save(employee);
+        }
+    }
 }

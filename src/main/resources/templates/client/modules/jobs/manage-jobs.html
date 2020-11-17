@@ -49,11 +49,11 @@
                                             <!-- Details -->
                                             <div class="job-listing-description">
                                                 <h3 class="job-listing-title">
-                                                    <a th:href="${'/dashboard/edit-job/' + item.slug}">[[${item.name}]]</a>
+                                                    <a th:href="${'/dashboard/manage-jobs/' + item.slug}">[[${item.name}]]</a>
                                                     <th:inline th:switch="${item.status.toString()}">
-                                                        <span th:case="'OPEN'" class="dashboard-status-button green">Open</span>
-                                                        <span th:case="'PROGRESSING'" class="dashboard-status-button yellow">Progressing</span>
-                                                        <span th:case="'CLOSED'" class="dashboard-status-button red">Closed</span>
+                                                        <span th:case="'OPEN'" class="dashboard-status-button green">[[${item.status}]]</span>
+                                                        <span th:case="'PROGRESSING'" class="dashboard-status-button yellow">[[${item.status}]]</span>
+                                                        <span th:case="'CLOSED'" class="dashboard-status-button red">[[${item.status}]]</span>
                                                     </th:inline>
                                                 </h3>
 
@@ -73,19 +73,19 @@
 
                                     <!-- Buttons -->
                                     <div class="buttons-to-right always-visible">
-                                        <a href="dashboard-manage-candidates.html" class="button ripple-effect">
+                                        <a th:href="${'/dashboard/manage-jobs/' + item.slug + '/proposals'}" class="button ripple-effect">
                                             <i class="icon-material-outline-supervisor-account"></i>
                                             Manage Candidates
                                             <span class="button-info" th:text="${item.candidatesCount}"></span>
                                         </a>
 
-                                        <a th:href="${'/dashboard/edit-job/' + item.slug}" class="button gray ripple-effect ico" title="Edit"
+                                        <a th:href="${'/dashboard/manage-jobs/' + item.slug}" class="button gray ripple-effect ico" title="Edit"
                                            data-tippy-placement="top">
                                             <i class="icon-feather-edit"></i>
                                         </a>
 
                                         <a th:if="${item.status.toString() != 'CLOSED'}" th:href="${'/dashboard/delete-job/' + item.slug}"
-                                           onclick="confirm('Are you sure to delete this job? All the proposals will all be deleted!')"
+                                           onclick="if (!confirm('Are you sure to delete this job? All the proposals will all be deleted!')) return false"
                                            class="button gray ripple-effect ico"
                                            title="Remove"
                                            data-tippy-placement="top">
