@@ -3,12 +3,14 @@ package com.spring.Final.modules.job_proposal;
 import com.spring.Final.core.helpers.StorageService;
 import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
+import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.job_proposal.dtos.ProposeJobDTO;
 import com.spring.Final.modules.job_proposal.dtos.SearchProposalDTO;
 import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
 import com.spring.Final.modules.job_proposal.projections.JobProposalList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,10 +30,10 @@ public class JobProposalController extends ApiController {
     private StorageService storageService;
 
     @PostMapping("")
-    public ResponseEntity<ApiResult> proposeJob(@Valid @RequestBody ProposeJobDTO model) {
+    public ResponseEntity<ApiResult> proposeJob(Authentication authentication, @Valid @RequestBody ProposeJobDTO model) {
         HttpServletRequest request = this.getCurrentRequest();
-        HashMap<String, Object> employee = this.getCurrentUser(request);
-        model.setEmployeeId((Integer) employee.get("id"));
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        model.setEmployeeId((Integer) user.getInformation().get("id"));
 
         JobProposalList data = service.proposeJob(model);
 

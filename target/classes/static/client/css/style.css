@@ -124,6 +124,12 @@
 	cursor: default;
 }
 
+.price{
+	position: absolute !important;
+	top: 10px !important;
+	left: 150px !important;
+}
+
 .applied{
 	background-color: #66676b;
 	text-align: center;

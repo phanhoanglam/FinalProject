@@ -520,12 +520,11 @@ $(document).ready(function(){
 	            $(this).append(twoStars);
 	        } else if (dataRating >= 1.25) {
 	            $(this).append(oneHalfStar);
-	        } else if (dataRating > 0 && dataRating < 1.25) {
+	        } else if (dataRating < 1.25 && dataRating >= 0.5) {
 	            $(this).append(oneStar);
-	        } else {
-	        	$(this).append(zeroStar);
+	        } else if (dataRating < 0.5) {
+				$(this).append(zeroStar);
 			}
-
 		});
 
 	} starRating('.star-rating');

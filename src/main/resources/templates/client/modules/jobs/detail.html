@@ -6,13 +6,17 @@
 <body>
 <div layout:fragment="body">
     <div th:replace="client/modules/jobs/job-proposal.html :: div"></div>
-
+    <div hidden id="bootstrap-alert" class="notification success closeable">
+        <p>Apply success!</p>
+        <a class="close" href="#"></a>
+    </div>
     <div class="single-page-header">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="single-page-header-inner">
                         <div class="left-side">
+                            <input id="idHidden" th:value="${detail.id}" hidden/>
                             <div class="header-image"><a href="single-company-profile.html"><img
                                     th:src="@{${detail.employer.avatar}}" alt=""></a></div>
                             <div class="header-details">
@@ -23,7 +27,7 @@
                                             class="icon-material-outline-business"></i> [[${detail.employer.name}]]</a>
                                     </li>
                                     <li>
-                                        <div class="star-rating" data-rating="4.9"></div>
+                                        <div id="rating-star" th:attr="data-rating=${detail.employer.rating}" class="star-rating" ></div>
                                     </li>
                                     <li>
                                         <img class="flag" th:src="@{/client/images/flags/gb.svg}" alt="">
@@ -39,7 +43,8 @@
                             <div class="salary-box">
                                 <div class="salary-type">Annual Salary</div>
                                 <div th:if="${detail.salaryFrom > 0}" class="salary-amount">
-                                    $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]]
+                                    $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo ==
+                                    null ? 0 : detail.salaryTo}]]
                                 </div>
                                 <div th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"
                                      class="salary-amount">Negotiate
@@ -95,7 +100,8 @@
                                 <div class="job-listing-description">
                                     <h4 class="job-listing-company">
                                         [[${similar.employer.name}]]
-                                        <span class="verified-badge" data-tippy-placement="top" data-tippy="" data-original-title="Verified Employer"></span>
+                                        <span class="verified-badge" data-tippy-placement="top" data-tippy=""
+                                              data-original-title="Verified Employer"></span>
                                     </h4>
                                     <h3 class="job-listing-title" th:text="${similar.name}"></h3>
                                 </div>
@@ -112,7 +118,8 @@
                                     </li>
                                     <li th:if="${detail.salaryFrom > 0}">
                                         <i class="icon-material-outline-account-balance-wallet"></i>
-                                        $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]]
+                                        $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo
+                                        == null ? 0 : detail.salaryTo}]]
                                     </li>
                                     <li th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}"><i
                                             class="icon-material-outline-account-balance-wallet"></i> Negotiate
@@ -130,12 +137,11 @@
                 </div>
             </div>
 
-
             <!-- Sidebar -->
             <div class="col-xl-4 col-lg-4">
                 <div class="sidebar-container">
 
-                    <a href="#small-dialog"
+                    <a id="applynow" href="#small-dialog"
                        th:class="${proposal == null ? 'apply-now-button popup-with-zoom-anim' : 'applied'}"
                        th:text="${proposal == null ? 'Apply Now' : 'Applied'}"><i
                             class="icon-material-outline-arrow-right-alt"></i></a>
@@ -159,9 +165,11 @@
                                         <i class="icon-material-outline-local-atm"></i>
                                         <span>Salary</span>
                                         <h5 th:if="${detail.salaryFrom > 0}">
-                                            $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] - $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]]
+                                            $[[${detail.salaryFrom == null ? 0 : detail.salaryFrom}]] -
+                                            $[[${detail.salaryTo == null ? 0 : detail.salaryTo}]]
                                         </h5>
-                                        <h5 th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}">Negotiate</h5>
+                                        <h5 th:if="${detail.salaryFrom == 0 || detail.salaryFrom == null}">
+                                            Negotiate</h5>
                                     </li>
                                     <li>
                                         <i class="icon-material-outline-access-time"></i>
@@ -220,7 +228,7 @@
 <script layout:fragment="js">
     $('#btnApplyNow').on('click', function () {
         var fileUpload = $('#upload-cv')[0].files;
-        console.log(fileUpload)
+        var jobId = $('#idHidden').val();
         var message = $('#message').val();
         var fd = new FormData();
 
@@ -237,22 +245,44 @@
                 },
                 enctype: 'multipart/form-data',
                 success: function (res) {
-                    console.log('res >>>> ', res);
+                    const data = {
+                        jobId: jobId,
+                        attachments: {
+                            cv: {
+                                name: res.data.name,
+                                url: res.data.path
+                            }
+                        },
+                        message: message
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'JSON',
+                        contentType: 'application/json',
+                        headers: {
+                            [$('[name="_csrf_header"]').attr('content')]: $('[name="_csrf"]').attr('content')
+                        },
+                        data: JSON.stringify(data),
+                        url: '/api/job-proposals',
+                        success: function (data) {
+                            document.getElementById('bootstrap-alert').hidden = false;
+                            setTimeout(function () {
+                                document.getElementById('bootstrap-alert').hidden = true;
+                            }, 1700);
+                            document.getElementById('applynow').innerHTML = "Applied";
+                            $('#applynow').removeClass();
+                            document.getElementById('applynow').className = "applied";
+                            $("html, body").animate({ scrollTop: 0 }, "slow");
+                            var magnificPopup = $.magnificPopup.instance;
+                            magnificPopup.close();
+                        }
+                    })
                 }, error: function (error) {
                     console.log('error ', error)
                 }
             });
         }
     });
-
-    function getBinaryFromFile(file, cb) {
-        const reader = new FileReader();
-
-        reader.addEventListener("load", cb.bind(this, reader.result));
-        reader.addEventListener("error", console.error.bind(this, err));
-
-        reader.readAsBinaryString(file);
-    }
 
     // Initialize and add the map
     function initMap() {

@@ -2,8 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}"
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Memberships</title>
+    <title>Hireo</title>
 </head>
 <body>
 <!-- Titlebar
@@ -48,24 +47,21 @@
 
                     <!-- Radio -->
                     <div class="radio">
-                        <input id="radio-5" name="radio-payment-type" type="radio" checked>
-                        <label for="radio-5">
+                        <input id="monthly" name="radio-payment-type" value="monthly" type="radio" checked>
+                        <label for="monthly">
                             <span class="radio-label"></span>
                             Billed Monthly
                             <span class="billing-cycle-details">
-							<span class="regular-price-tag">$49.00 / month</span>
 						</span>
                         </label>
                     </div>
 
                     <!-- Radio -->
                     <div class="radio">
-                        <input id="radio-6" name="radio-payment-type" type="radio">
-                        <label for="radio-6"><span class="radio-label"></span>
+                        <input id="yearly" name="radio-payment-type" value="yearly" type="radio">
+                        <label for="yearly"><span class="radio-label"></span>
                             Billed Yearly
                             <span class="billing-cycle-details">
-							<span class="discounted-price-tag">$529.20 / year</span>
-							<span class="regular-price-tag line-through">588.00 / year</span>
 						</span>
                         </label>
                     </div>
@@ -75,71 +71,31 @@
                 <!-- Hedline -->
                 <h3 class="margin-top-50">Payment Method</h3>
 
-                <!-- Payment Methods Accordion -->
-                <div class="payment margin-top-30">
-
-                    <div class="payment-tab payment-tab-active">
+                <!-- Payment Methods Accordion monthly -->
+                <div class="payment margin-top-30 monthlytype">
+                    <div th:each="monthly :${listMonthly}" class="payment-tab payment-tab-active">
                         <div class="payment-tab-trigger">
-                            <input checked id="paypal" name="cardType" type="radio" value="paypal">
-                            <label for="paypal">PayPal</label>
-                            <img class="payment-logo paypal" src="../../../i.imgur.com/ApBxkXU.png" alt="">
-                        </div>
-
-                        <div class="payment-tab-content">
-                            <p>You will be redirected to PayPal to complete payment.</p>
+                            <input th:checked="${monthly.type == T(com.spring.Final.modules.shared.enums.membership_type.MembershipType).STANDARD ? true : false}" th:id="${monthly.name + monthly.duration}" name="cardTypeMonth" type="radio"
+                                   th:value="${monthly.price}">
+                            <label th:for="${monthly.name + monthly.duration}" th:text="${monthly.name}"></label>
+                            <span class="regular-price-tag price">$[[${monthly.price}]] / month</span>
                         </div>
                     </div>
-
-
-                    <div class="payment-tab">
-                        <div class="payment-tab-trigger">
-                            <input type="radio" name="cardType" id="creditCart" value="creditCard">
-                            <label for="creditCart">Credit / Debit Card</label>
-                            <img class="payment-logo" src="../../../i.imgur.com/IHEKLgm.png" alt="">
-                        </div>
-
-                        <div class="payment-tab-content">
-                            <div class="row payment-form-row">
-
-                                <div class="col-md-6">
-                                    <div class="card-label">
-                                        <input id="nameOnCard" name="nameOnCard" required type="text"
-                                               placeholder="Cardholder Name">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="card-label">
-                                        <input id="cardNumber" name="cardNumber" placeholder="Credit Card Number"
-                                               required type="text">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="card-label">
-                                        <input id="expiryDate" placeholder="Expiry Month" required type="text">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="card-label">
-                                        <label for="expiryDate">Expiry Year</label>
-                                        <input id="expirynDate" placeholder="Expiry Year" required type="text">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="card-label">
-                                        <input id="cvv" required type="text" placeholder="CVV">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-                <!-- Payment Methods Accordion / End -->
+                <!-- Payment Methods Accordion monthly / End -->
+
+                <!-- Payment Methods Accordion yearly -->
+                <div class="payment margin-top-30 yearlytype" hidden>
+                    <div th:each="yearly :${listYearly}" class="payment-tab payment-tab-active">
+                        <div class="payment-tab-trigger">
+                            <input th:checked="${yearly.type == T(com.spring.Final.modules.shared.enums.membership_type.MembershipType).STANDARD ? true : false}" th:id="${yearly.name + yearly.duration}" name="cardTypeYear" type="radio"
+                                   th:value="${yearly.price}">
+                            <label th:for="${yearly.name + yearly.duration}" th:text="${yearly.name}"></label>
+                            <span class="regular-price-tag price">$[[${yearly.price}]] / month</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Payment Methods Accordion yearly / End -->
 
                 <a href="pages-order-confirmation.html" class="button big ripple-effect margin-top-40 margin-bottom-65">Proceed
                     Payment</a>
@@ -176,5 +132,21 @@
     </div>
     <!-- Container / End -->
 </div>
+<!--<div th:replace="client/fragments/footer1.html :: div"></div>-->
+<script layout:fragment="js">
+    $(document).ready(function () {
+        const $billingType = $('[name="radio-payment-type"]');
+
+        $billingType.on('change', function () {
+            if($(this).val() == 'monthly'){
+                $('.yearlytype')[0].hidden = true;
+                $('.monthlytype')[0].hidden = false;
+            }else{
+                $('.yearlytype')[0].hidden = false;
+                $('.monthlytype')[0].hidden = true;
+            }
+        })
+    });
+</script>
 </body>
 </html>

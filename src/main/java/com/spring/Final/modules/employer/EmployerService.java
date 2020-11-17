@@ -8,6 +8,7 @@ import com.spring.Final.core.exceptions.InvalidEmailOrPasswordException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
+import com.spring.Final.modules.employee.EmployeeEntity;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import com.spring.Final.modules.membership.MembershipEntity;
@@ -107,5 +108,14 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         EmployerEntity employer = this.repository.getOne(id);
 
         return this.jobService.listByEmployer(page, size, employer);
+    }
+
+    public void updateRating(int id, float rating) {
+        EmployerEntity employer = this.repository.findById(id).orElse(null);
+
+        if (employer != null) {
+            employer.setRating(rating);
+            this.repository.save(employer);
+        }
     }
 }

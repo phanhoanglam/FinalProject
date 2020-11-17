@@ -114,7 +114,7 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         review.setToUserType(toUserType);
         review = this.repository.save(review);
 
-        this.employeeService.updateRating(
+        this.employerService.updateRating(
                 jobProposal.getEmployee().getId(),
                 this.repository.recalculateRating(toUserId, toUserType)
         );

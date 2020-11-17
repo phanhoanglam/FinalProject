@@ -43,7 +43,6 @@ public class CommonHelper {
 
     public static <T> Object parseJSON(String json, T dataType) {
         Gson gson = new Gson();
-        System.out.println(json);
 
         return gson.fromJson(json, dataType.getClass());
     }
