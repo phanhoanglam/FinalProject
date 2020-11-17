@@ -55,25 +55,4 @@ public class JobProposalController extends ApiController {
 
         return buildResponse(data);
     }
-
-    @PutMapping("/{id}/acceptance")
-    public ResponseEntity<ApiResult> accept(@PathVariable(value = "id") int id) {
-        JobProposalList data = this.service.accept(id);
-
-        return buildResponse(data);
-    }
-
-    @PutMapping("/{id}/rejection")
-    public ResponseEntity<ApiResult> reject(@PathVariable(value = "id") int id) {
-        JobProposalList data = this.service.reject(id);
-
-        return buildResponse(data);
-    }
-
-    @PutMapping("/{id}/failure")
-    public ResponseEntity<ApiResult> setFailed(@PathVariable(value = "id") int id) {
-        JobProposalList data = this.service.setFailed(id);
-
-        return buildResponse(data);
-    }
 }

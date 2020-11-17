@@ -501,6 +501,8 @@ $(document).ready(function(){
 			var oneHalfStar = starsOutput('star','star half','star empty','star empty','star empty');
 			var oneStar = starsOutput('star','star empty','star empty','star empty','star empty');
 
+			var zeroStar = starsOutput('star empty','star empty','star empty','star empty','star empty');
+
 			// Rules
 	        if (dataRating >= 4.75) {
 	            $(this).append(fiveStars);
@@ -518,9 +520,11 @@ $(document).ready(function(){
 	            $(this).append(twoStars);
 	        } else if (dataRating >= 1.25) {
 	            $(this).append(oneHalfStar);
-	        } else if (dataRating < 1.25) {
+	        } else if (dataRating > 0 && dataRating < 1.25) {
 	            $(this).append(oneStar);
-	        }
+	        } else {
+	        	$(this).append(zeroStar);
+			}
 
 		});
 

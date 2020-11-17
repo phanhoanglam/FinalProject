@@ -43,12 +43,12 @@ public class JobController extends ApiController {
 //        return buildResponse(data);
 //    }
 
-    @GetMapping("/{slug}/job-proposals")
-    public ResponseEntity<ApiResult> listProposals(@PathVariable(value = "slug") String slug) {
-        List<JobProposalList> data = service.listProposals(slug);
-
-        return buildResponse(data);
-    }
+//    @GetMapping("/{slug}/job-proposals")
+//    public ResponseEntity<ApiResult> listProposals(@PathVariable(value = "slug") String slug) {
+//        List<JobProposalList> data = service.listProposals(slug);
+//
+//        return buildResponse(data);
+//    }
 
 //    @PostMapping("")
 //    public ResponseEntity<ApiResult> create(@Valid @RequestBody JobDTO model) throws IOException {

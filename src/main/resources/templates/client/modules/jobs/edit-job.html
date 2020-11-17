@@ -30,7 +30,7 @@
             <!-- Row -->
             <div class="row">
 
-                <form th:action="${'/dashboard/edit-job/' + jobDTO.id}" method="post" th:object="${jobDTO}"
+                <form th:action="${'/dashboard/manage-jobs/' + jobDTO.id}" method="post" th:object="${jobDTO}"
                       id="edit-job-form"
                       th:data-status="${jobDTO.status}">
                     <!-- Dashboard Box -->

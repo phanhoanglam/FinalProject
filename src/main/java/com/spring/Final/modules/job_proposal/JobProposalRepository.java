@@ -39,4 +39,8 @@ public interface JobProposalRepository extends JpaRepository<JobProposalEntity, 
 
     @Query("select count(jp) from JobProposal jp where jp.job.id = ?1 and jp.status <> com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.REJECTED")
     long countByJob(int jobId);
+
+    @Modifying
+    @Query("update JobProposal jp set jp.status = ?1 where jp.job = ?2 and jp.status = ?3")
+    void setStatusByJobAndStatus(JobProposalStatus newStatus, JobEntity job, JobProposalStatus oldStatus);
 }

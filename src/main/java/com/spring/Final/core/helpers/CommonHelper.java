@@ -41,6 +41,13 @@ public class CommonHelper {
         return gson.toJson(data);
     }
 
+    public static <T> Object parseJSON(String json, T dataType) {
+        Gson gson = new Gson();
+        System.out.println(json);
+
+        return gson.fromJson(json, dataType.getClass());
+    }
+
     public static Point createGeometryPoint(Coordinate coordinate) {
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         Point point = geometryFactory.createPoint(coordinate);

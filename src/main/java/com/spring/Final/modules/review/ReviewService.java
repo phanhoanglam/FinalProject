@@ -3,8 +3,11 @@ package com.spring.Final.modules.review;
 import com.spring.Final.core.exceptions.BadRequestException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.infrastructure.ApiService;
+import com.spring.Final.modules.employee.EmployeeService;
+import com.spring.Final.modules.employer.EmployerService;
 import com.spring.Final.modules.job_proposal.JobProposalEntity;
 import com.spring.Final.modules.job_proposal.JobProposalService;
+import com.spring.Final.modules.jobs.JobEntity;
 import com.spring.Final.modules.notification.NotificationService;
 import com.spring.Final.modules.review.dtos.ReviewEmployeeDTO;
 import com.spring.Final.modules.review.dtos.ReviewEmployerDTO;
@@ -29,12 +32,19 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private EmployerService employerService;
+
     public ReviewService(ReviewRepository repository) {
         this.repository = repository;
     }
 
     public PageImpl<ReviewList> listByEmployee(int pageNumber, int size, int employeeId) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
         Page<ReviewEntity> results = this.repository.findAllByToUserIdAndToUserType(employeeId, UserType.EMPLOYEE, page);
         List<ReviewList> resultList = results.stream()
                 .map(e -> this.modelMapper.map(e, ReviewList.class))
@@ -49,11 +59,13 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
 
         if (jobProposal == null) {
             throw new ResourceNotFoundException();
-        } else if (jobProposal.getStatus() != JobProposalStatus.SUCCEEDED) {
+        } else if (jobProposal.getStatus() != JobProposalStatus.SUCCEEDED && jobProposal.getStatus() != JobProposalStatus.FAILED) {
             throw new BadRequestException("Status of job proposal is invalid");
         }
         int userId = jobProposal.getJob().getEmployer().getId();
+        int toUserId = jobProposal.getEmployee().getId();
         UserType userType = UserType.EMPLOYER;
+        UserType toUserType = UserType.EMPLOYEE;
 
         if (this.repository.findTopByJobProposalAndUserIdAndUserType(jobProposal, userId, userType) != null) {
             throw new ExistingReviewException();
@@ -62,9 +74,14 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         ReviewEntity review = this.modelMapper.map(data, ReviewEntity.class);
         review.setUserId(userId);
         review.setUserType(userType);
-        review.setToUserId(jobProposal.getEmployee().getId());
-        review.setToUserType(UserType.EMPLOYEE);
+        review.setToUserId(toUserId);
+        review.setToUserType(toUserType);
         review = this.repository.save(review);
+
+        this.employeeService.updateRating(
+                jobProposal.getEmployee().getId(),
+                this.repository.recalculateRating(jobProposal.getEmployee().getId(), UserType.EMPLOYEE)
+        );
 
         this.createNotification(review, jobProposal.getJob().getName());
 
@@ -81,7 +98,9 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
             throw new BadRequestException("Status of job proposal is invalid");
         }
         int userId = jobProposal.getEmployee().getId();
+        int toUserId = jobProposal.getJob().getEmployer().getId();
         UserType userType = UserType.EMPLOYEE;
+        UserType toUserType = UserType.EMPLOYER;
 
         if (this.repository.findTopByJobProposalAndUserIdAndUserType(jobProposal, userId, userType) != null) {
             throw new ExistingReviewException();
@@ -91,13 +110,24 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
 
         review.setUserId(userId);
         review.setUserType(userType);
-        review.setToUserId(jobProposal.getJob().getEmployer().getId());
-        review.setToUserType(UserType.EMPLOYER);
+        review.setToUserId(toUserId);
+        review.setToUserType(toUserType);
         review = this.repository.save(review);
+
+        this.employeeService.updateRating(
+                jobProposal.getEmployee().getId(),
+                this.repository.recalculateRating(toUserId, toUserType)
+        );
 
         this.createNotification(review, jobProposal.getJob().getName());
 
         return this.modelMapper.map(review, ReviewList.class);
+    }
+
+    public boolean roleHasReview(UserType userType, JobProposalEntity jobProposal) {
+        ReviewEntity review = this.repository.findByUserTypeAndJobProposal(userType, jobProposal);
+
+        return review != null;
     }
 
     private void createNotification(ReviewEntity review, String jobName) {

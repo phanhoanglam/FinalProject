@@ -14,6 +14,7 @@ import com.spring.Final.modules.jobs.JobEntity;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.exceptions.JobInvalidStatusException;
 import com.spring.Final.modules.notification.NotificationService;
+import com.spring.Final.modules.review.ReviewService;
 import com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus;
 import com.spring.Final.modules.shared.enums.job_status.JobStatus;
 import com.spring.Final.modules.shared.enums.notification_reference_type.ReferenceType;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,9 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     public JobProposalService(JobProposalRepository repository) {
         this.repository = repository;
@@ -92,7 +97,13 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
             JobProposalStatus.FAILED
         }, sort);
 
-        return jobs.stream().map(e -> this.modelMapper.map(e, JobProposalList.class)).collect(Collectors.toList());
+        return jobs.stream().map(e -> {
+            JobProposalList jobProposal = this.modelMapper.map(e, JobProposalList.class);
+            jobProposal.setAttachments((HashMap<String, Object>) CommonHelper.parseJSON(e.getAttachments(), new HashMap<String, Object>()));
+            jobProposal.setHasReview(this.reviewService.roleHasReview(UserType.EMPLOYER, e));
+
+            return jobProposal;
+        }).collect(Collectors.toList());
     }
 
     @Transactional
@@ -167,5 +178,9 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
 
     public long countJobCandidates(int jobId) {
         return this.repository.countByJob(jobId);
+    }
+
+    public void setStatusSucceeded(JobEntity job) {
+        this.repository.setStatusByJobAndStatus(JobProposalStatus.SUCCEEDED, job, JobProposalStatus.ACCEPTED);
     }
 }

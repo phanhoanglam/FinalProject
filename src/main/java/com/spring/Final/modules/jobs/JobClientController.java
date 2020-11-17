@@ -1,14 +1,13 @@
 package com.spring.Final.modules.jobs;
 
 import com.spring.Final.core.exceptions.InvalidAddressException;
+import com.spring.Final.core.infrastructure.ApiResult;
 import com.spring.Final.modules.auth.CustomUserDetails;
+import com.spring.Final.modules.job_proposal.projections.JobProposalList;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
-import com.spring.Final.modules.jobs.projections.DetailData;
-import com.spring.Final.modules.jobs.projections.HomepageData;
-import com.spring.Final.modules.jobs.projections.JobDetail;
-import com.spring.Final.modules.jobs.projections.JobList;
-import com.spring.Final.modules.jobs.projections.PostJobData;
+import com.spring.Final.modules.jobs.projections.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
@@ -103,7 +103,7 @@ public class JobClientController {
         return "redirect:/dashboard/manage-jobs";
     }
 
-    @GetMapping("/dashboard/edit-job/{slug}")
+    @GetMapping("/dashboard/manage-jobs/{slug}")
     public String editJob(@PathVariable String slug, Model modelView) {
         int jobCategoryId = modelView.getAttribute("jobDTO") != null
                 ? ((JobDTO) modelView.getAttribute("jobDTO")).getJobCategoryId()
@@ -124,7 +124,7 @@ public class JobClientController {
         return "client/modules/jobs/edit-job";
     }
 
-    @PostMapping("/dashboard/edit-job/{id}")
+    @PostMapping("/dashboard/manage-jobs/{id}")
     public String editJobSubmit(
             @PathVariable int id,
             @Valid JobDTO dto,
@@ -142,7 +142,7 @@ public class JobClientController {
 
             return "redirect:" + request.getHeader("Referer");
         }
-        return "redirect:/dashboard/edit-job/" + jobDetail.getSlug();
+        return "redirect:/dashboard/manage-jobs/" + jobDetail.getSlug();
     }
 
 
@@ -151,5 +151,14 @@ public class JobClientController {
         service.deleteOne(slug);
 
         return "redirect:/dashboard/manage-jobs";
+    }
+
+    @GetMapping("/dashboard/manage-jobs/{slug}/proposals")
+    public String listProposals(@PathVariable(value = "slug") String slug, Model modelView) {
+        ManageCandidatesData data = service.listProposals(slug);
+        modelView.addAttribute("list", data.getList());
+        modelView.addAttribute("job", data.getJob());
+
+        return "client/modules/jobs/manage-candidates";
     }
 }
