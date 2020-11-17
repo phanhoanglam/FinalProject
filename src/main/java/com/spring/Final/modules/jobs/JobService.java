@@ -6,10 +6,15 @@ import com.spring.Final.core.exceptions.BadRequestException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
+import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.employer.EmployerEntity;
 import com.spring.Final.modules.employer.EmployerService;
+import com.spring.Final.modules.job_category.JobCategoryEntity;
 import com.spring.Final.modules.job_category.JobCategoryService;
+import com.spring.Final.modules.job_proposal.JobProposalEntity;
 import com.spring.Final.modules.job_proposal.JobProposalService;
+import com.spring.Final.modules.job_proposal.dtos.SearchProposalDTO;
+import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
 import com.spring.Final.modules.job_proposal.projections.JobProposalList;
 import com.spring.Final.modules.job_type.JobTypeService;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
@@ -17,16 +22,19 @@ import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.jobs.exceptions.ExceedFreeJobsAvailableException;
 import com.spring.Final.modules.jobs.projections.*;
 import com.spring.Final.modules.jobs.specifications.JobSpecification;
+import com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus;
 import com.spring.Final.modules.shared.enums.job_status.JobStatus;
 import com.spring.Final.modules.skill.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,14 +79,33 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         );
     }
 
-    public JobDetail getDetail(String slug) {
+    public DetailData getDetail(String slug, Authentication authentication) {
         JobEntity data = this.repository.findBySlug(slug);
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        int id = (int) user.getInformation().get("id");
 
         if (data == null) {
             throw new ResourceNotFoundException();
         }
 
-        return this.modelMapper.map(data, JobDetail.class);
+        JobDetail viewModel = this.modelMapper.map(data, JobDetail.class);
+
+        Pageable page = PageRequest.of(this.getPage(1), 2, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<JobEntity> listEntity = this.repository.findAllByIdNotAndJobCategory(data.getId(), data.getJobCategory(), page);
+        List<JobList> resultList = listEntity.stream()
+                .map(e -> this.modelMapper.map(e, JobList.class))
+                .collect(Collectors.toList());
+
+        SearchProposalDTO search = new SearchProposalDTO();
+        search.setJobId(viewModel.getId());
+        search.setEmployeeId(id);
+        JobProposalDetailExistence proposal = jobProposalService.searchProposal(search);
+
+        return new DetailData(
+                viewModel,
+                proposal,
+                resultList
+        );
     }
 
     public List<JobProposalList> listProposals(String slug) {
@@ -119,7 +146,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         if (job == null) {
             throw new ResourceNotFoundException();
         } else if (job.getStatus() == JobStatus.CLOSED) {
-            throw new BadRequestException("Job was already closed, cannot edit!");
+            throw new BadRequestException("Job was already closed, cannot delete!");
         }
         // TODO: Create notifications to the proposals of the deleted job
         this.jobProposalService.deleteByJobId(job.getId());

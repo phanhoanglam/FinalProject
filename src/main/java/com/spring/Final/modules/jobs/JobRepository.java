@@ -8,9 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface JobRepository extends JpaRepository<JobEntity, Integer>, JpaSpecificationExecutor<JobEntity> {
     JobEntity findBySlug(String slug);
 
     Page<JobEntity> findAllByEmployer(EmployerEntity employer, Pageable pageable);
+
+    Page<JobEntity> findAllByIdNotAndJobCategory(int id, JobCategoryEntity jobCategory, Pageable pageable);
 }
