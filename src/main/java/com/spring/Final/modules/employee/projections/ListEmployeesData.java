@@ -1,4 +1,4 @@
-package com.spring.Final.modules.jobs.projections;
+package com.spring.Final.modules.employee.projections;
 
 import com.spring.Final.modules.job_category.projections.NameWithJobCount;
 import com.spring.Final.modules.shared.dtos.NameOnly;
@@ -9,15 +9,13 @@ import org.springframework.data.domain.PageImpl;
 import java.util.List;
 
 @Data
-public class HomepageData {
+public class ListEmployeesData {
     private List<NameWithJobCount> jobCategories;
-    private List<NameOnly> jobTypes;
     private Page<NameOnly> skills;
-    PageImpl<JobList> list;
+    PageImpl<EmployeeList> list;
 
-    public HomepageData(List<NameWithJobCount> jobCategories, List<NameOnly> jobTypes, Page<NameOnly> skills, PageImpl<JobList> list) {
+    public ListEmployeesData(List<NameWithJobCount> jobCategories, Page<NameOnly> skills, PageImpl<EmployeeList> list) {
         this.jobCategories = jobCategories;
-        this.jobTypes = jobTypes;
         this.skills = skills;
         this.list = list;
     }

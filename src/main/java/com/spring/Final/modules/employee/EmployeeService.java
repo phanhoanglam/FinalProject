@@ -8,15 +8,24 @@ import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
 import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
+import com.spring.Final.modules.employee.projections.ListEmployeesData;
 import com.spring.Final.modules.employee.specifications.EmployeeSpecification;
+import com.spring.Final.modules.job_category.JobCategoryEntity;
+import com.spring.Final.modules.job_category.JobCategoryService;
+import com.spring.Final.modules.job_category.projections.NameWithJobCount;
 import com.spring.Final.modules.job_proposal.JobProposalService;
+import com.spring.Final.modules.job_type.JobTypeService;
 import com.spring.Final.modules.review.ReviewService;
 import com.spring.Final.modules.review.projections.ReviewList;
+import com.spring.Final.modules.skill.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +39,12 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private JobCategoryService jobCategoryService;
+
+    @Autowired
+    private SkillService skillService;
 
     public EmployeeService(
             EmployeeRepository repository,
@@ -89,16 +104,30 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         return this.repository.save(newEmployee);
     }
 
-    public PageImpl<EmployeeList> list(int pageNumber, int size, SearchEmployeeDTO model) {
+    public ListEmployeesData list(int pageNumber, int size, SearchEmployeeDTO model) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         EmployeeSpecification search = new EmployeeSpecification(model);
 
         Page<EmployeeEntity> results = this.repository.findAll(search, page);
         List<EmployeeList> resultList = results.stream()
-                .map(e -> this.modelMapper.map(e, EmployeeList.class))
-                .collect(Collectors.toList());
+                .map(e -> {
+                    EmployeeList employee = this.modelMapper.map(e, EmployeeList.class);
+                    employee.setSuccessRate(this.jobProposalService.calculateSuccessRate(e.getId()));
 
-        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
+                    return employee;
+                })
+                .collect(Collectors.toList());
+        List<NameWithJobCount> jobCategories = jobCategoryService.findAllAsNameOnly();
+
+        return new ListEmployeesData(
+                jobCategories,
+                skillService.findAllAsNameOnly(
+                        1,
+                        100,
+                        (model.getJobCategories().size() == 0 ? new int[]{jobCategories.get(0).getId()} : model.getJobCategories().stream().mapToInt(i -> i).toArray())
+                ),
+                new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
+        );
     }
 
     public EmployeeGetDetail getDetail(String slug) {

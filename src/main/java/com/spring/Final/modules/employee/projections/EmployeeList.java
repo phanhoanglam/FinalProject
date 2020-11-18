@@ -10,7 +10,9 @@ public class EmployeeList {
     private String avatar;
     private String address;
     private String nationality;
+    private String jobTitle;
     private float rating;
+    private int successRate;
     private int minHourlyRate;
     private String slug;
 }

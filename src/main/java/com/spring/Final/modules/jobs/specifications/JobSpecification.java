@@ -51,6 +51,16 @@ public class JobSpecification extends EntitySpecification<JobEntity> {
 
             andPredicates.add(cb.exists(skillSubQuery));
         }
+        if (dto.getSalaryFrom() != 0) {
+            andPredicates.add(
+                    cb.greaterThanOrEqualTo(root.get("salaryFrom"), dto.getSalaryFrom())
+            );
+        }
+        if (dto.getSalaryTo() != 0) {
+            andPredicates.add(
+                    cb.lessThanOrEqualTo(root.get("salaryTo"), dto.getSalaryTo())
+            );
+        }
         andPredicates = this.getSearchPredicates(andPredicates, root, cb);
         Predicate[] predicates = new Predicate[andPredicates.size()];
         predicates = andPredicates.toArray(predicates);

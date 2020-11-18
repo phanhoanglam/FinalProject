@@ -62,7 +62,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         this.repository = repository;
     }
 
-    public HomepageData<JobList> list(int pageNumber, int size, SearchJobDTO model) {
+    public HomepageData list(int pageNumber, int size, SearchJobDTO model) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         JobSpecification search = new JobSpecification(model);
 

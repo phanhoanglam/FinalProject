@@ -5,6 +5,8 @@ import com.spring.Final.core.infrastructure.ApiResult;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
 import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
+import com.spring.Final.modules.employee.projections.ListEmployeesData;
+import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.review.projections.ReviewList;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -28,16 +30,16 @@ public class EmployeeController extends ApiController {
 //        return buildResponse(data);
 //    }
 
-    @GetMapping("")
-    public ResponseEntity<ApiResult> list(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            SearchEmployeeDTO model
-    ) {
-        Page<EmployeeList> data = service.list(page, size, model);
-
-        return buildResponse(data);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<ApiResult> list(
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            SearchEmployeeDTO model
+//    ) {
+//        Page<EmployeeList> data = service.list(page, size, model);
+//
+//        return buildResponse(data);
+//    }
 
     @GetMapping("/{slug}")
     public ResponseEntity<ApiResult> getDetail(@PathVariable(value = "slug") String slug) {

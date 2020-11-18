@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="full-page-container" layout:fragment="body">
+	<div th:replace="client/modules/employees/search-bar.html :: div"></div>
+	<!-- Full Page Sidebar / End -->
+
+	<!-- Full Page Content -->
+	<div class="full-page-content-container" data-simplebar>
+		<div class="full-page-content-inner">
+
+			<h3 class="page-title">Search Results</h3>
+
+			<!-- Freelancers List Container -->
+			<div class="freelancers-container freelancers-grid-layout margin-top-35">
+
+				<!--Freelancer -->
+				<div class="freelancer" th:each="item : ${list}">
+
+					<!-- Overview -->
+					<div class="freelancer-overview">
+						<div class="freelancer-overview-inner">
+
+<!--							 Bookmark Icon -->
+<!--							<span class="bookmark-icon"></span>-->
+
+							<!-- Avatar -->
+							<div class="freelancer-avatar">
+								<div class="verified-badge"></div>
+								<a th:href="${'/employees/' + item.slug}"><img th:src="${item.avatar}" alt=""></a>
+							</div>
+
+							<!-- Name -->
+							<div class="freelancer-name">
+								<h4>
+									<a th:href="${'/employees/' + item.slug}">
+										[[${item.firstName + ' ' + item.lastName}]]
+<!--									<img class="flag" src="images/flags/gb.svg" alt="" title="United Kingdom" data-tippy-placement="top">-->
+									</a>
+								</h4>
+								<span th:text="${item.jobTitle}"></span>
+							</div>
+
+							<!-- Rating -->
+							<div class="freelancer-rating">
+								<div class="star-rating" th:data-rating="${item.rating}"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Details -->
+					<div class="freelancer-details">
+						<div class="freelancer-details-list">
+							<ul>
+								<li th:if="${item.address != null}">Location <strong><i class="icon-material-outline-location-on"></i> [[${item.address}]]</strong></li>
+								<li th:if="${item.minHourlyRate}">Rate <strong>$[[${item.minHourlyRate}]] / hr</strong></li>
+								<li th:if="${item.successRate > 0}">Job Success <strong>[[${item.successRate}]]%</strong></li>
+							</ul>
+						</div>
+						<a th:href="${'/employees/' + item.slug}" class="button button-sliding-icon ripple-effect">
+							View Profile <i class="icon-material-outline-arrow-right-alt"></i>
+						</a>
+					</div>
+				</div>
+				<!-- Freelancer / End -->
+			</div>
+			<!-- Freelancers Container / End -->
+
+			<!-- Pagination -->
+			<div class="clearfix"></div>
+			<div th:if="${list.getTotalPages() > 0}" class="pagination-container margin-top-20 margin-bottom-20">
+                <nav class="pagination">
+                    <ul>
+                        <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                            <a th:href="@{/employees(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
+                               class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+                        <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
+                                th:href="@{/employees(page=${i})}" th:utext="${i}"
+                                th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
+                        </li>
+                        <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                            <a th:href="@{/employees(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
+                               class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+			<div class="clearfix"></div>
+			<!-- Pagination / End -->
+
+			<!-- Footer -->
+			<div th:replace="client/fragments/footer2.html :: div"></div>
+			<!-- Footer / End -->
+
+		</div>
+	</div>
+	<!-- Full Page Content / End -->
+</div>
+
+<script layout:fragment="js">
+    function changeJobCategory() {
+        var change = $("#category").val();
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '/api/skills',
+            data: {
+                page: 1,
+                size: 100,
+                jobCategories: change.join(',')
+            },
+            success: function (res) {
+                document.getElementById("tags-element").innerHTML = "";
+                $.each(res.data.content, function (index, value) {
+                    if (res.data.content !== []) {
+                        document.getElementById("tags-element").innerHTML += `
+                            <div class="tag">
+                                <input type="checkbox" name="skills" id="tag${index}" value="${value.id}"/>
+                                <label for="tag${index}">${value.name}</label>
+                            </div>
+                        `;
+                    }
+                })
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        $('#search-bar').on('submit', function (e) {
+            e.preventDefault();
+
+            const location = $(this).find('[name="location"]').val();
+            const jobCategories = $(this).find('[name="jobCategories"]').val();
+            const jobTypes = [];
+            const skills = [];
+            const names = [];
+            const [salaryFrom, salaryTo] = $(this).find('[name="salaryRange"]').val().split(',');
+
+            $.each($('.keywords-list .keyword-text'), function () {
+                names.push($(this).text());
+            });
+            $.each($('input[name="jobTypes"]:checked'), function () {
+                jobTypes.push($(this).val());
+            });
+            $.each($('input[name="skills"]:checked'), function () {
+                skills.push($(this).val());
+            });
+            let url = `${window.location.pathname}?`;
+
+            if (location) {
+                url = `${url}&location=${location}`;
+            }
+            if (names.length) {
+                url = `${url}&names=${names.join(',')}`;
+            }
+            if (jobCategories.length) {
+                url = `${url}&jobCategories=${jobCategories.join(',')}`;
+            }
+            if (jobTypes.length) {
+                url = `${url}&jobTypes=${jobTypes.join(',')}`;
+            }
+            if (skills.length) {
+                url = `${url}&skills=${skills.join(',')}`;
+            }
+            if (salaryFrom) {
+                url = `${url}&salaryFrom=${salaryFrom}`;
+            }
+            if (jobCategories) {
+                url = `${url}&salaryTo=${salaryTo}`;
+            }
+            window.location.href = url;
+        });
+    });
+</script>
+</body>
+</html>

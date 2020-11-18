@@ -180,6 +180,16 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         return this.repository.countByJob(jobId);
     }
 
+    public int calculateSuccessRate(int employeeId) {
+        long[] test = this.repository.calculateSuccessRate(employeeId);
+
+        if (test[1] == 0) {
+            return 0;
+        } else {
+            return (int) ((float) test[0] / test[1] * 100);
+        }
+    }
+
     public void setStatusSucceeded(JobEntity job) {
         this.repository.setStatusByJobAndStatus(JobProposalStatus.SUCCEEDED, job, JobProposalStatus.ACCEPTED);
     }
