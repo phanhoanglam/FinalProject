@@ -8,6 +8,7 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link th:href="@{/client/css/style.css}" rel="stylesheet">
     <link th:href="@{/client/css/colors/blue.css}" rel="stylesheet">
+    <style layout:fragment="css"></style>
 </head>
 <body>
 <div id="wrapper">
@@ -50,6 +51,7 @@
     });
 </script>
 
+<script layout:fragment="libraries"></script>
 <script layout:fragment="js"></script>
 </body>
 </html>
