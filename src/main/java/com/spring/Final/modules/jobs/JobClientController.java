@@ -52,7 +52,7 @@ public class JobClientController {
         return "client/modules/jobs/list";
     }
 
-    @GetMapping("/{slug}")
+    @GetMapping("/job-{slug}")
     public String getDetail(
             Authentication authentication,
             HttpServletResponse response,

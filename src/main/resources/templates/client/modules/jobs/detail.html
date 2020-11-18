@@ -27,7 +27,8 @@
                                             class="icon-material-outline-business"></i> [[${detail.employer.name}]]</a>
                                     </li>
                                     <li>
-                                        <div id="rating-star" th:attr="data-rating=${detail.employer.rating}" class="star-rating" ></div>
+                                        <div id="rating-star" th:attr="data-rating=${detail.employer.rating}"
+                                             class="star-rating"></div>
                                     </li>
                                     <li>
                                         <img class="flag" th:src="@{/client/images/flags/gb.svg}" alt="">
@@ -87,13 +88,13 @@
                     <div class="listings-container grid-layout">
 
                         <!-- Job Listing -->
-                        <a th:each="similar : ${listSimilar}" th:href="@{${similar.slug}}" class="job-listing">
+                        <a th:each="similar : ${listSimilar}" th:href="@{/job-${similar.slug}}" class="job-listing">
 
                             <!-- Job Listing Details -->
                             <div class="job-listing-details">
                                 <!-- Logo -->
                                 <div class="job-listing-company-logo">
-                                    <img th:src="@{${similar.employer.avatar}}" alt="">
+                                    <img th:src="@{/job-${similar.employer.avatar}}" alt="">
                                 </div>
 
                                 <!-- Details -->
@@ -272,7 +273,7 @@
                             document.getElementById('applynow').innerHTML = "Applied";
                             $('#applynow').removeClass();
                             document.getElementById('applynow').className = "applied";
-                            $("html, body").animate({ scrollTop: 0 }, "slow");
+                            $("html, body").animate({scrollTop: 0}, "slow");
                             var magnificPopup = $.magnificPopup.instance;
                             magnificPopup.close();
                         }

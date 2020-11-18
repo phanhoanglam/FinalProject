@@ -2,6 +2,7 @@ package com.spring.Final.modules.membership;
 
 import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
+import com.spring.Final.modules.membership.projections.MembershipData;
 import com.spring.Final.modules.membership.projections.MembershipDetail;
 import com.spring.Final.modules.shared.enums.membership_duration.MembershipDuration;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +29,13 @@ public class MembershipClientController extends ApiController {
 
     @GetMapping("")
     public String list(Model modelView) {
-        List<MembershipDetail> data = service.list();
-        List<MembershipDetail> listMonthly = data.stream().filter(x->x.getDuration() == MembershipDuration.MONTHLY).collect(Collectors.toList());
-        List<MembershipDetail> listYearly = data.stream().filter(x->x.getDuration() == MembershipDuration.YEARLY).collect(Collectors.toList());
-        modelView.addAttribute("listMonthly", listMonthly);
-        modelView.addAttribute("listYearly", listYearly);
+        // compare current membership
+        MembershipData data = service.list();
+
+        modelView.addAttribute("listMonthly", data.getListMonthly());
+        modelView.addAttribute("listYearly", data.getListYearly());
+        modelView.addAttribute("VATRate", data.getVATRate());
+
         return "client/modules/memberships/membership";
     }
 }

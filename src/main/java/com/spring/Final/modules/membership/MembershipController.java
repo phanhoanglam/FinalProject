@@ -22,10 +22,10 @@ public class MembershipController extends ApiController {
         this.service = service;
     }
 
-    @GetMapping("")
-    public ResponseEntity<ApiResult> list() {
-        List<MembershipDetail> data = service.list();
-
-        return buildResponse(data);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<ApiResult> list() {
+//        List<MembershipDetail> data = service.list();
+//
+//        return buildResponse(data);
+//    }
 }

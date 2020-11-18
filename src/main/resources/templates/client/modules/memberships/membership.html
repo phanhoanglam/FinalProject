@@ -3,6 +3,9 @@
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <title>Hireo</title>
+    <style layout:fragment="css">
+        :root{--body-color:#f7fafc;--button-color:#1ea672;--accent-color:#0a721b;--link-color:#fff;--font-color:#697386;--body-font-family:-apple-system,BlinkMacSystemFont,sans-serif;--radius:6px;--form-width:400px}.sr-root{display:flex;flex-direction:row;width:100%;max-width:980px;padding:48px;align-content:center;justify-content:center;height:auto;min-height:100vh;margin:0 auto}.sr-main{display:flex;flex-direction:column;justify-content:center;height:100%;align-self:center;padding:75px 50px;background:var(--body-color);width:var(--form-width);border-radius:var(--radius);box-shadow:0 0 0 .5px rgba(50,50,93,0.1),0 2px 5px 0 rgba(50,50,93,0.1),0 1px 1.5px 0 rgba(0,0,0,0.07)}.sr-field-error{color:var(--font-color);text-align:left;font-size:13px;line-height:17px;margin-top:12px}.sr-input{border:1px solid var(--gray-border);border-radius:var(--radius);padding:5px 12px;height:44px;width:100%;transition:box-shadow .2s ease;background:#fff;-moz-appearance:none;-webkit-appearance:none;appearance:none}.sr-input:focus,.focused{box-shadow:0 0 0 1px rgba(50,151,211,0.3),0 1px 1px 0 rgba(0,0,0,0.07),0 0 0 4px rgba(50,151,211,0.3);outline:none;z-index:9}.sr-result{height:44px;-webkit-transition:height 1s ease;-moz-transition:height 1s ease;-o-transition:height 1s ease;transition:height 1s ease;color:var(--font-color);overflow:auto}.sr-result code{overflow:scroll}.sr-result.expand{height:350px}.sr-combo-inputs-row{box-shadow:0 0 0 .5px rgba(50,50,93,0.1),0 2px 5px 0 rgba(50,50,93,0.1),0 1px 1.5px 0 rgba(0,0,0,0.07);border-radius:7px}.stripe-btn{background:#556CD6;border-radius:var(--radius);color:#fff;border:0;padding:12px 16px;margin-top:16px;font-weight:600;cursor:pointer;transition:all .2s ease;display:block;box-shadow:0 4px 5.5px 0 rgba(0,0,0,0.07);width:100%}.stripe-btn:hover{filter:contrast(115%)}.stripe-btn:active{transform:translateY(0px) scale(0.98);filter:brightness(0.9)}.stripe-btn:disabled{opacity:.5;cursor:none}.sr-card-element{padding-top:12px}@media (max-width: 720px){.sr-root{flex-direction:column;justify-content:flex-start;padding:48px 20px;min-width:320px}.sr-header__logo{background-position:center}.sr-payment-summary{text-align:center}.sr-content{display:none}.sr-main{width:100%;height:305px;background:#f7fafc;box-shadow:0 0 0 .5px rgba(50,50,93,0.1),0 2px 5px 0 rgba(50,50,93,0.1),0 1px 1.5px 0 rgba(0,0,0,0.07);border-radius:6px}}.spinner,.spinner:before,.spinner:after{border-radius:50%}.spinner{color:#fff;font-size:22px;text-indent:-99999px;margin:0 auto;position:relative;width:20px;height:20px;box-shadow:inset 0 0 0 2px;-webkit-transform:translateZ(0);-ms-transform:translateZ(0);transform:translateZ(0)}.spinner:before,.spinner:after{position:absolute;content:""}.spinner:before{width:10.4px;height:20.4px;background:var(--accent-color);border-radius:20.4px 0 0 20.4px;top:-.2px;left:-.2px;-webkit-transform-origin:10.4px 10.2px;transform-origin:10.4px 10.2px;-webkit-animation:loading 2s infinite ease 1.5s;animation:loading 2s infinite ease 1.5s}.spinner:after{width:10.4px;height:10.2px;background:var(--accent-color);border-radius:0 10.2px 10.2px 0;top:-.1px;left:10.2px;-webkit-transform-origin:0 10.2px;transform-origin:0 10.2px;-webkit-animation:loading 2s infinite ease;animation:loading 2s infinite ease}@-webkit-keyframes loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes loading{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.sr-root{animation:.4s form-in;animation-fill-mode:both;animation-timing-function:ease}.hidden{display:none}@keyframes field-in{0%{opacity:0;transform:translateY(8px) scale(0.95)}100%{opacity:1;transform:translateY(0px) scale(1)}}@keyframes form-in{0%{opacity:0;transform:scale(0.98)}100%{opacity:1;transform:scale(1)}}
+    </style>
 </head>
 <body>
 <!-- Titlebar
@@ -18,7 +21,7 @@
                     <!-- Breadcrumbs -->
                     <nav id="breadcrumbs" class="dark">
                         <ul>
-                            <li><a href="/static">Home</a></li>
+                            <li><a href="/">Home</a></li>
                             <!--                            <li><a href="#">Pricing Plans</a></li>-->
                             <li>Checkout</li>
                         </ul>
@@ -37,7 +40,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xl-8 col-lg-8 content-right-offset">
-
+                <div class="message"></div>
 
                 <!-- Hedaline -->
                 <h3>Billing Cycle</h3>
@@ -72,33 +75,45 @@
                 <h3 class="margin-top-50">Payment Method</h3>
 
                 <!-- Payment Methods Accordion monthly -->
-                <div class="payment margin-top-30 monthlytype">
-                    <div th:each="monthly :${listMonthly}" class="payment-tab payment-tab-active">
-                        <div class="payment-tab-trigger">
-                            <input th:checked="${monthly.type == T(com.spring.Final.modules.shared.enums.membership_type.MembershipType).STANDARD ? true : false}" th:id="${monthly.name + monthly.duration}" name="cardTypeMonth" type="radio"
-                                   th:value="${monthly.price}">
-                            <label th:for="${monthly.name + monthly.duration}" th:text="${monthly.name}"></label>
-                            <span class="regular-price-tag price">$[[${monthly.price}]] / month</span>
+                <form id="membership-form" th:data-vat="${VATRate}">
+                    <div class="payment margin-top-30 payment--month-type">
+                        <div th:each="monthly :${listMonthly}" th:class="${'payment-tab ' + (monthly.type.toString() == 'STANDARD' ? 'payment-tab-active' : '')}">
+                            <div class="payment-tab-trigger">
+                                <input th:checked="${monthly.type.toString() == 'STANDARD' ? true : false}"
+                                       th:id="${monthly.name + monthly.duration}"
+                                       name="membershipId"
+                                       type="radio"
+                                       th:data-name="${monthly.name}"
+                                       th:data-price="${monthly.price}"
+                                       th:value="${monthly.id}">
+                                <label th:for="${monthly.name + monthly.duration}" th:text="${monthly.name}"></label>
+                                <span class="regular-price-tag price">$[[${monthly.price}]] / month</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Payment Methods Accordion monthly / End -->
+                    <!-- Payment Methods Accordion monthly / End -->
 
-                <!-- Payment Methods Accordion yearly -->
-                <div class="payment margin-top-30 yearlytype" hidden>
-                    <div th:each="yearly :${listYearly}" class="payment-tab payment-tab-active">
-                        <div class="payment-tab-trigger">
-                            <input th:checked="${yearly.type == T(com.spring.Final.modules.shared.enums.membership_type.MembershipType).STANDARD ? true : false}" th:id="${yearly.name + yearly.duration}" name="cardTypeYear" type="radio"
-                                   th:value="${yearly.price}">
-                            <label th:for="${yearly.name + yearly.duration}" th:text="${yearly.name}"></label>
-                            <span class="regular-price-tag price">$[[${yearly.price}]] / month</span>
+                    <!-- Payment Methods Accordion yearly -->
+                    <div class="payment margin-top-30 payment--year-type" hidden>
+                        <div th:each="yearly :${listYearly}" class="payment-tab">
+                            <div class="payment-tab-trigger">
+                                <input th:id="${yearly.name + yearly.duration}"
+                                       name="membershipId"
+                                       type="radio"
+                                       th:data-name="${yearly.name}"
+                                       th:data-price="${yearly.price}"
+                                       th:value="${yearly.id}">
+                                <label th:for="${yearly.name + yearly.duration}" th:text="${yearly.name}"></label>
+                                <span class="regular-price-tag price">$[[${yearly.price}]] / year</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Payment Methods Accordion yearly / End -->
+                    <!-- Payment Methods Accordion yearly / End -->
 
-                <a href="pages-order-confirmation.html" class="button big ripple-effect margin-top-40 margin-bottom-65">Proceed
-                    Payment</a>
+                    <button class="button big ripple-effect margin-top-40 margin-bottom-65">
+                        Proceed Payment
+                    </button>
+                </form>
             </div>
 
 
@@ -112,40 +127,166 @@
                     </div>
                     <div class="boxed-widget-inner">
                         <ul>
-                            <li>Standard Plan <span>$49.00</span></li>
-                            <li>VAT (20%) <span>$9.80</span></li>
-                            <li class="total-costs">Final Price <span>$58.80</span></li>
+                            <li class="payment-type">Standard Plan <span>$50.00</span></li>
+                            <li class="VAT">VAT (10%) <span>$5.00</span></li>
+                            <li class="total-costs">Final Price <span>$55.00</span></li>
                         </ul>
                     </div>
                 </div>
                 <!-- Summary / End -->
-
-                <!-- Checkbox -->
-                <div class="checkbox margin-top-30">
-                    <input type="checkbox" id="two-step">
-                    <label for="two-step"><span class="checkbox-icon"></span> I agree to the <a href="#">Terms and
-                        Conditions</a> and the <a href="#">Automatic Renewal Terms</a></label>
-                </div>
             </div>
 
         </div>
     </div>
     <!-- Container / End -->
-</div>
-<!--<div th:replace="client/fragments/footer1.html :: div"></div>-->
-<script layout:fragment="js">
-    $(document).ready(function () {
-        const $billingType = $('[name="radio-payment-type"]');
 
-        $billingType.on('change', function () {
-            if($(this).val() == 'monthly'){
-                $('.yearlytype')[0].hidden = true;
-                $('.monthlytype')[0].hidden = false;
-            }else{
-                $('.yearlytype')[0].hidden = false;
-                $('.monthlytype')[0].hidden = true;
+    <div id="small-dialog-2" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
+
+        <!--Tabs -->
+        <div class="sign-in-form">
+
+            <ul class="popup-tabs-nav"></ul>
+
+            <div class="popup-tabs-container">
+
+                <!-- Tab -->
+                <div class="popup-tab-content" id="tab2">
+
+                    <!-- Welcome Text -->
+                    <div class="welcome-text">
+                        <h3>Card information</h3>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" id="payment-form">
+						<div class="sr-combo-inputs-row">
+                            <div class="sr-input sr-card-element" id="card-element"></div>
+                        </div>
+
+                        <div class="sr-field-error" id="card-errors" role="alert"></div>
+
+                        <button id="submit" class="stripe-btn">
+                            <div class="spinner hidden" id="spinner"></div>
+                            <span id="button-text">Pay</span><span id="order-amount"></span>
+                        </button>
+                    </form>
+
+                    <!-- Button -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#small-dialog-2"
+       class="popup-with-zoom-anim button ripple-effect review-btn" style="display: none">
+        <i class="icon-material-outline-thumb-up"></i> Card information
+    </a>
+</div>
+
+<script layout:fragment="libraries" src="https://js.stripe.com/v3/"></script>
+<script layout:fragment="js">
+    let clientSecret;
+    const stripe = Stripe('pk_test_51Hj4WbF55X8hSDUqpK952ybJoEoLBcXzkvndlsNmB1nEDqtC6bhwyz9lDX2uciMm5Uhy4tLdlRvZnBzKTmTzfEVr00Z6gIsOwu');
+    const elements = stripe.elements();
+    const style = {
+        base: {
+            color: "#32325d",
+        }
+    };
+
+    var card = elements.create("card", {style: style});
+    card.mount("#card-element");
+
+    card.on('change', function (event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    var form = document.getElementById('payment-form');
+
+    form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+
+        stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: card,
             }
-        })
+        }).then(function (result) {
+            if (result.error) {
+                $('.message').html(`
+                    <div class="margin-bottom-40 notification error closeable">
+                        <p>${result.error.message}</p>
+                        <a class="close"></a>
+                    </div>
+                `);
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    $.magnificPopup.close();
+
+                    $('.message').html(`
+                        <div class="margin-bottom-40 notification success closeable">
+                            <p>Send successfully, membership will be updated!</p>
+                            <a class="close"></a>
+                        </div>
+                    `);
+                }
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('[name="radio-payment-type"]').on('change', function () {
+            if ($(this).val() === 'monthly') {
+                $('.payment--year-type')[0].hidden = true;
+                $('.payment--month-type')[0].hidden = false;
+            } else {
+                $('.payment--year-type')[0].hidden = false;
+                $('.payment--month-type')[0].hidden = true;
+            }
+        });
+
+        $('[name="membershipId"]').on('change', function () {
+            const name = $(this).data('name');
+            const price = $(this).data('price');
+            const VAT = $('#membership-form').data('vat');
+            const vatAmount = VAT * price / 100;
+
+            $('.payment-type').html(`${name} Plan <span>$${parseFloat(price).toFixed(2)}</span>`)
+            $('.VAT').html(`VAT (${parseInt(VAT, 10)}%) <span>$${parseFloat(vatAmount).toFixed(2)}</span>`)
+            $('.total-costs').html(`Final Price <span>$${parseFloat(vatAmount + price).toFixed(2)}</span>`)
+        });
+
+        $('.payment-tab-active [name="membershipId"]').trigger('change');
+
+        $('#membership-form').on('submit', function (e) {
+            e.preventDefault();
+            const membershipId = $(this).find('[name="membershipId"]:checked').val();
+
+            if (!membershipId) {
+                $.magnificPopup.close();
+                return false;
+            }
+            $.ajax({
+                url: '/api/payments',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                headers: {
+					[$('[name="_csrf_header"]').attr('content')]: $('[name="_csrf"]').attr('content'),
+				},
+                data: JSON.stringify({
+                    membershipId: parseInt(membershipId, 10),
+                }),
+                success: function (res) {
+                    clientSecret = res.data.secret;
+                    $('[href="#small-dialog-2"]').trigger('click');
+                },
+            })
+        });
     });
 </script>
 </body>
