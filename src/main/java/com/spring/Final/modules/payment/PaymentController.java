@@ -27,7 +27,7 @@ public class PaymentController extends ApiController {
 
     @PostMapping("")
     public ResponseEntity<ApiResult> create(Authentication authentication, @Valid @RequestBody CreatePaymentDTO model) {
-         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         int id = (int) user.getInformation().get("id");
 
         model.setEmployerId(id);

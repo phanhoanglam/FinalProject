@@ -39,16 +39,6 @@ public class EntitySpecification<T> implements Specification<T> {
     }
 
     public ArrayList<Predicate> getSearchPredicates(ArrayList<Predicate> andPredicates, Root<T> root, CriteriaBuilder cb) {
-        if (dto.getSalaryFrom() != 0) {
-            andPredicates.add(
-                    cb.greaterThanOrEqualTo(root.get("salaryFrom"), dto.getSalaryFrom())
-            );
-        }
-        if (dto.getSalaryTo() != 0) {
-            andPredicates.add(
-                    cb.lessThanOrEqualTo(root.get("salaryTo"), dto.getSalaryTo())
-            );
-        }
         if (dto.getLocation() != null) {
             try {
                 Predicate location = this.searchLocation(dto.getLocation(), cb, root);

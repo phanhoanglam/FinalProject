@@ -40,6 +40,12 @@ public interface JobProposalRepository extends JpaRepository<JobProposalEntity, 
     @Query("select count(jp) from JobProposal jp where jp.job.id = ?1 and jp.status <> com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.REJECTED")
     long countByJob(int jobId);
 
+    @Query("select (select count(jp) from JobProposal jp where jp.employee.id = ?1 and jp.status = com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.SUCCEEDED) as a," +
+            "(select count(jp) from JobProposal jp where jp.employee.id = ?1 and jp.status in (" +
+            "   com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.SUCCEEDED," +
+            "   com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.FAILED)) as b from JobProposal")
+    long[] calculateSuccessRate(int employeeId);
+
     @Modifying
     @Query("update JobProposal jp set jp.status = ?1 where jp.job = ?2 and jp.status = ?3")
     void setStatusByJobAndStatus(JobProposalStatus newStatus, JobEntity job, JobProposalStatus oldStatus);
