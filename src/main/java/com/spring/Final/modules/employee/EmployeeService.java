@@ -41,9 +41,6 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
     private ReviewService reviewService;
 
     @Autowired
-    private JobTypeService jobTypeService;
-
-    @Autowired
     private JobCategoryService jobCategoryService;
 
     @Autowired
@@ -122,13 +119,13 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
                 .collect(Collectors.toList());
         List<NameWithJobCount> jobCategories = jobCategoryService.findAllAsNameOnly();
 
-        if (model.getJobCategories().size() == 0) {
-            model.setJobCategories(new ArrayList<>(Arrays.asList(new Integer[]{jobCategories.get(0).getId()})));
-        }
-
         return new ListEmployeesData(
-                jobCategoryService.findAllAsNameOnly(),
-                skillService.findAllAsNameOnly(1, 100, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
+                jobCategories,
+                skillService.findAllAsNameOnly(
+                        1,
+                        100,
+                        (model.getJobCategories().size() == 0 ? new int[]{jobCategories.get(0).getId()} : model.getJobCategories().stream().mapToInt(i -> i).toArray())
+                ),
                 new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
         );
     }

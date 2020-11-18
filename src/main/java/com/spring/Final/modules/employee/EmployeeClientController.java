@@ -28,7 +28,7 @@ public class EmployeeClientController {
     @GetMapping("")
     public String list(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(defaultValue = "6") int size,
             SearchEmployeeDTO dto,
             Model modelView
     ) {
