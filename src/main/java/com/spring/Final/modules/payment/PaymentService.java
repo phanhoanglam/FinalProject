@@ -48,8 +48,8 @@ public class PaymentService extends ApiService<PaymentEntity, PaymentRepository>
         MembershipEntity membership = this.membershipService.getOne(data.getMembershipId());
         PaymentIntent paymentIntent;
 
-        if (membership.getPrice() == null) {
-            throw new InvalidMembershipException();
+        if (membership == null) {
+            throw new ResourceNotFoundException();
         }
         try {
             List<Object> paymentMethodTypes = new ArrayList<>();

@@ -51,6 +51,16 @@ public class EmployeeSpecification extends EntitySpecification<EmployeeEntity> {
             }
             andPredicates.add(cb.or(predicates));
         }
+        if (dto.getSalaryFrom() != 0) {
+            andPredicates.add(
+                    cb.greaterThanOrEqualTo(root.get("minHourlyRate"), dto.getSalaryFrom())
+            );
+        }
+        if (dto.getSalaryTo() != 0) {
+            andPredicates.add(
+                    cb.lessThanOrEqualTo(root.get("minHourlyRate"), dto.getSalaryTo())
+            );
+        }
         andPredicates = this.getSearchPredicates(andPredicates, root, cb);
         Predicate[] predicates = new Predicate[andPredicates.size()];
         predicates = andPredicates.toArray(predicates);

@@ -7,11 +7,15 @@ import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
+import com.spring.Final.modules.employee.projections.EmployeeDetailData;
 import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
 import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employee.projections.ProfilePageData;
+import com.spring.Final.modules.employee.projections.ListEmployeesData;
 import com.spring.Final.modules.employee.specifications.EmployeeSpecification;
+import com.spring.Final.modules.job_category.JobCategoryService;
+import com.spring.Final.modules.job_category.projections.NameWithJobCount;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.review.ReviewService;
 import com.spring.Final.modules.review.projections.ReviewList;
@@ -19,6 +23,8 @@ import com.spring.Final.modules.shared.dtos.NameOnly;
 import com.spring.Final.modules.skill.SkillEntity;
 import com.spring.Final.modules.skill.SkillService;
 import com.spring.Final.modules.skill.projections.Skill;
+import com.spring.Final.modules.shared.enums.user_type.UserType;
+import com.spring.Final.modules.skill.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,6 +44,9 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private JobCategoryService jobCategoryService;
 
     @Autowired
     private SkillService skillService;
@@ -100,36 +109,50 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         return this.repository.save(newEmployee);
     }
 
-    public PageImpl<EmployeeList> list(int pageNumber, int size, SearchEmployeeDTO model) {
+    public ListEmployeesData list(int pageNumber, int size, SearchEmployeeDTO model) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         EmployeeSpecification search = new EmployeeSpecification(model);
 
         Page<EmployeeEntity> results = this.repository.findAll(search, page);
         List<EmployeeList> resultList = results.stream()
-                .map(e -> this.modelMapper.map(e, EmployeeList.class))
+                .map(e -> {
+                    EmployeeList employee = this.modelMapper.map(e, EmployeeList.class);
+                    employee.setSuccessRate(this.jobProposalService.calculateSuccessRate(e.getId()));
+
+                    return employee;
+                })
                 .collect(Collectors.toList());
+        List<NameWithJobCount> jobCategories = jobCategoryService.findAllAsNameOnly();
 
-        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
+        return new ListEmployeesData(
+                jobCategories,
+                skillService.findAllAsNameOnly(
+                        1,
+                        100,
+                        (model.getJobCategories().size() == 0 ? new int[]{jobCategories.get(0).getId()} : model.getJobCategories().stream().mapToInt(i -> i).toArray())
+                ),
+                new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
+        );
     }
 
-    public EmployeeGetDetail getDetail(String slug) {
-        EmployeeGetDetail data = this.repository.findBySlug(slug);
-        if (data == null) {
+    public EmployeeDetailData getDetail(String slug) {
+        EmployeeEntity employee = this.repository.findBySlug(slug);
+
+        if (employee == null) {
             throw new ResourceNotFoundException();
         }
-        data.setEmploymentHistory(this.jobProposalService.getEmploymentHistory(data.getId()));
+        EmployeeGetDetail data = this.modelMapper.map(employee, EmployeeGetDetail.class);
+        data.setSuccessRate(this.jobProposalService.calculateSuccessRate(data.getId()));
+        data.setJobHiredCount(this.jobProposalService.countJobHired(data.getId()));
+        data.setJobDoneCount(this.jobProposalService.countJobDone(data.getId()));
+        data.setJobDoneOnTime(this.reviewService.countJobDoneOnTime(data.getId()));
+        data.setJobDoneOnBudget(this.reviewService.countJobDoneOnBudget(data.getId()));
 
-        return data;
-    }
-
-    public Page<ReviewList> listReviews(int page, int size, String slug) {
-        EmployeeGetDetail data = this.repository.findBySlug(slug);
-        if (data == null) {
-            throw new ResourceNotFoundException();
-        }
-        Page<ReviewList> results = this.reviewService.listByEmployee(page, size, data.getId());
-
-        return results;
+        return new EmployeeDetailData(
+                data,
+                this.jobProposalService.getEmploymentHistory(data.getId()),
+                this.reviewService.listByUser(data.getId(), UserType.EMPLOYEE)
+        );
     }
 
     public void updateRating(int id, float rating) {

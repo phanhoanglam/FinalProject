@@ -6,6 +6,7 @@ import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.helpers.PointSerializer;
 import com.spring.Final.modules.employee_skill.EmployeeSkillEntity;
+import com.spring.Final.modules.skill.SkillEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -74,7 +76,7 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
     @Column(name = "min_hourly_rate", nullable = false)
     private int minHourlyRate = 0;
 
-    @Column(name = "attachments")
+    @Column(name = "attachments", columnDefinition = "TEXT")
     private String attachments;
 
     @Column(name = "slug", nullable = false, unique = true)
@@ -104,10 +106,16 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
     @Column(name = "updated_at")
     private Date updatedAt = CommonHelper.getCurrentTime();
 
-    @Column(name = "social_profiles")
+    @Column(name = "social_profiles", columnDefinition = "TEXT")
     private String socialProfiles;
 
-//    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "employee_skill",
+//            joinColumns = @JoinColumn(name = "employee_id"),
+//            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+//    private List<SkillEntity> skills;
+
+    //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobProposalEntity> jobProposals;
 //
 //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
@@ -116,7 +124,7 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     private Set<EmployeeSkillEntity> employeeSkills;
 
-//    @JsonIgnore
+    //    @JsonIgnore
 //    public Set<JobProposalEntity> getJobProposals() {
 //        return jobProposals;
 //    }
@@ -126,8 +134,12 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
 //		return jobCategoriesEmployees;
 //	}
 //
-	@JsonIgnore
-	public Set<EmployeeSkillEntity> getEmployeeSkills() {
-		return employeeSkills;
-	}
+    @JsonIgnore
+    public Set<EmployeeSkillEntity> getEmployeeSkills() {
+        return employeeSkills;
+    }
+//	@JsonIgnore
+//	public List<SkillEntity> getSkills() {
+//		return skills;
+//	}
 }

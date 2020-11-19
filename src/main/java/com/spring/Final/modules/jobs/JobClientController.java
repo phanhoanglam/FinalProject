@@ -42,7 +42,7 @@ public class JobClientController {
                        @RequestParam(defaultValue = "12") int size,
                        SearchJobDTO dto
     ) {
-        HomepageData<JobList> data = service.list(page, size, dto);
+        HomepageData data = service.list(page, size, dto);
         modelView.addAttribute("jobCategories", data.getJobCategories());
         modelView.addAttribute("jobTypes", data.getJobTypes());
         modelView.addAttribute("list", data.getList());
@@ -52,7 +52,7 @@ public class JobClientController {
         return "client/modules/jobs/list";
     }
 
-    @GetMapping("/{slug}")
+    @GetMapping("/job-{slug}")
     public String getDetail(
             Authentication authentication,
             HttpServletResponse response,

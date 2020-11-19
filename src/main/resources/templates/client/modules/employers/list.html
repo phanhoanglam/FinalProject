@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="container" layout:fragment="body">
+	<div class="row">
+		<div class="col-xl-12">
+			<div class="companies-list">
+				<a th:href="${'employers/' + item.slug}" class="company" th:each="item : ${list}">
+					<div class="company-inner-alignment">
+						<span class="company-logo"><img th:src="${item.avatar}" alt=""></span>
+						<h4>[[${item.name}]]</h4>
+						<div class="star-rating" th:data-rating="${item.rating}"></div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Pagination -->
+	<div class="clearfix"></div>
+	<div th:if="${list.getTotalPages() > 1}" class="pagination-container margin-top-20 margin-bottom-20">
+		<nav class="pagination">
+			<ul>
+				<li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+					<a th:href="@{/employers(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
+					   class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+				<li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
+						th:href="@{/employers(page=${i})}" th:utext="${i}"
+						th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
+				</li>
+				<li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+					<a th:href="@{/employers(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
+					   class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+			</ul>
+		</nav>
+	</div>
+	<div class="clearfix"></div>
+	<!-- Pagination / End -->
+
+	<!-- Footer -->
+	<div th:replace="client/fragments/footer2.html :: div"></div>
+</div>
+</body>
+</html>

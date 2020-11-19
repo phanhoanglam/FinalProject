@@ -5,87 +5,98 @@
 </head>
 <body>
 <div class="full-page-container" layout:fragment="body">
-    <div th:replace="client/modules/jobs/search-bar.html :: div"></div>
+	<div th:replace="client/modules/employees/search-bar.html :: div"></div>
+	<!-- Full Page Sidebar / End -->
 
-    <!-- Full Page Content -->
-    <div class="full-page-content-container" data-simplebar>
-        <div class="full-page-content-inner">
-            <h3 class="page-title">Search Results</h3>
+	<!-- Full Page Content -->
+	<div class="full-page-content-container" data-simplebar>
+		<div class="full-page-content-inner">
 
-            <div class="listings-container grid-layout margin-top-35">
-                <!-- Job Listing -->
-                <a th:each="item : ${list}" th:href="${'/job-' + item.slug}" class="job-listing">
+			<h3 class="page-title">Search Results</h3>
 
-                    <!-- Job Listing Details -->
-                    <div class="job-listing-details">
-                        <!-- Logo -->
-                        <div class="job-listing-company-logo">
-                            <img th:src="${item.employer.avatar}" alt="">
-                        </div>
+			<!-- Freelancers List Container -->
+			<div class="freelancers-container freelancers-grid-layout margin-top-35">
 
-                        <!-- Details -->
-                        <div class="job-listing-description">
-                            <h4 class="job-listing-company">
-                                [[${item.employer.name}]]
-                                <span class="verified-badge"
-                                      title="Verified Employer"
-                                      data-tippy-placement="top"></span>
-                            </h4>
-                            <h3 class="job-listing-title" th:utext="${item.name}"></h3>
-                        </div>
-                    </div>
+				<!--Freelancer -->
+				<div class="freelancer" th:each="item : ${list}">
 
-                    <!-- Job Listing Footer -->
-                    <div class="job-listing-footer">
-<!--                        <span class="bookmark-icon"></span>-->
-                        <ul>
-                            <li>
-                                <i class="icon-material-outline-location-on"></i>
-                                [[${item.address}]]
-                            </li>
-                            <li><i class="icon-material-outline-business-center"></i> [[${item.jobType.name}]]</li>
-                            <li th:if="${item.salaryFrom > 0}">
-                                <i class="icon-material-outline-account-balance-wallet"></i>
-                                $[[${item.salaryFrom == null ? 0 : item.salaryFrom}]]
-                                -
-                                $[[${item.salaryTo == null ? 0 : item.salaryTo}]]
-                            </li>
-                            <li th:if="${item.salaryFrom == 0 || item.salaryFrom == null}"><i
-                                    class="icon-material-outline-account-balance-wallet"></i> Negotiate
-                            </li>
-                        </ul>
-                    </div>
-                </a>
-            </div>
+					<!-- Overview -->
+					<div class="freelancer-overview">
+						<div class="freelancer-overview-inner">
+<!--							<span class="bookmark-icon"></span>-->
 
-            <!-- Pagination -->
-            <div class="clearfix"></div>
-            <div th:if="${list.getTotalPages() > 1}" class="pagination-container margin-top-20 margin-bottom-20">
+							<!-- Avatar -->
+							<div class="freelancer-avatar">
+								<div class="verified-badge"></div>
+								<a th:href="${'/employees/' + item.slug}"><img th:src="${item.avatar}" alt=""></a>
+							</div>
+
+							<!-- Name -->
+							<div class="freelancer-name">
+								<h4>
+									<a th:href="${'/employees/' + item.slug}">
+										[[${item.firstName + ' ' + item.lastName}]]
+<!--									<img class="flag" src="images/flags/gb.svg" alt="" title="United Kingdom" data-tippy-placement="top">-->
+									</a>
+								</h4>
+								<span th:text="${item.jobTitle}"></span>
+							</div>
+
+							<!-- Rating -->
+							<div class="freelancer-rating">
+								<div class="star-rating" th:data-rating="${item.rating}"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Details -->
+					<div class="freelancer-details">
+						<div class="freelancer-details-list">
+							<ul>
+								<li th:if="${item.address != null}">Location <strong><i class="icon-material-outline-location-on"></i> [[${item.address}]]</strong></li>
+								<li th:if="${item.minHourlyRate}">Rate <strong>$[[${item.minHourlyRate}]] / hr</strong></li>
+								<li th:if="${item.successRate > 0}">Job Success <strong>[[${item.successRate}]]%</strong></li>
+							</ul>
+						</div>
+						<a th:href="${'/employees/' + item.slug}" class="button button-sliding-icon ripple-effect">
+							View Profile <i class="icon-material-outline-arrow-right-alt"></i>
+						</a>
+					</div>
+				</div>
+				<!-- Freelancer / End -->
+			</div>
+			<!-- Freelancers Container / End -->
+
+			<!-- Pagination -->
+			<div class="clearfix"></div>
+			<div th:if="${list.getTotalPages() > 1}" class="pagination-container margin-top-20 margin-bottom-20">
                 <nav class="pagination">
                     <ul>
                         <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
-                            <a th:href="@{/(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
+                            <a th:href="@{/employees(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
                                class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
                         <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
-                                th:href="@{/(page=${i})}" th:utext="${i}"
+                                th:href="@{/employees(page=${i})}" th:utext="${i}"
                                 th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
                         </li>
                         <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
-                            <a th:href="@{/(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
+                            <a th:href="@{/employees(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
                                class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
                     </ul>
                 </nav>
             </div>
-            <div class="clearfix"></div>
-            <!-- Pagination / End -->
+			<div class="clearfix"></div>
+			<!-- Pagination / End -->
 
-            <div th:replace="client/fragments/footer2.html :: div"></div>
-        </div>
-    </div>
-    <!-- Full Page Content / End -->
+			<!-- Footer -->
+			<div th:replace="client/fragments/footer2.html :: div"></div>
+			<!-- Footer / End -->
 
+		</div>
+	</div>
+	<!-- Full Page Content / End -->
 </div>
-</body>
+
 <script layout:fragment="js">
     function changeJobCategory() {
         var change = $("#category").val();
@@ -121,16 +132,12 @@
 
             const location = $(this).find('[name="location"]').val();
             const jobCategories = $(this).find('[name="jobCategories"]').val();
-            const jobTypes = [];
             const skills = [];
             const names = [];
             const [salaryFrom, salaryTo] = $(this).find('[name="salaryRange"]').val().split(',');
 
             $.each($('.keywords-list .keyword-text'), function () {
                 names.push($(this).text());
-            });
-            $.each($('input[name="jobTypes"]:checked'), function () {
-                jobTypes.push($(this).val());
             });
             $.each($('input[name="skills"]:checked'), function () {
                 skills.push($(this).val());
@@ -146,9 +153,6 @@
             if (jobCategories.length) {
                 url = `${url}&jobCategories=${jobCategories.join(',')}`;
             }
-            if (jobTypes.length) {
-                url = `${url}&jobTypes=${jobTypes.join(',')}`;
-            }
             if (skills.length) {
                 url = `${url}&skills=${skills.join(',')}`;
             }
@@ -162,4 +166,5 @@
         });
     });
 </script>
+</body>
 </html>

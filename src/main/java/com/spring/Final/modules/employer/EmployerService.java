@@ -1,25 +1,27 @@
 package com.spring.Final.modules.employer;
 
-import com.spring.Final.core.common.JwtHelper;
-import com.spring.Final.core.exceptions.AccountBlockedException;
-import com.spring.Final.core.exceptions.AccountUnverifiedException;
 import com.spring.Final.core.exceptions.EntityExistException;
-import com.spring.Final.core.exceptions.InvalidEmailOrPasswordException;
+import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
-import com.spring.Final.modules.employee.EmployeeEntity;
+import com.spring.Final.modules.employer.projections.EmployerDetail;
+import com.spring.Final.modules.employer.projections.EmployerDetailData;
+import com.spring.Final.modules.employer.projections.EmployerList;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import com.spring.Final.modules.membership.MembershipEntity;
+import com.spring.Final.modules.review.ReviewService;
 import com.spring.Final.modules.shared.enums.membership_duration.MembershipDuration;
+import com.spring.Final.modules.shared.enums.user_type.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployerService extends ApiService<EmployerEntity, EmployerRepository> {
@@ -27,6 +29,9 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     public EmployerService(
             EmployerRepository repository,
@@ -36,36 +41,29 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         this.passwordEncoder = passwordEncoder;
     }
 
-    public HashMap<String, Object> login(String email, String password) {
-        EmployerEntity employer = this.repository.findByEmail(email);
+    public PageImpl<EmployerList> list(int pageNumber, int size) {
+        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        if (employer == null || !this.passwordEncoder.matches(password, employer.getPassword())) {
-            throw new InvalidEmailOrPasswordException();
-        }
-        if (employer.isBlocked()) {
-            throw new AccountBlockedException();
-        }
-        if (!employer.isVerified()) {
-            throw new AccountUnverifiedException();
-        }
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("id", employer.getId());
-        data.put("email", employer.getEmail());
-        data.put("name", employer.getName());
-        data.put("phone", employer.getPhone());
-        data.put("avatar", employer.getAvatar());
-        data.put("address", employer.getAddress());
-        data.put("token", JwtHelper.generateBearerToken(employer.getId(), "employer"));
-        data.put("slug", employer.getSlug());
+        Page<EmployerEntity> results = this.repository.findAll(page);
+        List<EmployerList> resultList = results.stream()
+                .map(e -> this.modelMapper.map(e, EmployerList.class))
+                .collect(Collectors.toList());
 
-        if (employer.getAddressLocation() != null) {
-            HashMap<String, Double> coordinate = new HashMap<>();
-            coordinate.put("x", employer.getAddressLocation().getX());
-            coordinate.put("y", employer.getAddressLocation().getY());
-            data.put("addressLocation", coordinate);
+        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
+    }
+
+    public EmployerDetailData getDetail(String slug) {
+        EmployerEntity employer = this.repository.findBySlug(slug);
+
+        if (employer == null) {
+            throw new ResourceNotFoundException();
         }
 
-        return data;
+        return new EmployerDetailData(
+                this.modelMapper.map(employer, EmployerDetail.class),
+                this.jobService.listByEmployer(employer),
+                this.reviewService.listByUser(employer.getId(), UserType.EMPLOYER)
+        );
     }
 
     public EmployerEntity register(RegisterDTO data) {

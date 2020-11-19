@@ -2,11 +2,13 @@ package com.spring.Final.modules.review;
 
 import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
+import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.review.dtos.ReviewEmployeeDTO;
 import com.spring.Final.modules.review.dtos.ReviewEmployerDTO;
 import com.spring.Final.modules.review.projections.ReviewList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,7 +28,12 @@ public class ReviewController extends ApiController {
     }
 
     @PostMapping("/employers")
-    public ResponseEntity<ApiResult> reviewEmployer(@Valid @RequestBody ReviewEmployerDTO model) {
+    public ResponseEntity<ApiResult> reviewEmployer(@Valid @RequestBody ReviewEmployerDTO model, Authentication authentication) {
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        model.setEmployeeId((int) user.getInformation().get("id"));
+        System.out.println(model);
+        System.out.println("=======================================================================================================================");
+
         ReviewList review = this.service.reviewEmployer(model);
 
         return buildResponse(review);

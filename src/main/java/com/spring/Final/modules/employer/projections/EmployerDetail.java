@@ -8,9 +8,7 @@ import java.util.HashMap;
 @Data
 public class EmployerDetail {
     private int id;
-    private String email;
     private String name;
-    private String phone;
     private String avatar;
     private String address;
     private HashMap<String, Double> addressLocation;

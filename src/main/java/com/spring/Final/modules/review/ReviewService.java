@@ -42,15 +42,11 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         this.repository = repository;
     }
 
-    public PageImpl<ReviewList> listByEmployee(int pageNumber, int size, int employeeId) {
-        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+    public List<ReviewList> listByUser(int userId, UserType userType) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        List<ReviewEntity> results = this.repository.findAllByToUserIdAndToUserType(userId, userType, sort);
 
-        Page<ReviewEntity> results = this.repository.findAllByToUserIdAndToUserType(employeeId, UserType.EMPLOYEE, page);
-        List<ReviewList> resultList = results.stream()
-                .map(e -> this.modelMapper.map(e, ReviewList.class))
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
+        return results.stream().map(e -> this.modelMapper.map(e, ReviewList.class)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -90,21 +86,16 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
 
     @Transactional
     public ReviewList reviewEmployer(ReviewEmployerDTO data) {
-        JobProposalEntity jobProposal = this.jobProposalService.getOne(data.getJobProposalId());
+        JobProposalEntity jobProposal = this.jobProposalService.findByEmployerAndEmployee(data.getEmployerId(), data.getEmployeeId());
 
         if (jobProposal == null) {
             throw new ResourceNotFoundException();
-        } else if (jobProposal.getStatus() == JobProposalStatus.PENDING || jobProposal.getStatus() == JobProposalStatus.REJECTED) {
-            throw new BadRequestException("Status of job proposal is invalid");
         }
         int userId = jobProposal.getEmployee().getId();
         int toUserId = jobProposal.getJob().getEmployer().getId();
         UserType userType = UserType.EMPLOYEE;
         UserType toUserType = UserType.EMPLOYER;
 
-        if (this.repository.findTopByJobProposalAndUserIdAndUserType(jobProposal, userId, userType) != null) {
-            throw new ExistingReviewException();
-        }
         this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
         ReviewEntity review = this.modelMapper.map(data, ReviewEntity.class);
 
@@ -138,5 +129,13 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
                 ReferenceType.REVIEW,
                 "You got a review on job " + jobName
         );
+    }
+
+    public long countJobDoneOnTime(int employeeId) {
+        return this.repository.countJobDoneOnTime(employeeId, UserType.EMPLOYEE);
+    }
+
+    public long countJobDoneOnBudget(int employeeId) {
+        return this.repository.countJobDoneOnBudget(employeeId, UserType.EMPLOYEE);
     }
 }

@@ -62,7 +62,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         this.repository = repository;
     }
 
-    public HomepageData<JobList> list(int pageNumber, int size, SearchJobDTO model) {
+    public HomepageData list(int pageNumber, int size, SearchJobDTO model) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         JobSpecification search = new JobSpecification(model);
 
@@ -173,6 +173,14 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         // TODO: Create notifications to the proposals of the deleted job
         this.jobProposalService.deleteByJobId(job.getId());
         this.repository.deleteById(job.getId());
+    }
+
+    public List<EmployerJobList> listByEmployer(EmployerEntity employer) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        List<JobEntity> results = this.repository.findAllByEmployer(employer, sort);
+
+        return results.stream().map(e -> this.modelMapper.map(e, EmployerJobList.class)).collect(Collectors.toList());
     }
 
     public Page<JobManage> listByEmployer(int pageNumber, int size, EmployerEntity employer) {

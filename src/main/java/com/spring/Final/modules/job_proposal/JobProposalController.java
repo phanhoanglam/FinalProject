@@ -33,7 +33,6 @@ public class JobProposalController extends ApiController {
 
     @PostMapping("")
     public ResponseEntity<ApiResult> proposeJob(Authentication authentication, @Valid @RequestBody ProposeJobDTO model) {
-        HttpServletRequest request = this.getCurrentRequest();
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         model.setEmployeeId((Integer) user.getInformation().get("id"));
 

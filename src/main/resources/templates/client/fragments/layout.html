@@ -8,6 +8,7 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link th:href="@{/client/css/style.css}" rel="stylesheet">
     <link th:href="@{/client/css/colors/blue.css}" rel="stylesheet">
+    <style layout:fragment="css"></style>
 </head>
 <body>
 <div id="wrapper">
@@ -35,6 +36,25 @@
 <script th:src="@{/client/js/slick.min.js}"></script>
 <script th:src="@{/client/js/custom.js}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1T5A0ce0dJVYavhzTWH4w-yJ243KuTTI&callback=initMap&libraries=&v=weekly" defer></script>
+<script>
+    function initMap() {}
+
+    $.fn.serializeObject = function() {
+        const o = {};
+        const a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
 
 <script>
     $('#snackbar-user-status label').click(function () {
@@ -50,6 +70,7 @@
     });
 </script>
 
+<script layout:fragment="libraries"></script>
 <script layout:fragment="js"></script>
 </body>
 </html>
