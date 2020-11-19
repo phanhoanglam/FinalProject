@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.helpers.PointSerializer;
+import com.spring.Final.modules.employee_skill.EmployeeSkillEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -113,8 +113,8 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
 //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobCategoryEmployeeEntity> jobCategoriesEmployees;
 //
-//    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
-//    private Set<EmployeeSkillEntity> employeeSkills;
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    private Set<EmployeeSkillEntity> employeeSkills;
 
 //    @JsonIgnore
 //    public Set<JobProposalEntity> getJobProposals() {
@@ -126,8 +126,8 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
 //		return jobCategoriesEmployees;
 //	}
 //
-//	@JsonIgnore
-//	public Set<EmployeeSkillEntity> getEmployeeSkills() {
-//		return employeeSkills;
-//	}
+	@JsonIgnore
+	public Set<EmployeeSkillEntity> getEmployeeSkills() {
+		return employeeSkills;
+	}
 }

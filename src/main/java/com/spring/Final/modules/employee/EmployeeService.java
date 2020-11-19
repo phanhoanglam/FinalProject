@@ -1,5 +1,6 @@
 package com.spring.Final.modules.employee;
 
+import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.common.JwtHelper;
 import com.spring.Final.core.exceptions.*;
 import com.spring.Final.core.helpers.CommonHelper;
@@ -8,10 +9,16 @@ import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
 import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
+import com.spring.Final.modules.employee.projections.EmployeeProfile;
+import com.spring.Final.modules.employee.projections.ProfilePageData;
 import com.spring.Final.modules.employee.specifications.EmployeeSpecification;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.review.ReviewService;
 import com.spring.Final.modules.review.projections.ReviewList;
+import com.spring.Final.modules.shared.dtos.NameOnly;
+import com.spring.Final.modules.skill.SkillEntity;
+import com.spring.Final.modules.skill.SkillService;
+import com.spring.Final.modules.skill.projections.Skill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +38,9 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private SkillService skillService;
 
     public EmployeeService(
             EmployeeRepository repository,
@@ -128,5 +139,21 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
             employee.setRating(rating);
             this.repository.save(employee);
         }
+    }
+
+    public ProfilePageData profile(int id) {
+        Optional<EmployeeEntity> result = this.repository.findById(id);
+        if (result == null) {
+            throw new ResourceNotFoundException();
+        }
+        EmployeeProfile profile = result.map(x -> this.modelMapper.map(x, EmployeeProfile.class)).get();
+        profile.setSkillIds(result.get().getEmployeeSkills().stream().map(BaseEntity::getId).collect(Collectors.toList()));
+        List<Skill> skills = skillService.findAll().stream()
+                .map(x -> this.modelMapper.map(x, Skill.class))
+                .collect(Collectors.toList());
+        return new ProfilePageData (
+                profile,
+                skills
+        );
     }
 }
