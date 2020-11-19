@@ -38,6 +38,22 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1T5A0ce0dJVYavhzTWH4w-yJ243KuTTI&callback=initMap&libraries=&v=weekly" defer></script>
 <script>
     function initMap() {}
+
+    $.fn.serializeObject = function() {
+        const o = {};
+        const a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
 </script>
 
 <script>

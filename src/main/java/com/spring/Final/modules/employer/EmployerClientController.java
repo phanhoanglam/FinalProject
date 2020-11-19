@@ -1,22 +1,20 @@
 package com.spring.Final.modules.employer;
 
 import com.spring.Final.modules.auth.CustomUserDetails;
+import com.spring.Final.modules.employer.projections.EmployerDetail;
+import com.spring.Final.modules.employer.projections.EmployerDetailData;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
 @CrossOrigin
-//@RequestMapping("/")
 public class EmployerClientController {
     @Autowired
     private EmployerService service;
@@ -28,6 +26,19 @@ public class EmployerClientController {
         modelView.addAttribute("list", this.service.list(page, size));
 
         return "client/modules/employers/list";
+    }
+
+    @GetMapping("/employers/{slug}")
+    public String getDetail(Model modelView, @PathVariable String slug) {
+        EmployerDetailData data = this.service.getDetail(slug);
+
+        System.out.println(data.getEmployerDetail());
+
+        modelView.addAttribute("detail", data.getEmployerDetail());
+        modelView.addAttribute("jobList", data.getJobList());
+        modelView.addAttribute("reviewList", data.getReviewList());
+
+        return "client/modules/employers/detail";
     }
 
     @GetMapping("/dashboard/manage-jobs")

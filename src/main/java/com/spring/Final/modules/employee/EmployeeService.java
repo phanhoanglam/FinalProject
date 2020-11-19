@@ -15,6 +15,7 @@ import com.spring.Final.modules.job_category.JobCategoryService;
 import com.spring.Final.modules.job_category.projections.NameWithJobCount;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.review.ReviewService;
+import com.spring.Final.modules.shared.enums.user_type.UserType;
 import com.spring.Final.modules.skill.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -141,19 +142,9 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         return new EmployeeDetailData(
                 data,
                 this.jobProposalService.getEmploymentHistory(data.getId()),
-                this.reviewService.listByEmployee(data.getId())
+                this.reviewService.listByUser(data.getId(), UserType.EMPLOYEE)
         );
     }
-
-//    public Page<ReviewList> listReviews(int page, int size, String slug) {
-//        EmployeeGetDetail data = this.repository.findBySlug(slug);
-//        if (data == null) {
-//            throw new ResourceNotFoundException();
-//        }
-//        Page<ReviewList> results = this.reviewService.listByEmployee(page, size, data.getId());
-//
-//        return results;
-//    }
 
     public void updateRating(int id, float rating) {
         EmployeeEntity employee = this.repository.findById(id).orElse(null);

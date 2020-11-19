@@ -208,4 +208,8 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
                 CommonHelper.getCurrentTime()
         );
     }
+
+    public JobProposalEntity findByEmployerAndEmployee(int employerId, int employeeId) {
+        return this.repository.findByEmployerAndEmployee(employerId, employeeId);
+    }
 }

@@ -60,4 +60,9 @@ public interface JobProposalRepository extends JpaRepository<JobProposalEntity, 
     @Modifying
     @Query("update JobProposal jp set jp.status = ?3, jp.endedAt = ?4 where jp.job = ?1 and jp.status = ?2")
     void setStatusByJobAndStatus(JobEntity job, JobProposalStatus oldStatus, JobProposalStatus newStatus, Date endedAt);
+
+    @Query("select jp from JobProposal jp inner join Job j on jp.job = j where j.employer.id = ?1 and jp.employee.id = ?2 and jp.status not in (" +
+            "com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.PENDING," +
+            "com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.REJECTED)")
+    JobProposalEntity findByEmployerAndEmployee(int employerId, int employeeId);
 }
