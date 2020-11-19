@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -29,6 +30,7 @@ public interface JobProposalRepository extends JpaRepository<JobProposalEntity, 
                 "jp.job.name," +
                 "jp.job.employer.name," +
                 "jp.job.employer.avatar," +
+                "jp.job.employer.slug," +
                 "jp.startedAt," +
                 "jp.endedAt" +
             ") from JobProposal jp where jp.employee.id = ?1 and jp.status in (" +
@@ -40,6 +42,15 @@ public interface JobProposalRepository extends JpaRepository<JobProposalEntity, 
     @Query("select count(jp) from JobProposal jp where jp.job.id = ?1 and jp.status <> com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.REJECTED")
     long countByJob(int jobId);
 
+    @Query("select count(jp) from JobProposal jp where jp.employee.id = ?1 and jp.status in (" +
+				"com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.SUCCEEDED)")
+    long countJobDone(int employeeId);
+
+    @Query("select count(jp) from JobProposal jp where jp.employee.id = ?1 and jp.status not in (" +
+				"com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.PENDING," +
+				"com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.REJECTED)")
+    long countJobHired(int employeeId);
+
     @Query("select (select count(jp) from JobProposal jp where jp.employee.id = ?1 and jp.status = com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.SUCCEEDED) as a," +
             "(select count(jp) from JobProposal jp where jp.employee.id = ?1 and jp.status in (" +
             "   com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.SUCCEEDED," +
@@ -47,6 +58,6 @@ public interface JobProposalRepository extends JpaRepository<JobProposalEntity, 
     long[] calculateSuccessRate(int employeeId);
 
     @Modifying
-    @Query("update JobProposal jp set jp.status = ?1 where jp.job = ?2 and jp.status = ?3")
-    void setStatusByJobAndStatus(JobProposalStatus newStatus, JobEntity job, JobProposalStatus oldStatus);
+    @Query("update JobProposal jp set jp.status = ?3, jp.endedAt = ?4 where jp.job = ?1 and jp.status = ?2")
+    void setStatusByJobAndStatus(JobEntity job, JobProposalStatus oldStatus, JobProposalStatus newStatus, Date endedAt);
 }

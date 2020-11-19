@@ -28,4 +28,6 @@ public abstract class ApiService<T, R extends JpaRepository<T, Integer>> {
     protected int getPage(int pageNumber) {
         return pageNumber > 0 ? pageNumber - 1 : 0;
     }
+
+
 }

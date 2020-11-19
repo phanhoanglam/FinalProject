@@ -1,6 +1,7 @@
 package com.spring.Final.modules.employee;
 
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
+import com.spring.Final.modules.employee.projections.EmployeeDetailData;
 import com.spring.Final.modules.employee.projections.ListEmployeesData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -40,6 +41,17 @@ public class EmployeeClientController {
         modelView.addAttribute("searchJobDTO", dto);
 
         return "client/modules/employees/list";
+    }
+
+    @GetMapping("/{slug}")
+    public String getDetail(@PathVariable String slug, Model modelView) {
+        EmployeeDetailData data = employeeService.getDetail(slug);
+
+        modelView.addAttribute("detail", data.getEmployeeDetail());
+        modelView.addAttribute("history", data.getEmploymentHistory());
+        modelView.addAttribute("reviews", data.getReviewList());
+
+        return "client/modules/employees/detail";
     }
 
     @GetMapping("/profile/{slug}")

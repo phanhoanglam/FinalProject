@@ -53,6 +53,17 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
     }
 
+    public List<ReviewList> listByEmployee(int employeeId) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        List<ReviewEntity> results = this.repository.findAllByToUserIdAndToUserType(employeeId, UserType.EMPLOYEE, sort);
+        List<ReviewList> resultList = results.stream()
+                .map(e -> this.modelMapper.map(e, ReviewList.class))
+                .collect(Collectors.toList());
+
+        return resultList;
+    }
+
     @Transactional
     public ReviewList reviewEmployee(ReviewEmployeeDTO data) {
         JobProposalEntity jobProposal = this.jobProposalService.getOne(data.getJobProposalId());
@@ -138,5 +149,13 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
                 ReferenceType.REVIEW,
                 "You got a review on job " + jobName
         );
+    }
+
+    public long countJobDoneOnTime(int employeeId) {
+        return this.repository.countJobDoneOnTime(employeeId, UserType.EMPLOYEE);
+    }
+
+    public long countJobDoneOnBudget(int employeeId) {
+        return this.repository.countJobDoneOnBudget(employeeId, UserType.EMPLOYEE);
     }
 }
