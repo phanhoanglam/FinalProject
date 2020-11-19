@@ -9,17 +9,23 @@ import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.EmployeeEntity;
+import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
+import com.spring.Final.modules.employee.projections.EmployeeList;
+import com.spring.Final.modules.employee.projections.ListEmployeesData;
+import com.spring.Final.modules.employer.projections.EmployerList;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import com.spring.Final.modules.membership.MembershipEntity;
 import com.spring.Final.modules.shared.enums.membership_duration.MembershipDuration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployerService extends ApiService<EmployerEntity, EmployerRepository> {
@@ -34,6 +40,17 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
     ) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public PageImpl<EmployerList> list(int pageNumber, int size) {
+        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<EmployerEntity> results = this.repository.findAll(page);
+        List<EmployerList> resultList = results.stream()
+                .map(e -> this.modelMapper.map(e, EmployerList.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
     }
 
     public HashMap<String, Object> login(String email, String password) {

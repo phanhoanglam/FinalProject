@@ -60,7 +60,7 @@
 
             <!-- Pagination -->
             <div class="clearfix"></div>
-            <div th:if="${list.getTotalPages() > 0}" class="pagination-container margin-top-20 margin-bottom-20">
+            <div th:if="${list.getTotalPages() > 1}" class="pagination-container margin-top-20 margin-bottom-20">
                 <nav class="pagination">
                     <ul>
                         <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">

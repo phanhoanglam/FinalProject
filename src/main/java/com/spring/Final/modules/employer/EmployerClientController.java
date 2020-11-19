@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 @CrossOrigin
 //@RequestMapping("/")
@@ -20,7 +22,11 @@ public class EmployerClientController {
     private EmployerService service;
 
     @GetMapping("/employers")
-    public String list() {
+    public String list(Model modelView,
+                       @RequestParam(defaultValue = "1") int page,
+                       @RequestParam(defaultValue = "9") int size) {
+        modelView.addAttribute("list", this.service.list(page, size));
+
         return "client/modules/employers/list";
     }
 
