@@ -41,21 +41,21 @@ public class EmployeeController extends ApiController {
 //        return buildResponse(data);
 //    }
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<ApiResult> getDetail(@PathVariable(value = "slug") String slug) {
-        EmployeeGetDetail data = service.getDetail(slug);
-
-        return buildResponse(data);
-    }
-
-    @GetMapping("/{slug}/reviews")
-    public ResponseEntity<ApiResult> listReviews(
-            @PathVariable(value = "slug") String slug,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "3") int size
-    ) {
-        Page<ReviewList> data = service.listReviews(page, size, slug);
-
-        return buildResponse(data);
-    }
+//    @GetMapping("/{slug}")
+//    public ResponseEntity<ApiResult> getDetail(@PathVariable(value = "slug") String slug) {
+//        EmployeeGetDetail data = service.getDetail(slug);
+//
+//        return buildResponse(data);
+//    }
+//
+//    @GetMapping("/{slug}/reviews")
+//    public ResponseEntity<ApiResult> listReviews(
+//            @PathVariable(value = "slug") String slug,
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "3") int size
+//    ) {
+//        Page<ReviewList> data = service.listReviews(page, size, slug);
+//
+//        return buildResponse(data);
+//    }
 }

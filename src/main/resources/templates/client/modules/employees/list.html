@@ -23,8 +23,6 @@
 					<!-- Overview -->
 					<div class="freelancer-overview">
 						<div class="freelancer-overview-inner">
-
-<!--							 Bookmark Icon -->
 <!--							<span class="bookmark-icon"></span>-->
 
 							<!-- Avatar -->
@@ -134,16 +132,12 @@
 
             const location = $(this).find('[name="location"]').val();
             const jobCategories = $(this).find('[name="jobCategories"]').val();
-            const jobTypes = [];
             const skills = [];
             const names = [];
             const [salaryFrom, salaryTo] = $(this).find('[name="salaryRange"]').val().split(',');
 
             $.each($('.keywords-list .keyword-text'), function () {
                 names.push($(this).text());
-            });
-            $.each($('input[name="jobTypes"]:checked'), function () {
-                jobTypes.push($(this).val());
             });
             $.each($('input[name="skills"]:checked'), function () {
                 skills.push($(this).val());
@@ -158,9 +152,6 @@
             }
             if (jobCategories.length) {
                 url = `${url}&jobCategories=${jobCategories.join(',')}`;
-            }
-            if (jobTypes.length) {
-                url = `${url}&jobTypes=${jobTypes.join(',')}`;
             }
             if (skills.length) {
                 url = `${url}&skills=${skills.join(',')}`;

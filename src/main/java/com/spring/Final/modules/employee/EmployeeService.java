@@ -6,17 +6,15 @@ import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
+import com.spring.Final.modules.employee.projections.EmployeeDetailData;
 import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
 import com.spring.Final.modules.employee.projections.ListEmployeesData;
 import com.spring.Final.modules.employee.specifications.EmployeeSpecification;
-import com.spring.Final.modules.job_category.JobCategoryEntity;
 import com.spring.Final.modules.job_category.JobCategoryService;
 import com.spring.Final.modules.job_category.projections.NameWithJobCount;
 import com.spring.Final.modules.job_proposal.JobProposalService;
-import com.spring.Final.modules.job_type.JobTypeService;
 import com.spring.Final.modules.review.ReviewService;
-import com.spring.Final.modules.review.projections.ReviewList;
 import com.spring.Final.modules.skill.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -130,25 +128,35 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         );
     }
 
-    public EmployeeGetDetail getDetail(String slug) {
-        EmployeeGetDetail data = this.repository.findBySlug(slug);
-        if (data == null) {
+    public EmployeeDetailData getDetail(String slug) {
+        EmployeeEntity employee = this.repository.findBySlug(slug);
+
+        if (employee == null) {
             throw new ResourceNotFoundException();
         }
-        data.setEmploymentHistory(this.jobProposalService.getEmploymentHistory(data.getId()));
+        EmployeeGetDetail data = this.modelMapper.map(employee, EmployeeGetDetail.class);
+        data.setSuccessRate(this.jobProposalService.calculateSuccessRate(data.getId()));
+        data.setJobHiredCount(this.jobProposalService.countJobHired(data.getId()));
+        data.setJobDoneCount(this.jobProposalService.countJobDone(data.getId()));
+        data.setJobDoneOnTime(this.reviewService.countJobDoneOnTime(data.getId()));
+        data.setJobDoneOnBudget(this.reviewService.countJobDoneOnBudget(data.getId()));
 
-        return data;
+        return new EmployeeDetailData(
+                data,
+                this.jobProposalService.getEmploymentHistory(data.getId()),
+                this.reviewService.listByEmployee(data.getId())
+        );
     }
 
-    public Page<ReviewList> listReviews(int page, int size, String slug) {
-        EmployeeGetDetail data = this.repository.findBySlug(slug);
-        if (data == null) {
-            throw new ResourceNotFoundException();
-        }
-        Page<ReviewList> results = this.reviewService.listByEmployee(page, size, data.getId());
-
-        return results;
-    }
+//    public Page<ReviewList> listReviews(int page, int size, String slug) {
+//        EmployeeGetDetail data = this.repository.findBySlug(slug);
+//        if (data == null) {
+//            throw new ResourceNotFoundException();
+//        }
+//        Page<ReviewList> results = this.reviewService.listByEmployee(page, size, data.getId());
+//
+//        return results;
+//    }
 
     public void updateRating(int id, float rating) {
         EmployeeEntity employee = this.repository.findById(id).orElse(null);

@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.helpers.PointSerializer;
+import com.spring.Final.modules.skill.SkillEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -106,6 +106,12 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
 
     @Column(name = "social_profiles")
     private String socialProfiles;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "employee_skill",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<SkillEntity> skills;
 
 //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobProposalEntity> jobProposals;

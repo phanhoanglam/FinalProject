@@ -113,6 +113,7 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         if (jobProposal.getStatus() != JobProposalStatus.PENDING) {
             throw new BadRequestException("Invalid status");
         }
+        jobProposal.setStartedAt(CommonHelper.getCurrentTime());
         jobProposal.setStatus(JobProposalStatus.ACCEPTED);
         jobProposal = this.repository.save(jobProposal);
 
@@ -156,6 +157,7 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
             throw new BadRequestException("Invalid status");
         }
         jobProposal.setStatus(JobProposalStatus.FAILED);
+        jobProposal.setEndedAt(CommonHelper.getCurrentTime());
         jobProposal = this.repository.save(jobProposal);
 
         this.notificationService.create(
@@ -180,6 +182,14 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         return this.repository.countByJob(jobId);
     }
 
+    public long countJobDone(int employeeId) {
+        return this.repository.countJobDone(employeeId);
+    }
+
+    public long countJobHired(int employeeId) {
+        return this.repository.countJobHired(employeeId);
+    }
+
     public int calculateSuccessRate(int employeeId) {
         long[] test = this.repository.calculateSuccessRate(employeeId);
 
@@ -191,6 +201,11 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
     }
 
     public void setStatusSucceeded(JobEntity job) {
-        this.repository.setStatusByJobAndStatus(JobProposalStatus.SUCCEEDED, job, JobProposalStatus.ACCEPTED);
+        this.repository.setStatusByJobAndStatus(
+                job,
+                JobProposalStatus.ACCEPTED,
+                JobProposalStatus.SUCCEEDED,
+                CommonHelper.getCurrentTime()
+        );
     }
 }
