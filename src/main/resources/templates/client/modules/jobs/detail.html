@@ -6,10 +6,12 @@
 <body>
 <div layout:fragment="body">
     <div th:replace="client/modules/jobs/job-proposal.html :: div"></div>
+
     <div hidden id="bootstrap-alert" class="notification success closeable">
         <p>Apply success!</p>
         <a class="close" href="#"></a>
     </div>
+
     <div class="single-page-header">
         <div class="container">
             <div class="row">
@@ -17,14 +19,21 @@
                     <div class="single-page-header-inner">
                         <div class="left-side">
                             <input id="idHidden" th:value="${detail.id}" hidden/>
-                            <div class="header-image"><a href="single-company-profile.html"><img
-                                    th:src="@{${detail.employer.avatar}}" alt=""></a></div>
+
+                            <div class="header-image">
+                                <a th:href="${'/employers/' + detail.employer.slug}">
+                                    <img th:src="@{${detail.employer.avatar}}" alt="">
+                                </a>
+                            </div>
+
                             <div class="header-details">
                                 <h3 th:utext="${detail.name}"></h3>
                                 <h5>About the Employer</h5>
                                 <ul>
-                                    <li><a href="single-company-profile.html"><i
-                                            class="icon-material-outline-business"></i> [[${detail.employer.name}]]</a>
+                                    <li>
+                                        <a  th:href="${'/employers/' + detail.employer.slug}">
+                                            <i class="icon-material-outline-business"></i> [[${detail.employer.name}]]
+                                        </a>
                                     </li>
                                     <li>
                                         <div id="rating-star" th:attr="data-rating=${detail.employer.rating}"
@@ -76,8 +85,7 @@
                     <h3 class="margin-bottom-30">Location</h3>
                     <div id="single-job-map-container">
                         <!--                        <div id="singleListingMap" data-latitude="51.507717" data-longitude="-0.131095" data-map-icon="im im-icon-Hamburger"></div>-->
-                        <div id="map" th:attr="data-location=${detail.location}"
-                             style="width: 100%; height: 400px"></div>
+                        <div id="map" th:attr="data-location=${detail.location}" style="width: 100%; height: 400px"></div>
                     </div>
                 </div>
 

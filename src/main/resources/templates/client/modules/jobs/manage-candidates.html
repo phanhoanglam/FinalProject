@@ -242,22 +242,6 @@
 
 <script layout:fragment="js">
 	$(document).ready(function () {
-		$.fn.serializeObject = function() {
-			const o = {};
-			const a = this.serializeArray();
-			$.each(a, function() {
-				if (o[this.name]) {
-					if (!o[this.name].push) {
-						o[this.name] = [o[this.name]];
-					}
-					o[this.name].push(this.value || '');
-				} else {
-					o[this.name] = this.value || '';
-				}
-			});
-			return o;
-		};
-
 		$('.review-btn').on('click', function () {
 			const $info = $(this).parent().closest('li.review--info');
 			const employeeName = $info.data('employee-name');

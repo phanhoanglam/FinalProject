@@ -40,6 +40,9 @@ public class ReviewEntity extends BaseEntity implements Serializable {
     @Convert(converter = UserTypeAttributeConverter.class)
     private UserType toUserType;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "message")
     private String message;
 

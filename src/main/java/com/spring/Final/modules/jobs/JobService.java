@@ -175,6 +175,14 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         this.repository.deleteById(job.getId());
     }
 
+    public List<EmployerJobList> listByEmployer(EmployerEntity employer) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        List<JobEntity> results = this.repository.findAllByEmployer(employer, sort);
+
+        return results.stream().map(e -> this.modelMapper.map(e, EmployerJobList.class)).collect(Collectors.toList());
+    }
+
     public Page<JobManage> listByEmployer(int pageNumber, int size, EmployerEntity employer) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
 

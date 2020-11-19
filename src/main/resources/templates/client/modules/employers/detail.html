@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="single-page-header" data-background-image="http://www.vasterad.com/themes/hireo/images/single-company.jpg"
+     layout:fragment="titlebar">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="single-page-header-inner">
+                    <div class="left-side">
+                        <div class="header-image"><img th:src="${detail.avatar}" alt=""></div>
+                        <div class="header-details">
+                            <h3>[[${detail.name}]]</h3>
+                            <ul>
+                                <li>
+                                    <div class="star-rating" th:data-rating="${detail.rating}"></div>
+                                </li>
+                                <li><img class="flag" src="images/flags/de.svg" alt=""> Germany</li>
+                                <li>
+                                    <div class="verified-badge-with-title">Verified</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="right-side">
+                        <!-- Breadcrumbs -->
+                        <nav id="breadcrumbs" class="white">
+                            <ul>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/employers">Browse Employers</a></li>
+                                <li>[[${detail.name}]]</li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Content
+================================================== -->
+<div class="container" layout:fragment="body">
+    <div class="row employer-info" th:data-id="${detail.id}">
+
+        <!-- Content -->
+        <div class="col-xl-8 col-lg-8 content-right-offset">
+
+            <div class="single-page-section">
+                <h3 class="margin-bottom-25">About Company</h3>
+                <div th:utext="${detail.description}"></div>
+            </div>
+
+            <!-- Boxed List -->
+            <div class="boxed-list margin-bottom-60" th:if="${jobList.size() > 0}">
+                <div class="boxed-list-headline">
+                    <h3><i class="icon-material-outline-business-center"></i> Open Positions</h3>
+                </div>
+
+                <div class="listings-container compact-list-layout">
+
+                    <!-- Job Listing -->
+                    <a th:href="${'/job-' + item.slug}" class="job-listing" th:each="item : ${jobList}">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h3 class="job-listing-title">[[${item.name}]]</h3>
+
+                                <!-- Job Listing Footer -->
+                                <div class="job-listing-footer">
+                                    <ul>
+                                        <li><i class="icon-material-outline-location-on"></i> [[${item.address}]]</li>
+                                        <li><i class="icon-material-outline-business-center"></i>
+                                            [[${item.jobType.name}]]
+                                        </li>
+                                        <li><i class="icon-material-outline-access-time"></i>
+                                            [[${#dates.format(item.createdAt, 'MMMM yyyy')}]]
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- Boxed List / End -->
+
+            <!-- Boxed List -->
+            <div class="boxed-list margin-bottom-60">
+                <div class="boxed-list-headline">
+                    <h3><i class="icon-material-outline-thumb-up"></i> Reviews</h3>
+                </div>
+                <ul class="boxed-list-ul">
+                    <li th:each="item : ${reviewList}">
+                        <div class="boxed-list-item">
+                            <!-- Content -->
+                            <div class="item-content">
+                                <h4>[[${item.title}]]</h4>
+                                <div class="item-details margin-top-10">
+                                    <div class="star-rating" th:data-rating="${item.rating}"></div>
+                                    <div class="detail-item"><i class="icon-material-outline-date-range"></i>
+                                        [[${#dates.format(item.createdAt, 'MMMM yyyy')}]]
+                                    </div>
+                                </div>
+                                <div class="item-description">
+                                    <p>[[${item.message}]]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="centered-button margin-top-35">
+                    <a href="#small-dialog" class="popup-with-zoom-anim button button-sliding-icon">Leave a Review <i
+                            class="icon-material-outline-arrow-right-alt"></i></a>
+                </div>
+            </div>
+            <!-- Boxed List / End -->
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-xl-4 col-lg-4">
+            <div class="sidebar-container">
+
+                <!-- Location -->
+                <div class="sidebar-widget" th:if="${detail.addressLocation != null}">
+                    <h3>Location</h3>
+                    <div id="single-job-map-container">
+                        <div id="map"
+                             style="width: 100%; height: 300px"
+                             th:attr="data-location=${detail.addressLocation.x + ',' + detail.addressLocation.y}"
+                             data-map-icon="im im-icon-Hamburger"></div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Widget -->
+                <div class="sidebar-widget">
+                    <h3>Share</h3>
+
+                    <!-- Copy URL -->
+                    <div class="copy-url">
+                        <input id="copy-url" type="text" value="" class="with-border">
+                        <button class="copy-url-button ripple-effect" data-clipboard-target="#copy-url"
+                                title="Copy to Clipboard" data-tippy-placement="top"><i
+                                class="icon-material-outline-file-copy"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
+
+        <!--Tabs -->
+        <div class="sign-in-form">
+
+            <ul class="popup-tabs-nav">
+                <li><a href="#tab">Leave a Review</a></li>
+            </ul>
+
+            <div class="popup-tabs-container">
+
+                <!-- Tab -->
+                <div class="popup-tab-content" id="tab">
+                    <form method="post" id="leave-review-form">
+                        <!-- Welcome Text -->
+                        <div class="welcome-text">
+                            <h3>What is it like to work at [[${detail.name}]]?</h3>
+                            <!-- Leave Rating -->
+                            <div class="clearfix"></div>
+                            <div class="leave-rating-container">
+                                <div class="leave-rating margin-bottom-5">
+                                    <input type="radio" name="rating" id="rating-1" value="1" required>
+                                    <label for="rating-1" class="icon-material-outline-star"></label>
+                                    <input type="radio" name="rating" id="rating-2" value="2" required>
+                                    <label for="rating-2" class="icon-material-outline-star"></label>
+                                    <input type="radio" name="rating" id="rating-3" value="3" required>
+                                    <label for="rating-3" class="icon-material-outline-star"></label>
+                                    <input type="radio" name="rating" id="rating-4" value="4" required>
+                                    <label for="rating-4" class="icon-material-outline-star"></label>
+                                    <input type="radio" name="rating" id="rating-5" value="5" required>
+                                    <label for="rating-5" class="icon-material-outline-star"></label>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <!-- Leave Rating / End-->
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="input-with-icon-left">
+                                    <i class="icon-material-outline-rate-review"></i>
+                                    <input type="text" class="input-text with-border" name="title"
+                                           placeholder="Review Title" required/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <textarea class="with-border" placeholder="Review" name="message" id="message" cols="7" required></textarea>
+
+                        <button class="button margin-top-35 full-width button-sliding-icon ripple-effect" type="submit">
+                            Leave a Review <i class="icon-material-outline-arrow-right-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="js">
+    // Initialize and add the map
+    function initMap() {
+        const location = $('#map').attr('data-location');
+
+        const lat = location.split(',')[0];
+        const lng = location.split(',')[1];
+        // The location of Uluru
+        const uluru = {lat: parseInt(lat), lng: parseInt(lng)};
+        // The map, centered at Uluru
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 10,
+            center: uluru,
+        });
+        const mapMarker = "https://www.mapsmarker.com/wp-content/uploads/leaflet-maps-marker-icons/bar_coktail.png"
+        // The marker, positioned at Uluru
+        const marker = new google.maps.Marker({
+            position: uluru,
+            map: map,
+            icon: mapMarker,
+            animation: google.maps.Animation.BOUNCE
+        });
+        marker.addListener("click", function () {
+            if (marker.getAnimation() !== null) {
+                marker.setAnimation(null);
+            } else {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        $('#leave-review-form').on('submit', function (e) {
+			e.preventDefault();
+			const serializedObject = $(this).serializeObject();
+			serializedObject.employerId = $('.employer-info').data('id');
+			serializedObject.rating = parseInt(serializedObject.rating, 10);
+
+			$.ajax({
+				url: '/api/reviews/employers',
+				type: 'POST',
+				dataType: 'json',
+				contentType: 'application/json',
+				headers: {
+					[$('[name="_csrf_header"]').attr('content')]: $('[name="_csrf"]').attr('content'),
+				},
+				data: JSON.stringify(serializedObject),
+				success: function () {
+					window.location.reload();
+				},
+				error: function (a, b, c) {
+					console.log(a, b, c);
+				},
+			});
+		});
+    });
+</script>
+</body>
+</html>

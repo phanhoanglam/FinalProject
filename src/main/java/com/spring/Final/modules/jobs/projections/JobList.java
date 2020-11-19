@@ -50,4 +50,5 @@ class Employer {
     private String address;
     private String nationality;
     private float rating;
+    private String slug;
 }
