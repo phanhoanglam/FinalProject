@@ -14,13 +14,13 @@
 
             <div class="listings-container grid-layout margin-top-35">
                 <!-- Job Listing -->
-                <a th:each="item : ${list}" th:href="@{/job-${item.slug}}" class="job-listing">
+                <a th:each="item : ${list}" th:href="${'/job-' + item.slug}" class="job-listing">
 
                     <!-- Job Listing Details -->
                     <div class="job-listing-details">
                         <!-- Logo -->
                         <div class="job-listing-company-logo">
-                            <img th:src="@{/job-${item.employer.avatar}}" alt="">
+                            <img th:src="${item.employer.avatar}" alt="">
                         </div>
 
                         <!-- Details -->
@@ -37,7 +37,7 @@
 
                     <!-- Job Listing Footer -->
                     <div class="job-listing-footer">
-                        <span class="bookmark-icon"></span>
+<!--                        <span class="bookmark-icon"></span>-->
                         <ul>
                             <li>
                                 <i class="icon-material-outline-location-on"></i>

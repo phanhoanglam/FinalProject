@@ -12,15 +12,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @Controller
 @CrossOrigin
-@RequestMapping("/dashboard")
+//@RequestMapping("/")
 public class EmployerClientController {
     @Autowired
     private EmployerService service;
 
-    @GetMapping("/manage-jobs")
+    @GetMapping("/employers")
+    public String list() {
+        return "client/modules/employers/list";
+    }
+
+    @GetMapping("/dashboard/manage-jobs")
     public String listJobs(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
