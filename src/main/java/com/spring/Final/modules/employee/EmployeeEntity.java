@@ -74,7 +74,7 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
     @Column(name = "min_hourly_rate", nullable = false)
     private int minHourlyRate = 0;
 
-    @Column(name = "attachments")
+    @Column(name = "attachments", columnDefinition = "TEXT")
     private String attachments;
 
     @Column(name = "slug", nullable = false, unique = true)
@@ -104,7 +104,7 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
     @Column(name = "updated_at")
     private Date updatedAt = CommonHelper.getCurrentTime();
 
-    @Column(name = "social_profiles")
+    @Column(name = "social_profiles", columnDefinition = "TEXT")
     private String socialProfiles;
 
     @ManyToMany(fetch = FetchType.LAZY)

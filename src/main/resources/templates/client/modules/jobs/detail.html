@@ -88,13 +88,13 @@
                     <div class="listings-container grid-layout">
 
                         <!-- Job Listing -->
-                        <a th:each="similar : ${listSimilar}" th:href="@{/job-${similar.slug}}" class="job-listing">
+                        <a th:each="similar : ${listSimilar}" th:href="${'/job-' + similar.slug}" class="job-listing">
 
                             <!-- Job Listing Details -->
                             <div class="job-listing-details">
                                 <!-- Logo -->
                                 <div class="job-listing-company-logo">
-                                    <img th:src="@{/job-${similar.employer.avatar}}" alt="">
+                                    <img th:src="${similar.employer.avatar}" alt="">
                                 </div>
 
                                 <!-- Details -->

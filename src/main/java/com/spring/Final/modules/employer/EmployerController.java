@@ -1,16 +1,12 @@
 package com.spring.Final.modules.employer;
 
-import com.spring.Final.core.exceptions.BaseException;
 import com.spring.Final.core.infrastructure.ApiController;
 import com.spring.Final.core.infrastructure.ApiResult;
-import com.spring.Final.modules.employer.dtos.LoginDTO;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.HashMap;
 
 @RestController
@@ -20,9 +16,7 @@ public class EmployerController extends ApiController {
 
     private final EmployerService employerService;
 
-    public EmployerController(
-            EmployerService employerService
-    ) {
+    public EmployerController(EmployerService employerService) {
         this.employerService = employerService;
     }
 
@@ -56,17 +50,17 @@ public class EmployerController extends ApiController {
 //        }
 //    }
 
-    @GetMapping("/me/jobs")
-    public ResponseEntity<ApiResult> listJobs(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int size
-    ) {
-        HttpServletRequest request = this.getCurrentRequest();
-        HashMap<String, Object> employee = this.getCurrentUser(request);
-        int id = (Integer) employee.get("id");
-
-        Page<JobManage> results = this.employerService.listJobs(page, size, id);
-
-        return buildResponse(results);
-    }
+//    @GetMapping("/me/jobs")
+//    public ResponseEntity<ApiResult> listJobs(
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "5") int size
+//    ) {
+//        HttpServletRequest request = this.getCurrentRequest();
+//        HashMap<String, Object> employee = this.getCurrentUser(request);
+//        int id = (Integer) employee.get("id");
+//
+//        Page<JobManage> results = this.employerService.listJobs(page, size, id);
+//
+//        return buildResponse(results);
+//    }
 }

@@ -55,7 +55,7 @@ public class JobProposalEntity extends BaseEntity implements Serializable {
 //    @Column(name = "description")
 //    private String description;
 
-    @Column(name = "attachments")
+    @Column(name = "attachments", columnDefinition = "TEXT")
     private String attachments;
 
     @Column(name = "message", columnDefinition = "TEXT")
