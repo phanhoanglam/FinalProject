@@ -58,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/client/**",
                         "/auth/register"
                 ).permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                     .loginPage("/auth/login")
