@@ -1,5 +1,6 @@
 package com.spring.Final.modules.employee;
 
+import com.spring.Final.core.common.General;
 import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employee.projections.ProfilePageData;
@@ -49,6 +50,8 @@ public class EmployeeClientController {
         modelView.addAttribute("list", data.getList());
         modelView.addAttribute("skills", data.getSkills());
         modelView.addAttribute("searchJobDTO", dto);
+        String url = General.ConvertURL(dto);
+        modelView.addAttribute("url", url);
 
         return "client/modules/employees/list";
     }
