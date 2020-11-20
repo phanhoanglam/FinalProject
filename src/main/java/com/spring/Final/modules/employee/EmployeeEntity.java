@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.helpers.PointSerializer;
+import com.spring.Final.modules.employee_skill.EmployeeSkillEntity;
 import com.spring.Final.modules.skill.SkillEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ import org.locationtech.jts.geom.Point;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -118,16 +120,16 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
         return skills;
     }
 
-//    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobProposalEntity> jobProposals;
 //
 //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobCategoryEmployeeEntity> jobCategoriesEmployees;
 //
-//    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
-//    private Set<EmployeeSkillEntity> employeeSkills;
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    private Set<EmployeeSkillEntity> employeeSkills;
 
-//    @JsonIgnore
+    //    @JsonIgnore
 //    public Set<JobProposalEntity> getJobProposals() {
 //        return jobProposals;
 //    }
@@ -137,4 +139,22 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
 //		return jobCategoriesEmployees;
 //	}
 //
+    @JsonIgnore
+    public Set<EmployeeSkillEntity> getEmployeeSkills() {
+        return employeeSkills;
+    }
+//	@JsonIgnore
+//	public List<SkillEntity> getSkills() {
+//		return skills;
+//	}
+
+    public void removeSkill(SkillEntity skill) {
+        this.skills.remove(skill);
+        skill.getEmployees().remove(this);
+    }
+
+    public void addSkill(SkillEntity skill) {
+        this.skills.add(skill);
+        skill.getEmployees().add(this);
+    }
 }

@@ -73,14 +73,14 @@
                 <nav class="pagination">
                     <ul>
                         <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
-                            <a th:href="@{/employees(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
+                            <a th:href="@{'/employees?page=' + ${(list.getPageable().getPageNumber() + 1) - 1} + ${url}}"
                                class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
                         <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
-                                th:href="@{/employees(page=${i})}" th:utext="${i}"
+								th:href="@{'/employees?page=' + ${i} + ${url}}" th:utext="${i}"
                                 th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
                         </li>
                         <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
-                            <a th:href="@{/employees(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
+                            <a th:href="@{'/employees?page=' + ${(list.getPageable().getPageNumber() + 1) + 1} + ${url}}"
                                class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
                     </ul>
                 </nav>

@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -54,6 +56,16 @@ public class JobProposalController extends ApiController {
     public ResponseEntity<ApiResult> handleFileUpload(@RequestParam("file") MultipartFile file) {
         HashMap<String, String> data = storageService.store(file);
 
+        return buildResponse(data);
+    }
+
+    @PostMapping("/resumes")
+    public ResponseEntity<ApiResult> handleFileUploads(@RequestParam("files") List<MultipartFile> files) {
+        List data = new ArrayList();
+        files.forEach(file -> {
+            HashMap<String, String> result = storageService.store(file);
+            data.add(result);
+        });
         return buildResponse(data);
     }
 }

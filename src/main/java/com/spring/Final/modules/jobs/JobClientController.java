@@ -1,5 +1,6 @@
 package com.spring.Final.modules.jobs;
 
+import com.spring.Final.core.common.General;
 import com.spring.Final.core.exceptions.InvalidAddressException;
 import com.spring.Final.core.infrastructure.ApiResult;
 import com.spring.Final.modules.auth.CustomUserDetails;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -48,6 +50,8 @@ public class JobClientController {
         modelView.addAttribute("list", data.getList());
         modelView.addAttribute("skills", data.getSkills());
         modelView.addAttribute("searchJobDTO", dto);
+        String url = General.ConvertURL(dto);
+        modelView.addAttribute("url", url);
 
         return "client/modules/jobs/list";
     }

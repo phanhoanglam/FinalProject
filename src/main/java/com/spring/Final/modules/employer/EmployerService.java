@@ -1,13 +1,17 @@
 package com.spring.Final.modules.employer;
 
+import com.spring.Final.core.common.MapUtils;
 import com.spring.Final.core.exceptions.EntityExistException;
+import com.spring.Final.core.exceptions.InvalidEmailOrPasswordException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
+import com.spring.Final.modules.employee.EmployeeEntity;
 import com.spring.Final.modules.employer.projections.EmployerDetail;
 import com.spring.Final.modules.employer.projections.EmployerDetailData;
 import com.spring.Final.modules.employer.projections.EmployerList;
+import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
 import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
@@ -22,8 +26,10 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,5 +129,38 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
             employer.setRating(rating);
             this.repository.save(employer);
         }
+    }
+
+    public EmployerProfile profile(int id) {
+        Optional<EmployerEntity> result = this.repository.findById(id);
+        if (result == null) {
+            throw new ResourceNotFoundException();
+        }
+        EmployerProfile profile = result.map(x -> this.modelMapper.map(x, EmployerProfile.class)).get();
+
+        return profile;
+    }
+
+    public boolean profileSubmit(EmployerProfile dto) throws IOException {
+        this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        EmployerEntity employerEntity = this.repository.findByEmail(dto.getEmail());
+        employerEntity.setId(dto.getId());
+        employerEntity.setEmail(dto.getEmail());
+        employerEntity.setName(dto.getName());
+        employerEntity.setPhone(dto.getPhone());
+        employerEntity.setAvatar(dto.getAvatar());
+        employerEntity.setAddress(dto.getAddress());
+        employerEntity.setNationality(dto.getNationality());
+        employerEntity.setDescription(dto.getDescription());
+        dto.setAddressLocation(MapUtils.getCoordinateByText(dto.getAddress()));
+        employerEntity.setAddressLocation(CommonHelper.createGeometryPoint(dto.getAddressLocation()));
+        if(!dto.getPassword().isEmpty() && dto.getPassword() != null){
+            if (!this.passwordEncoder.matches(dto.getPassword(), employerEntity.getPassword())) {
+                return false;
+            }
+            employerEntity.setPassword(this.passwordEncoder.encode(dto.getNewPassword()));
+        }
+        employerEntity = this.repository.save(employerEntity);
+        return true;
     }
 }
