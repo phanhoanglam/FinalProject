@@ -4,6 +4,7 @@ import com.spring.Final.modules.job_proposal.projections.EmploymentHistory;
 import com.spring.Final.modules.skill.SkillEntity;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,7 +25,7 @@ public class EmployeeGetDetail {
     private long jobDoneOnTime;
     private long jobDoneOnBudget;
     private List<EmploymentHistory> employmentHistory;
-    private List<Skill> skills;
+    private List<Skill> skills = new ArrayList<>();
 
     private int successRate;
     private int jobDoneOnTimePercentage;

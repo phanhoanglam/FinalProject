@@ -107,11 +107,16 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
     @Column(name = "social_profiles", columnDefinition = "TEXT")
     private String socialProfiles;
 
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "employee_skill",
-//            joinColumns = @JoinColumn(name = "employee_id"),
-//            inverseJoinColumns = @JoinColumn(name = "skill_id"))
-//    private List<SkillEntity> skills;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "employee_skill",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<SkillEntity> skills;
+
+    @JsonIgnore
+    public List<SkillEntity> getSkills() {
+        return skills;
+    }
 
 //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobProposalEntity> jobProposals;
@@ -132,8 +137,4 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
 //		return jobCategoriesEmployees;
 //	}
 //
-//	@JsonIgnore
-//	public List<SkillEntity> getSkills() {
-//		return skills;
-//	}
 }

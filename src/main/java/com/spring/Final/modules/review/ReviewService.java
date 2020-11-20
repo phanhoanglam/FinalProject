@@ -99,6 +99,7 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
         ReviewEntity review = this.modelMapper.map(data, ReviewEntity.class);
 
+        review.setJobProposal(jobProposal);
         review.setUserId(userId);
         review.setUserType(userType);
         review.setToUserId(toUserId);
