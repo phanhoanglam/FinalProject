@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -178,5 +179,19 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
                 profile,
                 skills
         );
+    }
+
+    @Transactional
+    public EmployeeProfile profileSubmit(EmployeeProfile dto) {
+        this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        EmployeeEntity employeeEntity = this.modelMapper.map(dto, EmployeeEntity.class);
+//        employeeEntity.removeSkill(dto.getId());
+//        dto.getSkillIds().forEach(skillId->{
+//            SkillEntity skillEntity = new SkillEntity();
+//            skillEntity.setId(skillId);
+//            employeeEntity.addSkill(skillEntity);
+//        });
+
+        return null;
     }
 }

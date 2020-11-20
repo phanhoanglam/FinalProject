@@ -82,8 +82,12 @@ public class EmployeeClientController {
 
     @PostMapping("/profile")
     public String editProfile(@Valid EmployeeProfile dto,
+                              Authentication authentication,
                               HttpServletRequest request,
                               RedirectAttributes redirectAttributes) throws IOException {
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        dto.setId((int) user.getInformation().get("id"));
+        EmployeeProfile profile = employeeService.profileSubmit(dto);
         return "redirect:/employees/profile";
     }
 }
