@@ -1,10 +1,10 @@
 package com.spring.Final.modules.employee;
 
 import com.spring.Final.core.common.General;
+import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employee.projections.ProfilePageData;
-import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
 import com.spring.Final.modules.employee.projections.EmployeeDetailData;
 import com.spring.Final.modules.employee.projections.ListEmployeesData;
@@ -20,10 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Optional;
 
 
 @Controller
@@ -68,29 +66,34 @@ public class EmployeeClientController {
     }
 
     @GetMapping("/profile")
-    public String profile(Authentication authentication,
-                          HttpServletResponse response,
-                          Model modelView) throws IOException {
-        if (authentication == null) {
-            response.sendRedirect("/auth/login");
-        }
+    public String profile(Authentication authentication, Model modelView) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         int id = (int) user.getInformation().get("id");
 
-        ProfilePageData data = employeeService.profile(id);
-        modelView.addAttribute("detail", data.getEmployeeProfile());
+        ProfilePageData data = employeeService.getProfile(id);
         modelView.addAttribute("skills", data.getSkills());
+        modelView.addAttribute("jobCategories", data.getJobCategories());
+
+        if (!modelView.containsAttribute("detail")) {
+            modelView.addAttribute("detail", data.getEmployeeProfile());
+        }
+
         return "client/modules/employees/profile";
     }
 
     @PostMapping("/profile")
-    public String editProfile(@Valid EmployeeProfile dto,
-                              Authentication authentication,
-                              HttpServletRequest request,
-                              RedirectAttributes redirectAttributes) throws IOException {
+    public String editProfile(@Valid EmployeeProfile dto, Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         dto.setId((int) user.getInformation().get("id"));
-        EmployeeProfile profile = employeeService.profileSubmit(dto);
+
+        EmployeeEntity result = employeeService.submitProfile(dto);
+
+        if (result == null) {
+            String errorMessage = "Wrong old password";
+            redirectAttributes.addFlashAttribute("detail", dto);
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+        }
+
         return "redirect:/employees/profile";
     }
 }

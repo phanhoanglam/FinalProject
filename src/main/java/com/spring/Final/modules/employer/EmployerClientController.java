@@ -1,9 +1,6 @@
 package com.spring.Final.modules.employer;
 
-import com.spring.Final.core.exceptions.InvalidEmailOrPasswordException;
 import com.spring.Final.modules.auth.CustomUserDetails;
-import com.spring.Final.modules.employee.projections.EmployeeProfile;
-import com.spring.Final.modules.employer.projections.EmployerDetail;
 import com.spring.Final.modules.employer.projections.EmployerDetailData;
 import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.jobs.projections.JobManage;
@@ -16,10 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @Controller
 @CrossOrigin
@@ -71,32 +66,38 @@ public class EmployerClientController {
         return "client/modules/jobs/manage-jobs";
     }
 
-    @GetMapping("/employer/profile")
-    public String profile(Authentication authentication,
-                          HttpServletResponse response,
-                          Model modelView) throws IOException {
-        if (authentication == null) {
-            response.sendRedirect("/auth/login");
+    @GetMapping("/employers/profile")
+    public String profile(Authentication authentication, Model modelView) {
+        if (!modelView.containsAttribute("profile")) {
+            CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+            EmployerProfile profile = service.getProfile((int) user.getInformation().get("id"));
+
+            modelView.addAttribute("profile", profile);
         }
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        EmployerProfile profile = service.profile((int) user.getInformation().get("id"));
-        modelView.addAttribute("profile", profile);
+        if (!modelView.containsAttribute("errorMessage")) {
+            modelView.addAttribute("errorMessage", "");
+        }
 
         return "client/modules/employers/profile";
     }
 
-    @PostMapping("/employer/profile")
-    public String editProfile(@Valid EmployerProfile dto,
-                              Authentication authentication,
-                              HttpServletRequest request,
-                              RedirectAttributes redirectAttributes) throws IOException {
+    @PostMapping("/employers/profile")
+    public String editProfile(
+            @Valid EmployerProfile dto,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
+    ) throws IOException {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         dto.setId((int) user.getInformation().get("id"));
-        boolean employerProfile = service.profileSubmit(dto);
-        if(employerProfile == false){
+
+        boolean employerProfile = service.submitProfile(dto);
+
+        if (!employerProfile) {
             String errorMessage = "Wrong old password";
+            redirectAttributes.addFlashAttribute("profile", dto);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         }
-        return "redirect:/employer/profile";
+
+        return "redirect:/employers/profile";
     }
 }

@@ -61,11 +61,13 @@ public class JobProposalController extends ApiController {
 
     @PostMapping("/resumes")
     public ResponseEntity<ApiResult> handleFileUploads(@RequestParam("files") List<MultipartFile> files) {
-        List data = new ArrayList();
+        ArrayList<HashMap<String, String>> data = new ArrayList<>();
+
         files.forEach(file -> {
             HashMap<String, String> result = storageService.store(file);
             data.add(result);
         });
+
         return buildResponse(data);
     }
 }
