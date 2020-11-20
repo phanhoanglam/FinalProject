@@ -9,6 +9,7 @@ import com.spring.Final.modules.job_proposal.dtos.SearchProposalDTO;
 import com.spring.Final.modules.job_proposal.exceptions.ExistingProposalException;
 import com.spring.Final.modules.job_proposal.projections.EmploymentHistory;
 import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
+import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
 import com.spring.Final.modules.job_proposal.projections.JobProposalList;
 import com.spring.Final.modules.jobs.JobEntity;
 import com.spring.Final.modules.jobs.JobService;
@@ -209,7 +210,13 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         );
     }
 
-    public JobProposalEntity findByEmployerAndEmployee(int employerId, int employeeId) {
-        return this.repository.findByEmployerAndEmployee(employerId, employeeId);
+    public JobProposalDetailExistence2 findByEmployerAndEmployee(int employerId, int employeeId) {
+        JobProposalEntity data = this.repository.findByEmployerAndEmployee(employerId, employeeId);
+
+        if (data == null) {
+            return null;
+        }
+
+        return this.modelMapper.map(data, JobProposalDetailExistence2.class);
     }
 }

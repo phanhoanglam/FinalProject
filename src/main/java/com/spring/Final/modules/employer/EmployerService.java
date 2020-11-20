@@ -12,6 +12,9 @@ import com.spring.Final.modules.employer.projections.EmployerDetail;
 import com.spring.Final.modules.employer.projections.EmployerDetailData;
 import com.spring.Final.modules.employer.projections.EmployerList;
 import com.spring.Final.modules.employer.projections.EmployerProfile;
+import com.spring.Final.modules.job_proposal.JobProposalService;
+import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
+import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import com.spring.Final.modules.membership.MembershipEntity;
@@ -39,6 +42,9 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private JobProposalService jobProposalService;
+
     public EmployerService(
             EmployerRepository repository,
             BCryptPasswordEncoder passwordEncoder
@@ -58,17 +64,19 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
     }
 
-    public EmployerDetailData getDetail(String slug) {
+    public EmployerDetailData getDetail(String slug, int employeeId) {
         EmployerEntity employer = this.repository.findBySlug(slug);
 
         if (employer == null) {
             throw new ResourceNotFoundException();
         }
+        JobProposalDetailExistence2 jobProposal = this.jobProposalService.findByEmployerAndEmployee(employer.getId(), employeeId);
 
         return new EmployerDetailData(
                 this.modelMapper.map(employer, EmployerDetail.class),
                 this.jobService.listByEmployer(employer),
-                this.reviewService.listByUser(employer.getId(), UserType.EMPLOYER)
+                this.reviewService.listByUser(employer.getId(), UserType.EMPLOYER),
+                jobProposal != null
         );
     }
 

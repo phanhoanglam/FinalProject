@@ -116,7 +116,7 @@
                     </li>
                 </ul>
 
-                <div class="centered-button margin-top-35">
+                <div class="centered-button margin-top-35" th:if="${allowReview}">
                     <a href="#small-dialog" class="popup-with-zoom-anim button button-sliding-icon">Leave a Review <i
                             class="icon-material-outline-arrow-right-alt"></i></a>
                 </div>
@@ -156,7 +156,7 @@
         </div>
     </div>
 
-    <div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
+    <div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs" th:if="${allowReview}">
 
         <!--Tabs -->
         <div class="sign-in-form">
@@ -177,16 +177,20 @@
                             <div class="clearfix"></div>
                             <div class="leave-rating-container">
                                 <div class="leave-rating margin-bottom-5">
-                                    <input type="radio" name="rating" id="rating-1" value="1" required>
-                                    <label for="rating-1" class="icon-material-outline-star"></label>
-                                    <input type="radio" name="rating" id="rating-2" value="2" required>
-                                    <label for="rating-2" class="icon-material-outline-star"></label>
-                                    <input type="radio" name="rating" id="rating-3" value="3" required>
-                                    <label for="rating-3" class="icon-material-outline-star"></label>
-                                    <input type="radio" name="rating" id="rating-4" value="4" required>
-                                    <label for="rating-4" class="icon-material-outline-star"></label>
                                     <input type="radio" name="rating" id="rating-5" value="5" required>
                                     <label for="rating-5" class="icon-material-outline-star"></label>
+
+                                    <input type="radio" name="rating" id="rating-4" value="4" required>
+                                    <label for="rating-4" class="icon-material-outline-star"></label>
+
+                                    <input type="radio" name="rating" id="rating-3" value="3" required>
+                                    <label for="rating-3" class="icon-material-outline-star"></label>
+
+                                    <input type="radio" name="rating" id="rating-2" value="2" required>
+                                    <label for="rating-2" class="icon-material-outline-star"></label>
+
+                                    <input type="radio" name="rating" id="rating-1" value="1" required>
+                                    <label for="rating-1" class="icon-material-outline-star"></label>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -219,6 +223,8 @@
     // Initialize and add the map
     function initMap() {
         const location = $('#map').attr('data-location');
+
+        if (!location) return;
 
         const lat = location.split(',')[0];
         const lng = location.split(',')[1];
@@ -253,7 +259,7 @@
 			serializedObject.employerId = $('.employer-info').data('id');
 			serializedObject.rating = parseInt(serializedObject.rating, 10);
 
-			$.ajax({
+            $.ajax({
 				url: '/api/reviews/employers',
 				type: 'POST',
 				dataType: 'json',

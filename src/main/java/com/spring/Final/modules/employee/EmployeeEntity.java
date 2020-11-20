@@ -115,6 +115,11 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<SkillEntity> skills;
 
+    @JsonIgnore
+    public List<SkillEntity> getSkills() {
+        return skills;
+    }
+
     //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobProposalEntity> jobProposals;
 //
