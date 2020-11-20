@@ -1,9 +1,7 @@
 package com.spring.Final.modules.employee;
 
-import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -1,32 +1,58 @@
 package com.spring.Final.modules.employee.projections;
 
+import com.spring.Final.modules.job_proposal.projections.EmploymentHistory;
+import com.spring.Final.modules.skill.SkillEntity;
 import lombok.Data;
-import org.locationtech.jts.geom.Point;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class EmployeeDetail {
     private int id;
-    private String email;
     private String firstName;
     private String lastName;
-    private String phone;
+    private String jobTitle;
     private String avatar;
-    private String address;
-    private HashMap<String, Double> addressLocation;
     private String nationality;
     private String description;
+    private String socialProfiles;
+    private String attachments;
     private float rating;
     private int minHourlyRate;
-    private String attachments;
-    private String slug;
+    private long jobHiredCount;
+    private long jobDoneCount;
+    private long jobDoneOnTime;
+    private long jobDoneOnBudget;
+    private List<EmploymentHistory> employmentHistory;
+    private List<Skill> skills = new ArrayList<>();
 
-    public void setAddressLocation(Point point) {
-        if (point != null) {
-            this.addressLocation = new HashMap<>();
-            this.addressLocation.put("x", point.getX());
-            this.addressLocation.put("y", point.getY());
+    private int successRate;
+    private int jobDoneOnTimePercentage;
+    private int jobDoneOnBudgetPercentage;
+
+    public void setSuccessRate(int successRate) {
+        this.successRate = successRate;
+    }
+
+    public void setJobDoneOnTime(long jobDoneOnTime) {
+        this.jobDoneOnTime = jobDoneOnTime;
+
+        if (this.jobHiredCount > 0) {
+            this.jobDoneOnTimePercentage = (int) ((float) jobDoneOnTime / this.jobHiredCount * 100);
         }
     }
+
+    public void setJobDoneOnBudget(long jobDoneOnBudget) {
+        this.jobDoneOnBudget = jobDoneOnBudget;
+
+        if (this.jobHiredCount > 0) {
+            this.jobDoneOnBudgetPercentage = (int) ((float) jobDoneOnBudget / this.jobHiredCount * 100);
+        }
+    }
+}
+
+@Data
+class Skill {
+    private String name;
 }

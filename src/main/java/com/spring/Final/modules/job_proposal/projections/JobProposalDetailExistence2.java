@@ -5,23 +5,20 @@ import com.spring.Final.modules.shared.enums.job_proposal_type.JobProposalType;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Map;
 
 @Data
-public class JobProposalList {
+public class JobProposalDetailExistence2 {
     private int id;
 
     private String message;
-
-    private Map<String, Object> attachments;
 
     private JobProposalStatus status;
 
     private JobProposalType type;
 
-    private boolean hasReview;
-
     private Date createdAt;
 
-    private Employee employee;
+    public Employee employee;
+
+    public Job job;
 }

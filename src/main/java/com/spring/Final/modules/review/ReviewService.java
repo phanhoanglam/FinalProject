@@ -7,7 +7,8 @@ import com.spring.Final.modules.employee.EmployeeService;
 import com.spring.Final.modules.employer.EmployerService;
 import com.spring.Final.modules.job_proposal.JobProposalEntity;
 import com.spring.Final.modules.job_proposal.JobProposalService;
-import com.spring.Final.modules.jobs.JobEntity;
+import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
+import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
 import com.spring.Final.modules.notification.NotificationService;
 import com.spring.Final.modules.review.dtos.ReviewEmployeeDTO;
 import com.spring.Final.modules.review.dtos.ReviewEmployerDTO;
@@ -86,7 +87,7 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
 
     @Transactional
     public ReviewList reviewEmployer(ReviewEmployerDTO data) {
-        JobProposalEntity jobProposal = this.jobProposalService.findByEmployerAndEmployee(data.getEmployerId(), data.getEmployeeId());
+        JobProposalDetailExistence2 jobProposal = this.jobProposalService.findByEmployerAndEmployee(data.getEmployerId(), data.getEmployeeId());
 
         if (jobProposal == null) {
             throw new ResourceNotFoundException();
@@ -99,7 +100,10 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
         ReviewEntity review = this.modelMapper.map(data, ReviewEntity.class);
 
-        review.setJobProposal(jobProposal);
+        JobProposalEntity jp = new JobProposalEntity();
+        jp.setId(jobProposal.getId());
+
+        review.setJobProposal(jp);
         review.setUserId(userId);
         review.setUserType(userType);
         review.setToUserId(toUserId);

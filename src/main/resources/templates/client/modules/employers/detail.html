@@ -116,7 +116,7 @@
                     </li>
                 </ul>
 
-                <div class="centered-button margin-top-35">
+                <div class="centered-button margin-top-35" th:if="${allowReview}">
                     <a href="#small-dialog" class="popup-with-zoom-anim button button-sliding-icon">Leave a Review <i
                             class="icon-material-outline-arrow-right-alt"></i></a>
                 </div>
@@ -156,7 +156,7 @@
         </div>
     </div>
 
-    <div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs">
+    <div id="small-dialog" class="zoom-anim-dialog mfp-hide dialog-with-tabs" th:if="${allowReview}">
 
         <!--Tabs -->
         <div class="sign-in-form">

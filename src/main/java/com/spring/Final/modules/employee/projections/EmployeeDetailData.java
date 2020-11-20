@@ -8,13 +8,13 @@ import java.util.List;
 
 @Data
 public class EmployeeDetailData {
-    private EmployeeGetDetail employeeDetail;
+    private EmployeeDetail employeeDetail;
 
     private List<EmploymentHistory> employmentHistory;
 
     private List<ReviewList> reviewList;
 
-    public EmployeeDetailData(EmployeeGetDetail employeeDetail, List<EmploymentHistory> employmentHistory, List<ReviewList> reviewList) {
+    public EmployeeDetailData(EmployeeDetail employeeDetail, List<EmploymentHistory> employmentHistory, List<ReviewList> reviewList) {
         this.employeeDetail = employeeDetail;
         this.employmentHistory = employmentHistory;
         this.reviewList = reviewList;

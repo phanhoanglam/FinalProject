@@ -14,9 +14,17 @@ public class EmployerDetailData {
 
     private List<ReviewList> reviewList;
 
-    public EmployerDetailData(EmployerDetail employeeDetail, List<EmployerJobList> jobList, List<ReviewList> reviewList) {
+    private boolean allowReview;
+
+    public EmployerDetailData(
+            EmployerDetail employeeDetail,
+            List<EmployerJobList> jobList,
+            List<ReviewList> reviewList,
+            boolean allowReview
+    ) {
         this.employerDetail = employeeDetail;
         this.jobList = jobList;
         this.reviewList = reviewList;
+        this.allowReview = allowReview;
     }
 }

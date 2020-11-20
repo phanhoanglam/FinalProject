@@ -7,7 +7,7 @@ import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
 import com.spring.Final.modules.employee.projections.EmployeeDetailData;
-import com.spring.Final.modules.employee.projections.EmployeeGetDetail;
+import com.spring.Final.modules.employee.projections.EmployeeDetail;
 import com.spring.Final.modules.employee.projections.EmployeeList;
 import com.spring.Final.modules.employee.projections.ListEmployeesData;
 import com.spring.Final.modules.employee.specifications.EmployeeSpecification;
@@ -132,7 +132,7 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         if (employee == null) {
             throw new ResourceNotFoundException();
         }
-        EmployeeGetDetail data = this.modelMapper.map(employee, EmployeeGetDetail.class);
+        EmployeeDetail data = this.modelMapper.map(employee, EmployeeDetail.class);
         data.setSuccessRate(this.jobProposalService.calculateSuccessRate(data.getId()));
         data.setJobHiredCount(this.jobProposalService.countJobHired(data.getId()));
         data.setJobDoneCount(this.jobProposalService.countJobDone(data.getId()));
