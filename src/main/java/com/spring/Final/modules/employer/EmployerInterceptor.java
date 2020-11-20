@@ -4,6 +4,7 @@ import com.spring.Final.core.common.JwtHelper;
 import com.spring.Final.core.exceptions.UnauthorizedException;
 import com.spring.Final.core.helpers.PermissionHelper;
 import com.spring.Final.modules.auth.CustomUserDetails;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class EmployerInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && !(authentication.getPrincipal() instanceof String)) {
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
             Map<String, String[]> validPaths = new HashMap<>();
             validPaths.put("/dashboard/manage-jobs", new String[]{"GET"});
             validPaths.put("/dashboard/post-job", new String[]{"GET", "POST"});
@@ -30,6 +31,7 @@ public class EmployerInterceptor implements HandlerInterceptor {
             validPaths.put("/dashboard/job-proposals/reject/[0-9]+", new String[]{"GET"});
             validPaths.put("/dashboard/job-proposals/fail/[0-9]+", new String[]{"GET"});
             validPaths.put("/api/reviews/employers", new String[]{"POST"});
+            validPaths.put("/employers/profile", new String[]{"GET", "POST"});
 
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
             String subject = (String) user.getInformation().get("role");

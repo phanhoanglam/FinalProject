@@ -6,6 +6,7 @@ import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.helpers.PointSerializer;
 import com.spring.Final.modules.employee_skill.EmployeeSkillEntity;
+import com.spring.Final.modules.job_category.JobCategoryEntity;
 import com.spring.Final.modules.skill.SkillEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -110,26 +111,34 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
     private String socialProfiles;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "job_category_employee",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_category_id"))
+    private List<JobCategoryEntity> jobCategories;
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "employee_skill",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<SkillEntity> skills;
 
     @JsonIgnore
+    public List<JobCategoryEntity> getJobCategories() {
+        return jobCategories;
+    }
+
+    @JsonIgnore
     public List<SkillEntity> getSkills() {
         return skills;
     }
 
-    //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+//    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobProposalEntity> jobProposals;
 //
 //    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 //    private Set<JobCategoryEmployeeEntity> jobCategoriesEmployees;
 //
-    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
-    private Set<EmployeeSkillEntity> employeeSkills;
-
-    //    @JsonIgnore
+//    @JsonIgnore
 //    public Set<JobProposalEntity> getJobProposals() {
 //        return jobProposals;
 //    }
@@ -139,22 +148,8 @@ public class EmployeeEntity extends BaseEntity implements Serializable {
 //		return jobCategoriesEmployees;
 //	}
 //
-    @JsonIgnore
-    public Set<EmployeeSkillEntity> getEmployeeSkills() {
-        return employeeSkills;
-    }
 //	@JsonIgnore
 //	public List<SkillEntity> getSkills() {
 //		return skills;
 //	}
-
-    public void removeSkill(SkillEntity skill) {
-        this.skills.remove(skill);
-        skill.getEmployees().remove(this);
-    }
-
-    public void addSkill(SkillEntity skill) {
-        this.skills.add(skill);
-        skill.getEmployees().add(this);
-    }
 }

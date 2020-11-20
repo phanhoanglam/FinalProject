@@ -3,6 +3,7 @@ package com.spring.Final.modules.employee;
 import com.spring.Final.core.exceptions.UnauthorizedException;
 import com.spring.Final.core.helpers.PermissionHelper;
 import com.spring.Final.modules.auth.CustomUserDetails;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,11 +20,12 @@ public class EmployeeInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && !(authentication.getPrincipal() instanceof String)) {
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Map<String, String[]> validPaths = new HashMap<>();
             validPaths.put("/api/job-proposals", new String[]{"POST"});
             validPaths.put("/api/job-proposals/resume", new String[]{"POST"});
             validPaths.put("/api/reviews/employers", new String[]{"POST"});
+            validPaths.put("/employees/profile", new String[]{"GET", "POST"});
 
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
             String subject = (String) user.getInformation().get("role");
