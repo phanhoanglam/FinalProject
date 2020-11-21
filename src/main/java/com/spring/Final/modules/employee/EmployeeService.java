@@ -204,8 +204,6 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         Coordinate coordinate = MapUtils.getCoordinateByText(dto.getAddress());
         employee.setAddressLocation(CommonHelper.createGeometryPoint(coordinate));
 
-        System.out.println(dto);
-
         if (dto.getAttachmentsDecoded() != null) {
             String attachments = CommonHelper.toJSON(dto.getAttachmentsDecoded());
             employee.setAttachments(attachments);
@@ -218,5 +216,11 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         }
 
         return this.repository.save(employee);
+    }
+
+    public EmployeeProfile getById(int id) {
+        EmployeeEntity employee = this.repository.findById(id).get();
+
+        return this.modelMapper.map(employee, EmployeeProfile.class);
     }
 }

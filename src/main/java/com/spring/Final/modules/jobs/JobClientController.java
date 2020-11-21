@@ -56,6 +56,27 @@ public class JobClientController {
         return "client/modules/jobs/list";
     }
 
+    @GetMapping("job-maps")
+    public String listMaps(Model modelView,
+                           Authentication authentication,
+                           @RequestParam(defaultValue = "1") int page,
+                           @RequestParam(defaultValue = "12") int size,
+                           SearchJobDTO dto
+    ) {
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        int id = (int) user.getInformation().get("id");
+        HomepageData data = service.listMaps(page, size, dto, id);
+        modelView.addAttribute("jobCategories", data.getJobCategories());
+        modelView.addAttribute("jobTypes", data.getJobTypes());
+        modelView.addAttribute("list", data.getList());
+        modelView.addAttribute("skills", data.getSkills());
+        modelView.addAttribute("searchJobDTO", dto);
+        String url = General.ConvertURL(dto);
+        modelView.addAttribute("url", url);
+
+        return "client/modules/jobs/job-maps";
+    }
+
     @GetMapping("/job-{slug}")
     public String getDetail(Authentication authentication, Model modelView, @PathVariable(value = "slug") String slug) {
         DetailData data = service.getDetail(slug, authentication);

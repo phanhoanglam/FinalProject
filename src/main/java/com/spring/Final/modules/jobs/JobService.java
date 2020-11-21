@@ -7,11 +7,16 @@ import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.CustomUserDetails;
+import com.spring.Final.modules.employee.EmployeeEntity;
+import com.spring.Final.modules.employee.EmployeeService;
+import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employer.EmployerEntity;
 import com.spring.Final.modules.employer.EmployerService;
+import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.job_category.JobCategoryService;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.job_proposal.dtos.SearchProposalDTO;
+import com.spring.Final.modules.job_proposal.projections.Employee;
 import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
 import com.spring.Final.modules.job_type.JobTypeService;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
@@ -38,6 +43,9 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
     private EmployerService employerService;
 
     @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
     private JobTypeService jobTypeService;
 
     @Autowired
@@ -58,6 +66,25 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
 
     public HomepageData list(int pageNumber, int size, SearchJobDTO model) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        JobSpecification search = new JobSpecification(model);
+
+        Page<JobEntity> results = this.repository.findAll(search, page);
+        List<JobList> resultList = results.stream()
+                .map(e -> this.modelMapper.map(e, JobList.class))
+                .collect(Collectors.toList());
+
+        return new HomepageData(
+                jobCategoryService.findAllAsNameOnly(),
+                jobTypeService.findAllAsNameOnly(),
+                skillService.findAllAsNameOnly(1, 100, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
+                new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
+        );
+    }
+
+    public HomepageData listMaps(int pageNumber, int size, SearchJobDTO model, int uid) {
+        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        EmployeeProfile employee = employeeService.getById(uid);
+        model.setLocation(employee.getAddress());
         JobSpecification search = new JobSpecification(model);
 
         Page<JobEntity> results = this.repository.findAll(search, page);
