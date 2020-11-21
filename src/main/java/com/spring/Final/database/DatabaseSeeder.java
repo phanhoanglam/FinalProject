@@ -35,6 +35,7 @@ import com.spring.Final.modules.skill.SkillRepository;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -228,7 +229,7 @@ public class DatabaseSeeder {
         List<JobTypeEntity> jobTypes = this.jobTypeRepository.findAll();
         List<JobCategoryEntity> jobCategories = this.jobCategoryRepository.findAll();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 2; i++) {
             String name = getString(3);
 
             JobEntity job = new JobEntity();
@@ -245,7 +246,7 @@ public class DatabaseSeeder {
             job.setDescription(String.join("\n", faker.lorem().paragraphs(5)));
             job.setAddress(faker.address().fullAddress());
             job.setAddressLocation(
-                    CommonHelper.createGeometryPoint(Double.parseDouble(faker.address().latitude()), Double.parseDouble(faker.address().longitude()))
+                    CommonHelper.createGeometryPoint(38.8976805, -77.0387238)
             );
             job.setStatus((JobStatus) randomElement(Arrays.asList(JobStatus.values())));
             job.setExpiredAt(
