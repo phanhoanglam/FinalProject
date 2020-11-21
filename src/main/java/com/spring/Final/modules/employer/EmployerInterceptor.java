@@ -21,7 +21,7 @@ public class EmployerInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Map<String, String[]> validPaths = new HashMap<>();
             validPaths.put("/dashboard/manage-jobs", new String[]{"GET"});
             validPaths.put("/dashboard/post-job", new String[]{"GET", "POST"});
