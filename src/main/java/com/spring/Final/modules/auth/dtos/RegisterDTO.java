@@ -31,5 +31,8 @@ public class RegisterDTO implements Serializable {
     @NotBlank(message = "Address is required")
     private String address;
 
+    @NotBlank(message = "Job title is required")
+    private String jobTitle;
+
     private Coordinate addressLocation;
 }
