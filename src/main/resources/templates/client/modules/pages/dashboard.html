@@ -35,18 +35,18 @@
                         <span>Jobs Posted</span>
                         <h4>[[${detail.jobsCount}]]</h4>
                     </div>
-                    <div class="fun-fact-icon"><i class="icon-material-outline-gavel"></i></div>
+                    <div class="fun-fact-icon"><i class="icon-material-outline-business"></i></div>
                 </div>
 
-                <div class="fun-fact" data-fun-fact-color="#b81b7f">
+                <div class="fun-fact" data-fun-fact-color="#36bd78" th:if="${role == 'employee'}">
                     <div class="fun-fact-text">
-                        <span>Rating</span>
-                        <h4>[[${detail.rating}]]</h4>
+                        <span>Successful Works</span>
+                        <h4>[[${detail.jobProposalsSuccessCount}]]</h4>
                     </div>
-                    <div class="fun-fact-icon"><i class="icon-material-outline-business-center"></i></div>
+                    <div class="fun-fact-icon"><i class="icon-material-outline-rate-review"></i></div>
                 </div>
 
-                <div class="fun-fact" data-fun-fact-color="#efa80f">
+                <div class="fun-fact" data-fun-fact-color="#2a41e6">
                     <div class="fun-fact-text">
                         <span>Reviews</span>
                         <h4>[[${detail.reviewsCount}]]</h4>
@@ -54,12 +54,12 @@
                     <div class="fun-fact-icon"><i class="icon-material-outline-rate-review"></i></div>
                 </div>
 
-                <div class="fun-fact" data-fun-fact-color="#efa80f" th:if="${role == 'employee'}">
+                <div class="fun-fact" data-fun-fact-color="#efa80f">
                     <div class="fun-fact-text">
-                        <span>Successful Works</span>
-                        <h4>[[${detail.jobProposalsSuccessCount}]]</h4>
+                        <span>Rating</span>
+                        <h4>[[${detail.rating}]]</h4>
                     </div>
-                    <div class="fun-fact-icon"><i class="icon-material-outline-rate-review"></i></div>
+                    <div class="fun-fact-icon"><i class="icon-line-awesome-star"></i></div>
                 </div>
             </div>
 
