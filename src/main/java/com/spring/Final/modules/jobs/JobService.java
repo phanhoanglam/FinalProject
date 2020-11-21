@@ -142,7 +142,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
     public JobDetail createOne(JobDTO data) throws IOException {
         EmployerEntity employer = this.employerService.getOne(data.getEmployerId());
 
-        if (employer.getJobsCount() >= this.FREE_JOBS) {
+        if (employer.getJobsCount() >= this.FREE_JOBS && employer.getMembership() == null) {
             throw new ExceedFreeJobsAvailableException();
         }
         JobEntity job = convertToEntity(data);

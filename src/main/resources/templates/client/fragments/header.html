@@ -23,11 +23,13 @@
                             </ul>
                         </li>
 
-                        <li th:if="${isLoggedIn}">
+                        <li>
                             <a href="/employees">Find Employees</a>
                         </li>
 
-                        <li><a href="/memberships">Pricing Plans</a></li>
+                        <li th:if="${isLoggedIn && role == 'employer'}">
+                            <a href="/memberships">Pricing Plans</a>
+                        </li>
 
                         <li><a href="/contact">Contact</a></li>
                     </ul>
