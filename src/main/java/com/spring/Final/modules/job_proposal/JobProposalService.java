@@ -7,12 +7,10 @@ import com.spring.Final.modules.employee.EmployeeService;
 import com.spring.Final.modules.job_proposal.dtos.ProposeJobDTO;
 import com.spring.Final.modules.job_proposal.dtos.SearchProposalDTO;
 import com.spring.Final.modules.job_proposal.exceptions.ExistingProposalException;
-import com.spring.Final.modules.job_proposal.projections.EmploymentHistory;
-import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
-import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
-import com.spring.Final.modules.job_proposal.projections.JobProposalList;
+import com.spring.Final.modules.job_proposal.projections.*;
 import com.spring.Final.modules.jobs.JobEntity;
 import com.spring.Final.modules.jobs.JobService;
+import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.jobs.exceptions.JobInvalidStatusException;
 import com.spring.Final.modules.notification.NotificationService;
 import com.spring.Final.modules.review.ReviewService;
@@ -21,9 +19,7 @@ import com.spring.Final.modules.shared.enums.job_status.JobStatus;
 import com.spring.Final.modules.shared.enums.notification_reference_type.ReferenceType;
 import com.spring.Final.modules.shared.enums.user_type.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +74,15 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         return this.modelMapper.map(proposal, JobProposalList.class);
     }
 
+    public PageImpl<JobProposalEmployee> listJobByEmployee(int pageNumber, int size, int uid) {
+        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<JobProposalEntity> result = this.repository.findJobProposalByEmployeeId(page, uid);
+        List<JobProposalEmployee> resultList = result.stream()
+                .map(x -> this.modelMapper.map(x, JobProposalEmployee.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(resultList, result.getPageable(), result.getTotalElements());
+    }
+
     public JobProposalDetailExistence searchProposal(SearchProposalDTO data) {
         JobProposalStatus[] findStatuses = new JobProposalStatus[]{JobProposalStatus.ACCEPTED, JobProposalStatus.PENDING};
         Page<JobProposalEntity> existingProposal = this.repository.findByStatusEmployeeJob(PageRequest.of(0, 1), findStatuses, data.getEmployeeId(), data.getJobId());
@@ -92,10 +97,10 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
 
         List<JobProposalEntity> jobs = this.repository.findAllByJobAndStatusIn(job, new JobProposalStatus[]{
-            JobProposalStatus.PENDING,
-            JobProposalStatus.ACCEPTED,
-            JobProposalStatus.SUCCEEDED,
-            JobProposalStatus.FAILED
+                JobProposalStatus.PENDING,
+                JobProposalStatus.ACCEPTED,
+                JobProposalStatus.SUCCEEDED,
+                JobProposalStatus.FAILED
         }, sort);
 
         return jobs.stream().map(e -> {

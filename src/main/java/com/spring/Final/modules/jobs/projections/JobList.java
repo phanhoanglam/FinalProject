@@ -46,9 +46,11 @@ class JobCategory {
 class Employer {
     private int id;
     private String name;
+    private String email;
     private String avatar;
     private String address;
     private String nationality;
+    private String phone;
     private float rating;
     private String slug;
 }

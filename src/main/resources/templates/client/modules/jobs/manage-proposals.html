@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="full-page-container" layout:fragment="body">
+    <div th:replace="client/fragments/dashboard-sidebar.html :: div"></div>
+
+    <!-- Dashboard Content
+	================================================== -->
+    <div class="dashboard-content-container" data-simplebar>
+        <div class="dashboard-content-inner">
+
+            <!-- Dashboard Headline -->
+            <div class="dashboard-headline">
+                <h3>Manage Jobs</h3>
+
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li>Manage Jobs</li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Row -->
+            <div class="row">
+
+                <!-- Dashboard Box -->
+                <div class="col-xl-12">
+                    <div class="dashboard-box margin-top-0">
+
+                        <!-- Headline -->
+                        <div class="headline">
+                            <h3><i class="icon-material-outline-business-center"></i> My Job Listings</h3>
+                        </div>
+
+                        <div class="content">
+                            <ul class="dashboard-box-list">
+                                <li th:each="item : ${list}">
+                                    <!-- Overview -->
+                                    <div class="freelancer-overview manage-candidates">
+                                        <div class="freelancer-overview-inner">
+
+                                            <!-- Avatar -->
+                                            <div class="freelancer-avatar">
+                                                <div th:if="${item.status.toString() == 'ACCEPTED'}"
+                                                     class="verified-badge"></div>
+                                                <a th:href="${'/employers/' + item.job.employer.slug}"><img
+                                                        th:src="@{${item.job.employer.avatar}}" alt=""></a>
+                                            </div>
+
+                                            <!-- Name -->
+                                            <div class="freelancer-name">
+                                                <h4><a th:href="${'/employers/' + item.job.employer.slug}">[[${item.job.employer.name}]]
+                                                    <img class="flag" th:src="@{/client/images/flags/au.svg}" alt=""
+                                                         th:attr="title=${item.job.employer.nationality}"
+                                                         data-tippy-placement="top"></a></h4>
+
+                                                <!-- Details -->
+                                                <span th:if="${item.status.toString() != 'PENDING' && item.status.toString() != 'REJECTED'}"
+                                                      class="freelancer-detail-item"><a th:href="'mailto:' + ${item.job.employer.email}"><i
+                                                        class="icon-feather-mail"></i> [[${item.job.employer.email}]]</a></span>
+                                                <span th:if="${item.status.toString() != 'PENDING' && item.status.toString() != 'REJECTED'}"
+                                                      class="freelancer-detail-item"><i class="icon-feather-phone"></i> [[${item.job.employer.phone}]]</span>
+
+                                                <!-- Rating -->
+                                                <div class="freelancer-rating">
+                                                    <div class="star-rating" th:attr="data-rating=${item.job.employer.rating}"></div>
+                                                </div>
+
+                                                <!-- Rating -->
+                                                <span style="margin-top: 20px;" class="company-not-rated">[[${item.status}]]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div th:if="${list.getTotalPages() > 1}"
+                             class="pagination-container margin-top-20 margin-bottom-20">
+                            <nav class="pagination">
+                                <ul>
+                                    <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                                        <a th:href="@{/dashboard/job-proposals/manage-proposals(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
+                                           class="ripple-effect"><i
+                                                class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+                                    <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}">
+                                        <a th:href="@{/dashboard/job-proposals/manage-proposals(page=${i})}" th:utext="${i}"
+                                           th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
+                                    </li>
+                                    <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                                        <a th:href="@{/dashboard/job-proposals/manage-proposals(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
+                                           class="ripple-effect"><i
+                                                class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Row / End -->
+
+            <!-- Footer -->
+            <div class="dashboard-footer-spacer"></div>
+            <div th:replace="client/fragments/footer2.html :: div"></div>
+            <!-- Footer / End -->
+
+        </div>
+    </div>
+    <!-- Dashboard Content / End -->
+</div>
+</body>
+</html>
