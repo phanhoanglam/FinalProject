@@ -1,10 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Hireo</title>
 </head>
 <body>
+<!-- Dashboard Container -->
+<div class="dashboard-container" layout:fragment="body" th:with="user=${#authentication.getPrincipal().getInformation()}">
+    <div th:replace="client/fragments/dashboard-sidebar.html :: div"></div>
 
+
+    <!-- Dashboard Content
+    ================================================== -->
+    <div class="dashboard-content-container" data-simplebar>
+        <div class="dashboard-content-inner" >
+
+            <!-- Dashboard Headline -->
+            <div class="dashboard-headline">
+                <h3>Howdy, [[${user.get('name')}]]!</h3>
+                <span>We are glad to see you again!</span>
+
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li>Dashboard</li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Fun Facts Container -->
+            <div class="fun-facts-container">
+                <div class="fun-fact" data-fun-fact-color="#36bd78" th:if="${role == 'employer'}">
+                    <div class="fun-fact-text">
+                        <span>Jobs Posted</span>
+                        <h4>[[${detail.jobsCount}]]</h4>
+                    </div>
+                    <div class="fun-fact-icon"><i class="icon-material-outline-gavel"></i></div>
+                </div>
+
+                <div class="fun-fact" data-fun-fact-color="#b81b7f">
+                    <div class="fun-fact-text">
+                        <span>Rating</span>
+                        <h4>[[${detail.rating}]]</h4>
+                    </div>
+                    <div class="fun-fact-icon"><i class="icon-material-outline-business-center"></i></div>
+                </div>
+
+                <div class="fun-fact" data-fun-fact-color="#efa80f">
+                    <div class="fun-fact-text">
+                        <span>Reviews</span>
+                        <h4>[[${detail.reviewsCount}]]</h4>
+                    </div>
+                    <div class="fun-fact-icon"><i class="icon-material-outline-rate-review"></i></div>
+                </div>
+
+                <div class="fun-fact" data-fun-fact-color="#efa80f" th:if="${role == 'employee'}">
+                    <div class="fun-fact-text">
+                        <span>Successful Works</span>
+                        <h4>[[${detail.jobProposalsSuccessCount}]]</h4>
+                    </div>
+                    <div class="fun-fact-icon"><i class="icon-material-outline-rate-review"></i></div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="dashboard-footer-spacer"></div>
+            <div th:replace="client/fragments/footer2.html :: div"></div>
+            <!-- Footer / End -->
+        </div>
+    </div>
+    <!-- Dashboard Content / End -->
+</div>
 </body>
 </html>
