@@ -36,7 +36,11 @@
 								<h4>
 									<a th:href="${'/employees/' + item.slug}">
 										[[${item.firstName + ' ' + item.lastName}]]
-<!--									<img class="flag" src="images/flags/gb.svg" alt="" title="United Kingdom" data-tippy-placement="top">-->
+
+										<img th:if="${item.nationality != null}"
+											 class="flag"
+											 th:src="${'/client/images/flags/' + item.nationality.toLowerCase() + '.svg'}"
+											 alt="" th:title="${countries.get(item.nationality)}" data-tippy-placement="top">
 									</a>
 								</h4>
 								<span th:text="${item.jobTitle}"></span>

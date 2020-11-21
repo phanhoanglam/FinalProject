@@ -4,6 +4,7 @@ import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.employer.projections.EmployerDetailData;
 import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.jobs.projections.JobManage;
+import com.spring.Final.modules.shared.data.Countries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -46,6 +47,7 @@ public class EmployerClientController {
         modelView.addAttribute("jobList", data.getJobList());
         modelView.addAttribute("reviewList", data.getReviewList());
         modelView.addAttribute("allowReview", data.isAllowReview());
+        modelView.addAttribute("countries", Countries.getCountries());
 
         return "client/modules/employers/detail";
     }
@@ -77,6 +79,7 @@ public class EmployerClientController {
         if (!modelView.containsAttribute("errorMessage")) {
             modelView.addAttribute("errorMessage", "");
         }
+        modelView.addAttribute("countries", Countries.getCountries());
 
         return "client/modules/employers/profile";
     }

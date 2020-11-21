@@ -15,7 +15,11 @@
 							<h3>[[${detail.firstName + ' ' + detail.lastName}]] <span>[[${detail.jobTitle}]]</span></h3>
 							<ul>
 								<li><div class="star-rating" th:data-rating="${detail.rating}"></div></li>
-<!--								<li><img class="flag" src="images/flags/de.svg" alt=""> Germany</li>-->
+								<li th:if="${detail.nationality != null}">
+									<img class="flag"
+										 th:src="${'/client/images/flags/' + detail.nationality.toLowerCase() + '.svg'}" alt="">
+									[[${countries.get(detail.nationality)}]]
+								</li>
 								<li><div class="verified-badge-with-title">Verified</div></li>
 							</ul>
 						</div>
