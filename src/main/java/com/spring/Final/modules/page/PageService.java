@@ -5,7 +5,6 @@ import com.spring.Final.modules.employee.EmployeeService;
 import com.spring.Final.modules.employer.EmployerEntity;
 import com.spring.Final.modules.employer.EmployerService;
 import com.spring.Final.modules.job_proposal.JobProposalService;
-import com.spring.Final.modules.job_proposal.projections.Employee;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.page.projections.DashboardData;
 import com.spring.Final.modules.review.ReviewService;

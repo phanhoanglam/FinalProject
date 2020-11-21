@@ -61,10 +61,14 @@ public class EntitySpecification<T> implements Specification<T> {
             return null;
         }
         GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
-        shapeFactory.setCentre(coordinate);
+//        System.out.println("========================================================");
+//        System.out.println(coordinate + " " + location);
         shapeFactory.setHeight(0.0452185866);  // TODO: Set temporarily, refactor later
         shapeFactory.setWidth(0.0452185866);
+//        shapeFactory.setHeight(1);  // TODO: Set temporarily, refactor later
+//        shapeFactory.setWidth(1);
         Polygon rectangle = shapeFactory.createRectangle();
+        rectangle.setSRID(4326);
 
         return SpatialPredicates.within(cb, root.get("addressLocation"), rectangle);
     }

@@ -82,11 +82,12 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
     }
 
     public HomepageData listMaps(int pageNumber, int size, SearchJobDTO model, int uid) {
-        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         EmployeeProfile employee = employeeService.getById(uid);
         model.setLocation(employee.getAddress());
+
         JobSpecification search = new JobSpecification(model);
 
+        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<JobEntity> results = this.repository.findAll(search, page);
         List<JobList> resultList = results.stream()
                 .map(e -> this.modelMapper.map(e, JobList.class))
