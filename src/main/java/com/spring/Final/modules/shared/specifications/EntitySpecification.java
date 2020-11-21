@@ -5,7 +5,9 @@ import com.spring.Final.core.exceptions.InvalidAddressException;
 import com.spring.Final.modules.shared.dtos.SearchDTO;
 import org.hibernate.spatial.predicate.SpatialPredicates;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.util.GeometricShapeFactory;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -60,16 +62,11 @@ public class EntitySpecification<T> implements Specification<T> {
         } catch (InvalidAddressException e) {
             return null;
         }
-        GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
-//        System.out.println("========================================================");
-//        System.out.println(coordinate + " " + location);
-        shapeFactory.setHeight(0.0452185866);  // TODO: Set temporarily, refactor later
-        shapeFactory.setWidth(0.0452185866);
-//        shapeFactory.setHeight(1);  // TODO: Set temporarily, refactor later
-//        shapeFactory.setWidth(1);
-        Polygon rectangle = shapeFactory.createRectangle();
-        rectangle.setSRID(4326);
+        GeometricShapeFactory shapeFactory = new GeometricShapeFactory(new GeometryFactory(new PrecisionModel(), 4326));
+        shapeFactory.setCentre(coordinate);
+        shapeFactory.setHeight(0.1);  // TODO: Set temporarily, refactor later
+        shapeFactory.setWidth(0.1);
 
-        return SpatialPredicates.within(cb, root.get("addressLocation"), rectangle);
+        return SpatialPredicates.within(cb, root.get("addressLocation"), shapeFactory.createRectangle());
     }
 }

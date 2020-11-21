@@ -9,6 +9,7 @@ import org.locationtech.jts.geom.Coordinate;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class MapUtils {
     private static String API_KEY = "AIzaSyBYiHfMlwJdYaxFTkZQAk57bZaLPPW35TY";
@@ -16,7 +17,7 @@ public class MapUtils {
     private static final HttpRequestService httpRequestService = new HttpRequestService();
 
     public static Coordinate getCoordinateByText(String location) throws IOException {
-        String geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(location) + "&key=" + MapUtils.API_KEY;
+        String geoUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(location, StandardCharsets.UTF_8.toString()) + "&key=" + MapUtils.API_KEY;
         String json = httpRequestService.get(geoUrl);
 
         Gson gson = new Gson();
