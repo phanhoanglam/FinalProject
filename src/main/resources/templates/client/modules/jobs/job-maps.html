@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="full-page-container" layout:fragment="body">
+    <div class="full-page-container with-map">
+
+        <div class="full-page-sidebar hidden-sidebar">
+            <div class="full-page-sidebar-inner" data-simplebar>
+
+                <div class="sidebar-container">
+                    <!-- Keywords -->
+                    <div class="sidebar-widget">
+                        <h3>Keywords</h3>
+                        <div class="keywords-container">
+                            <div class="keyword-input-container">
+                                <input type="text" class="keyword-input" placeholder="e.g. job title"/>
+                                <button class="keyword-input-button ripple-effect"><i
+                                        class="icon-material-outline-add"></i></button>
+                            </div>
+                            <div class="keywords-list"><!-- keywords go here --></div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="sidebar-widget">
+                        <h3>Category</h3>
+                        <select onchange="changeJobCategory()" id="category" class="selectpicker default" multiple name="jobCategories"
+                                data-selected-text-format="count" data-size="5" title="All Categories">
+                            <option th:each="jobCategory : ${jobCategories}" th:value="${jobCategory.id}"
+                                    th:selected="${searchJobDTO.jobCategories.contains(jobCategory.id)}"
+                                    th:utext="${jobCategory.name}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Job Types -->
+                    <div class="sidebar-widget">
+                        <h3>Job Type</h3>
+
+                        <div class="switches-list">
+                            <div th:each="jobType : ${jobTypes}" class="switch-container">
+                                <label class="switch">
+                                    <input type="checkbox" name="jobTypes" th:value="${jobType.id}"
+                                           th:checked="${searchJobDTO.jobTypes.contains(jobType.id)}">
+                                    <span class="switch-button"></span>
+                                    [[${jobType.name}]]
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Salary -->
+                    <div class="sidebar-widget">
+                        <h3>Salary</h3>
+                        <div class="margin-top-35"></div>
+
+                        <!-- Range Slider -->
+                        <input class="range-slider"
+                               name="salaryRange"
+                               type="text"
+                               th:value="${searchJobDTO.salaryFrom + ',' + searchJobDTO.salaryTo}"
+                               data-slider-currency="$"
+                               data-slider-min="0"
+                               data-slider-max="300000" data-slider-step="200" data-slider-value="[0,300000]"/>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="sidebar-widget">
+                        <h3>Skills</h3>
+
+                        <div class="tags-container" id="tags-element">
+                            <div class="tag" th:each="skill : ${skills}">
+                                <input type="checkbox"
+                                       th:checked="${searchJobDTO.skills.contains(skill.id)}"
+                                       name="skills"
+                                       th:id="${'tag' + skill.id}"
+                                       th:value="${skill.id}"/>
+                                <label th:for="${'tag' + skill.id}" th:text="${skill.name}"></label>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+
+                </div>
+                <!-- Sidebar Container / End -->
+
+                <!-- Search Button -->
+                <div class="sidebar-search-button-container">
+                    <button class="button ripple-effect">Search</button>
+                </div>
+                <!-- Search Button / End-->
+
+            </div>
+        </div>
+        <!-- Full Page Sidebar / End -->
+
+
+        <!-- Full Page Content -->
+        <div class="full-page-content-container" data-simplebar>
+            <div class="full-page-content-inner">
+
+                <h3 class="page-title">Search Results</h3>
+
+                <div class="notify-box margin-top-15">
+                    <div class="switch-container">
+                        <label class="switch"><input type="checkbox"><span class="switch-button"></span><span
+                                class="switch-text">Turn on email alerts for this search</span></label>
+                    </div>
+
+                    <div class="sort-by">
+                        <span>Sort by:</span>
+                        <select class="selectpicker hide-tick">
+                            <option>Relevance</option>
+                            <option>Newest</option>
+                            <option>Oldest</option>
+                            <option>Random</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="listings-container grid-layout margin-top-35">
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-01.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Hexagon <span class="verified-badge"
+                                                                              title="Verified Employer"
+                                                                              data-tippy-placement="top"></span></h4>
+                                <h3 class="job-listing-title">Bilingual Event Support Specialist</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-05.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Laxo</h4>
+                                <h3 class="job-listing-title">Competition Law Officer</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-02.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Coffee</h4>
+                                <h3 class="job-listing-title">Barista and Cashier</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-03.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">King <span class="verified-badge"
+                                                                           title="Verified Employer"
+                                                                           data-tippy-placement="top"></span></h4>
+                                <h3 class="job-listing-title">Restaurant General Manager</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-05.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Skyist</h4>
+                                <h3 class="job-listing-title">International Marketing Coordinator</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-05.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Podous</h4>
+                                <h3 class="job-listing-title">Construction Labourers</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-04.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Mates</h4>
+                                <h3 class="job-listing-title">Administrative Assistant</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-06.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Trideo</h4>
+                                <h3 class="job-listing-title">Human Resources Consultant</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-06.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Trideo</h4>
+                                <h3 class="job-listing-title">International Marketing Specialist</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-02.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Coffee</h4>
+                                <h3 class="job-listing-title">Terrain Cafe Barista</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-05.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Kinte</h4>
+                                <h3 class="job-listing-title">Skilled Labourer</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <!-- Job Listing -->
+                    <a href="single-job-page.html" class="job-listing">
+
+                        <!-- Job Listing Details -->
+                        <div class="job-listing-details">
+                            <!-- Logo -->
+                            <div class="job-listing-company-logo">
+                                <img src="images/company-logo-05.png" alt="">
+                            </div>
+
+                            <!-- Details -->
+                            <div class="job-listing-description">
+                                <h4 class="job-listing-company">Alilia</h4>
+                                <h3 class="job-listing-title">Healthcare Claims Advisor</h3>
+                            </div>
+                        </div>
+
+                        <!-- Job Listing Footer -->
+                        <div class="job-listing-footer">
+                            <span class="bookmark-icon"></span>
+                            <ul>
+                                <li><i class="icon-material-outline-location-on"></i> San Francisco</li>
+                                <li><i class="icon-material-outline-business-center"></i> Full Time</li>
+                                <li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
+                                <li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                </div>
+
+                <!-- Pagination -->
+                <div class="clearfix"></div>
+                <div class="pagination-container margin-top-20 margin-bottom-20">
+                    <nav class="pagination">
+                        <ul>
+                            <li class="pagination-arrow"><a href="#" class="ripple-effect"><i
+                                    class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+                            <li><a href="#" class="ripple-effect">1</a></li>
+                            <li><a href="#" class="ripple-effect current-page">2</a></li>
+                            <li><a href="#" class="ripple-effect">3</a></li>
+                            <li><a href="#" class="ripple-effect">4</a></li>
+                            <li class="pagination-arrow"><a href="#" class="ripple-effect"><i
+                                    class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="clearfix"></div>
+                <!-- Pagination / End -->
+
+                <!-- Footer -->
+                <div class="small-footer margin-top-15">
+                    <div class="small-footer-copyrights">
+                        © 2019 <strong>Hireo</strong>. All Rights Reserved.
+                    </div>
+                    <ul class="footer-social-links">
+                        <li>
+                            <a href="#" title="Facebook" data-tippy-placement="top">
+                                <i class="icon-brand-facebook-f"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" title="Twitter" data-tippy-placement="top">
+                                <i class="icon-brand-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" title="Google Plus" data-tippy-placement="top">
+                                <i class="icon-brand-google-plus-g"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" title="LinkedIn" data-tippy-placement="top">
+                                <i class="icon-brand-linkedin-in"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- Footer / End -->
+
+            </div>
+        </div>
+        <!-- Full Page Content / End -->
+
+
+        <!-- Full Page Map -->
+        <div class="full-page-map-container">
+
+            <!-- Enable Filters Button -->
+            <div class="filter-button-container">
+                <button class="enable-filters-button">
+                    <i class="enable-filters-button-icon"></i>
+                    <span class="show-text">Show Filters</span>
+                    <span class="hide-text">Hide Filters</span>
+                </button>
+                <div class="filter-button-tooltip">Click to expand sidebar with filters!</div>
+            </div>
+
+            <!-- Map -->
+            <div id="map" data-map-zoom="12" data-map-scroll="true"></div>
+        </div>
+        <!-- Full Page Map / End -->
+
+    </div>
+</div>
+</body>
+<script layout:fragment="js">
+    function changeJobCategory() {
+        var change = $("#category").val();
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '/api/skills',
+            data: {
+                page: 1,
+                size: 100,
+                jobCategories: change.join(',')
+            },
+            success: function (res) {
+                document.getElementById("tags-element").innerHTML = "";
+                $.each(res.data.content, function (index, value) {
+                    if (res.data.content !== []) {
+                        document.getElementById("tags-element").innerHTML += `
+                            <div class="tag">
+                                <input type="checkbox" name="skills" id="tag${index}" value="${value.id}"/>
+                                <label for="tag${index}">${value.name}</label>
+                            </div>
+                        `;
+                    }
+                })
+            }
+        })
+    }
+</script>
+</html>
