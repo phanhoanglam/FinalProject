@@ -175,7 +175,7 @@
                                                                accept="image/*, application/pdf" id="upload" multiple/>
                                                         <label class="uploadButton-button ripple-effect" for="upload">Upload
                                                             Files</label>
-                                                        <span class="uploadButton-file-name">Maximum file size: 10 MB</span>
+<!--                                                        <span class="uploadButton-file-name">Maximum file size: 10 MB</span>-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -409,6 +409,8 @@
     <!-- Dashboard Content / End -->
 </div>
 <script layout:fragment="js">
+    let skillIds = [];
+
     function changeJobCategory() {
         const change = $('[name="jobCategoryIds"]').val();
 
@@ -423,25 +425,44 @@
             },
             success: function (res) {
                 document.getElementById("tags-element").innerHTML = "";
+                $('.skills-group').html('');
+
+                const allSkillIds = res.data.content.map(e => e.id);
+                skillIds = skillIds.filter(value => allSkillIds.includes(value));
 
                 $.each(res.data.content, function (index, value) {
                     if (res.data.content !== []) {
+                        const isAlive = skillIds.indexOf(value.id) >= 0;
+
+                        if (isAlive) {
+                            $('.skills-group').append(`
+                                <input value="${value.id}" type="hidden" name="skillIds[]">
+                           `);
+                        }
                         document.getElementById("tags-element").innerHTML += `
                             <div class="tag">
-                                <input type="checkbox" name="skills" id="tag${index}" value="${value.id}" onclick="changeSkills()"/>
+                                <input type="checkbox"
+                                       name="skills"
+                                       id="tag${index}"
+                                       ${isAlive ? 'checked' : ''}
+                                       value="${value.id}"
+                                       onclick="changeSkills()"/>
                                 <label for="tag${index}">${value.name}</label>
                             </div>
                         `;
                     }
-                })
+                });
             }
         })
     }
 
     function changeSkills() {
         $('.skills-group').html('');
+        skillIds = [];
 
         $('[name="skills"]:checked').each((index, element) => {
+            skillIds.push(parseInt($(element).val(), 10));
+
             $('.skills-group').append(`
                 <input value="${$(element).val()}" type="hidden" name="skillIds[]">
            `);
@@ -449,6 +470,10 @@
     }
 
     $(document).ready(function () {
+        $('[name="skillIds[]"]').each((index, element) => {
+            skillIds.push(parseInt($(element).val(), 10));
+        });
+
         $('.remove-attachment').on('click', function () {
             $(this).parent().closest('.attachment-box').remove();
         });
