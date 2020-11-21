@@ -1131,7 +1131,7 @@ ul.user-menu-small-nav li a:hover i { color: #66676b; }
 
 #navigation ul li:hover ul a:only-child ,
 #navigation ul a:only-child { 
-	padding: 4px 15px 4px 15px !important;
+	padding: 7px 15px 7px 15px !important;
 }
 
 #navigation ul ul:after {
