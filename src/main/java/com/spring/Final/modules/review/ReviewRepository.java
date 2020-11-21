@@ -30,4 +30,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
     @Query(value = "select count(r) from Review r where r.toUserId = ?1 and r.toUserType = ?2 and r.deliveredOnBudget = true")
     long countJobDoneOnBudget(int toUserId, UserType toUserType);
+
+    @Query(value = "select count(r) from Review r where r.toUserId = ?1 and r.toUserType = ?2")
+    long countReviewsByUser(int toUserId, UserType toUserType);
 }

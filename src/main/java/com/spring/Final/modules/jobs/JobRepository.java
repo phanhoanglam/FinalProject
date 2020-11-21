@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +21,7 @@ public interface JobRepository extends JpaRepository<JobEntity, Integer>, JpaSpe
     List<JobEntity> findAllByEmployer(EmployerEntity employer, Sort sort);
 
     Page<JobEntity> findAllByIdNotAndJobCategory(int id, JobCategoryEntity jobCategory, Pageable pageable);
+
+    @Query(value = "select count(j) from Job j where j.employer.id = ?1")
+    long countByEmployer(int employerId);
 }

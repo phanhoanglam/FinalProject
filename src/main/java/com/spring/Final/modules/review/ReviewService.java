@@ -143,4 +143,8 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
     public long countJobDoneOnBudget(int employeeId) {
         return this.repository.countJobDoneOnBudget(employeeId, UserType.EMPLOYEE);
     }
+
+    public long countReviewsByUser(int toUserId, UserType toUserType) {
+        return this.repository.countReviewsByUser(toUserId, toUserType);
+    }
 }
