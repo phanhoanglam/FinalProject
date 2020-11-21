@@ -85,6 +85,10 @@
     <div class="margin-top-70"></div>
 </div>
 
+<div layout:fragment="footer">
+    <div th:replace="client/fragments/footer1.html :: div#footer"></div>
+</div>
+
 <script layout:fragment="js">
     function changeAccountType(self) {
         const $loginForm = $('#login-form');

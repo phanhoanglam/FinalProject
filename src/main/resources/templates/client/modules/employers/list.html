@@ -41,7 +41,11 @@
 	<!-- Pagination / End -->
 
 	<!-- Footer -->
-	<div th:replace="client/fragments/footer2.html :: div"></div>
+<!--	<div th:replace="client/fragments/footer2.html :: div"></div>-->
+</div>
+
+<div layout:fragment="footer">
+	<div th:replace="client/fragments/footer1.html :: div#footer"></div>
 </div>
 </body>
 </html>

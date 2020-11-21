@@ -42,6 +42,10 @@
     </div>
 </div>
 
+<div layout:fragment="footer">
+    <div th:replace="client/fragments/footer1.html :: div#footer"></div>
+</div>
+
 <script layout:fragment="js">
     // Initialize and add the map
     function initMap() {
