@@ -9,8 +9,10 @@ import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.employee.EmployeeEntity;
 import com.spring.Final.modules.employee.EmployeeService;
+import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employer.EmployerEntity;
 import com.spring.Final.modules.employer.EmployerService;
+import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.job_category.JobCategoryService;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.job_proposal.dtos.SearchProposalDTO;
@@ -81,9 +83,10 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
 
     public HomepageData listMaps(int pageNumber, int size, SearchJobDTO model, int uid) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        EmployeeEntity employeeEntity = employeeService.getOne(uid);
-        model.setLocation(employeeEntity.getAddress());
+        EmployeeProfile employee = employeeService.getById(uid);
+        model.setLocation(employee.getAddress());
         JobSpecification search = new JobSpecification(model);
+
         Page<JobEntity> results = this.repository.findAll(search, page);
         List<JobList> resultList = results.stream()
                 .map(e -> this.modelMapper.map(e, JobList.class))

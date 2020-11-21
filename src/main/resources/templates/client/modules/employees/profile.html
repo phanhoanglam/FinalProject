@@ -27,7 +27,7 @@
             </div>
 
             <!-- Row -->
-            <form th:action="${'/employees/profile'}" method="post" th:object="${detail}" enctype="multipart/form-data">
+            <form th:action="${'/dashboard/employee/profile'}" method="post" th:object="${detail}" enctype="multipart/form-data">
                 <div class="row">
                     <!-- Dashboard Box -->
                     <div class="col-xl-12">
@@ -474,7 +474,7 @@
             skillIds.push(parseInt($(element).val(), 10));
         });
 
-        $('.remove-attachment').on('click', function () {
+        $(document).on('click', '.remove-attachment', function () {
             $(this).parent().closest('.attachment-box').remove();
         });
 
