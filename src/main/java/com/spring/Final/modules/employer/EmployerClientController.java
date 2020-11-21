@@ -66,7 +66,7 @@ public class EmployerClientController {
         return "client/modules/jobs/manage-jobs";
     }
 
-    @GetMapping("/employers/profile")
+    @GetMapping("/dashboard/employer/profile")
     public String profile(Authentication authentication, Model modelView) {
         if (!modelView.containsAttribute("profile")) {
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
@@ -81,7 +81,7 @@ public class EmployerClientController {
         return "client/modules/employers/profile";
     }
 
-    @PostMapping("/employers/profile")
+    @PostMapping("/dashboard/employer/profile")
     public String editProfile(
             @Valid EmployerProfile dto,
             Authentication authentication,
@@ -98,6 +98,6 @@ public class EmployerClientController {
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         }
 
-        return "redirect:/employers/profile";
+        return "redirect:/dashboard/employer/profile";
     }
 }

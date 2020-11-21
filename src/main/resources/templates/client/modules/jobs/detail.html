@@ -299,28 +299,16 @@
 
         const lat = location.split(',')[0];
         const lng = location.split(',')[1];
-        // The location of Uluru
-        const uluru = {lat: parseInt(lat), lng: parseInt(lng)};
-        // The map, centered at Uluru
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 10,
-            center: uluru,
+        const center = {lat: parseFloat(lat), lng: parseFloat(lng)};
+        const centerLatLng = new google.maps.LatLng(center);
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: centerLatLng,
+            ...mapConfig,
         });
-        const mapMarker = "https://www.mapsmarker.com/wp-content/uploads/leaflet-maps-marker-icons/bar_coktail.png"
-        // The marker, positioned at Uluru
-        const marker = new google.maps.Marker({
-            position: uluru,
-            map: map,
-            icon: mapMarker,
-            animation: google.maps.Animation.BOUNCE
-        });
-        marker.addListener("click", function () {
-            if (marker.getAnimation() !== null) {
-                marker.setAnimation(null);
-            } else {
-                marker.setAnimation(google.maps.Animation.BOUNCE);
-            }
-        })
+
+        initCustomerMarker(centerLatLng, map, {marker_id: '1'});
     }
 </script>
 </body>

@@ -44,6 +44,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             if (employee != null) {
                 HashMap<String, Object> information = new HashMap<>();
                 information.put("id", employee.getId());
+                information.put("name", employee.getFirstName() + " " + employee.getLastName());
+                information.put("avatar", employee.getAvatar());
                 information.put("role", "employee");
 
                 return new CustomUserDetails(employee.getEmail(), employee.getPassword(), information, new ArrayList<>());
@@ -53,6 +55,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (employer != null) {
             HashMap<String, Object> information = new HashMap<>();
             information.put("id", employer.getId());
+            information.put("name", employer.getName());
+            information.put("avatar", employer.getAvatar());
             information.put("role", "employer");
 
             return new CustomUserDetails(employer.getEmail(), employer.getPassword(), information, new ArrayList<>());

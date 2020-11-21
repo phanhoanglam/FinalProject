@@ -25,7 +25,7 @@ import java.io.IOException;
 
 
 @Controller
-@RequestMapping("/employees")
+@RequestMapping("/")
 public class EmployeeClientController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class EmployeeClientController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("")
+    @GetMapping("/employees")
     public String list(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "6") int size,
@@ -54,7 +54,7 @@ public class EmployeeClientController {
         return "client/modules/employees/list";
     }
 
-    @GetMapping("/{slug}")
+    @GetMapping("/employees/{slug}")
     public String getDetail(@PathVariable String slug, Model modelView) {
         EmployeeDetailData data = employeeService.getDetail(slug);
 
@@ -65,7 +65,7 @@ public class EmployeeClientController {
         return "client/modules/employees/detail";
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/dashboard/employee/profile")
     public String profile(Authentication authentication, Model modelView) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         int id = (int) user.getInformation().get("id");
@@ -81,7 +81,7 @@ public class EmployeeClientController {
         return "client/modules/employees/profile";
     }
 
-    @PostMapping("/profile")
+    @PostMapping("/dashboard/employee/profile")
     public String editProfile(@Valid EmployeeProfile dto, Authentication authentication, RedirectAttributes redirectAttributes) throws IOException {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         dto.setId((int) user.getInformation().get("id"));
@@ -94,6 +94,6 @@ public class EmployeeClientController {
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         }
 
-        return "redirect:/employees/profile";
+        return "redirect:/dashboard/employee/profile";
     }
 }

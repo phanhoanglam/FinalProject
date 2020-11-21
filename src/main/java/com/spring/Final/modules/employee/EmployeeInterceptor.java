@@ -25,7 +25,7 @@ public class EmployeeInterceptor implements HandlerInterceptor {
             validPaths.put("/api/job-proposals", new String[]{"POST"});
             validPaths.put("/api/job-proposals/resume", new String[]{"POST"});
             validPaths.put("/api/reviews/employers", new String[]{"POST"});
-            validPaths.put("/employees/profile", new String[]{"GET", "POST"});
+            validPaths.put("/dashboard/employee/profile", new String[]{"GET", "POST"});
 
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
             String subject = (String) user.getInformation().get("role");
