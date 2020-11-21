@@ -70,7 +70,7 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         proposal.setCreatedAt(CommonHelper.getCurrentTime());
 
         if (proposal.getAttachments() != null) {
-            String attachments = CommonHelper.toJSON(proposal.getAttachments());
+            String attachments = CommonHelper.toJSON(data.getAttachments());
             proposal.setAttachments(attachments);
         }
         proposal = this.repository.save(proposal);

@@ -78,15 +78,7 @@ public class JobClientController {
     }
 
     @GetMapping("/job-{slug}")
-    public String getDetail(
-            Authentication authentication,
-            HttpServletResponse response,
-            Model modelView,
-            @PathVariable(value = "slug") String slug
-    ) throws IOException {
-        if (authentication == null) {
-            response.sendRedirect("/auth/login");
-        }
+    public String getDetail(Authentication authentication, Model modelView, @PathVariable(value = "slug") String slug) {
         DetailData data = service.getDetail(slug, authentication);
         data.getJobDetails().setLocation(data.getJobDetails().getAddressLocation());
         modelView.addAttribute("detail", data.getJobDetails());

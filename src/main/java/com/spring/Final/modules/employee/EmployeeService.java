@@ -2,38 +2,34 @@ package com.spring.Final.modules.employee;
 
 import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.common.JwtHelper;
+import com.spring.Final.core.common.MapUtils;
 import com.spring.Final.core.exceptions.*;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
-import com.spring.Final.modules.employee.projections.EmployeeDetailData;
-import com.spring.Final.modules.employee.projections.EmployeeDetail;
-import com.spring.Final.modules.employee.projections.EmployeeList;
-import com.spring.Final.modules.employee.projections.EmployeeProfile;
-import com.spring.Final.modules.employee.projections.ProfilePageData;
-import com.spring.Final.modules.employee.projections.ListEmployeesData;
+import com.spring.Final.modules.employee.projections.*;
 import com.spring.Final.modules.employee.specifications.EmployeeSpecification;
 import com.spring.Final.modules.job_category.JobCategoryService;
 import com.spring.Final.modules.job_category.projections.NameWithJobCount;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.review.ReviewService;
-import com.spring.Final.modules.review.projections.ReviewList;
-import com.spring.Final.modules.shared.dtos.NameOnly;
-import com.spring.Final.modules.skill.SkillEntity;
+import com.spring.Final.modules.shared.enums.user_type.UserType;
+import com.spring.Final.modules.shared.specifications.File;
 import com.spring.Final.modules.skill.SkillService;
 import com.spring.Final.modules.skill.projections.Skill;
-import com.spring.Final.modules.shared.enums.user_type.UserType;
-import com.spring.Final.modules.skill.SkillService;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -165,33 +161,62 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         }
     }
 
-    public ProfilePageData profile(int id) {
-        Optional<EmployeeEntity> result = this.repository.findById(id);
-        if (result == null) {
-            throw new ResourceNotFoundException();
-        }
-        EmployeeProfile profile = result.map(x -> this.modelMapper.map(x, EmployeeProfile.class)).get();
-        profile.setSkillIds(result.get().getEmployeeSkills().stream().map(BaseEntity::getId).collect(Collectors.toList()));
-        List<Skill> skills = skillService.findAll().stream()
+    public ProfilePageData getProfile(int id) {
+        EmployeeEntity result = this.repository.findById(id).get();
+        EmployeeProfile profile = this.modelMapper.map(result, EmployeeProfile.class);
+
+        profile.setJobCategoryIds(result.getJobCategories().stream().map(BaseEntity::getId).collect(Collectors.toList()));
+        profile.setSkillIds(result.getSkills().stream().map(BaseEntity::getId).collect(Collectors.toList()));
+
+        List<Skill> skills = skillService.findAllAsNameOnly(
+                1, 1000, result.getJobCategories().stream().mapToInt(BaseEntity::getId).toArray())
+                .stream()
                 .map(x -> this.modelMapper.map(x, Skill.class))
                 .collect(Collectors.toList());
-        return new ProfilePageData (
+
+        if (result.getAttachments() != null) {
+            profile.setAttachmentsDecoded((ArrayList<File>) CommonHelper.parseJSON(result.getAttachments(), new ArrayList<>()));
+        }
+
+        return new ProfilePageData(
                 profile,
-                skills
+                skills,
+                jobCategoryService.findAllAsNameOnly()
         );
     }
 
     @Transactional
-    public EmployeeProfile profileSubmit(EmployeeProfile dto) {
-        this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        EmployeeEntity employeeEntity = this.modelMapper.map(dto, EmployeeEntity.class);
-//        employeeEntity.removeSkill(dto.getId());
-//        dto.getSkillIds().forEach(skillId->{
-//            SkillEntity skillEntity = new SkillEntity();
-//            skillEntity.setId(skillId);
-//            employeeEntity.addSkill(skillEntity);
-//        });
+    public EmployeeEntity submitProfile(EmployeeProfile dto) throws IOException {
+        EmployeeEntity employee = this.repository.findById(dto.getId()).get();
 
-        return null;
+        employee.setFirstName(dto.getFirstName());
+        employee.setLastName(dto.getLastName());
+        employee.setPhone(dto.getPhone());
+        employee.setAvatar(dto.getAvatar());
+        employee.setAddress(dto.getAddress());
+        employee.setNationality(dto.getNationality());
+        employee.setJobTitle(dto.getJobTitle());
+        employee.setDescription(dto.getDescription());
+        employee.setMinHourlyRate(dto.getMinHourlyRate());
+        employee.setSkills(this.skillService.getAllByIds(dto.getSkillIds()));
+        employee.setJobCategories(this.jobCategoryService.getAllByIds(dto.getJobCategoryIds()));
+
+        Coordinate coordinate = MapUtils.getCoordinateByText(dto.getAddress());
+        employee.setAddressLocation(CommonHelper.createGeometryPoint(coordinate));
+
+        System.out.println(dto);
+
+        if (dto.getAttachmentsDecoded() != null) {
+            String attachments = CommonHelper.toJSON(dto.getAttachmentsDecoded());
+            employee.setAttachments(attachments);
+        }
+        if (!dto.getPassword().isEmpty() && dto.getPassword() != null) {
+            if (!this.passwordEncoder.matches(dto.getPassword(), employee.getPassword())) {
+                return null;
+            }
+            employee.setPassword(this.passwordEncoder.encode(dto.getNewPassword()));
+        }
+
+        return this.repository.save(employee);
     }
 }

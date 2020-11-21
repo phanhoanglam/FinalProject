@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div id="titlebar" class="gradient" layout:fragment="titlebar">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Contact</h2>
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Pages</a></li>
+                        <li>Contact</li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" layout:fragment="body">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="contact-location-info margin-bottom-50">
+                <div class="contact-address">
+                    <ul>
+                        <li class="contact-address-headline">Our Office</li>
+                        <li>425 Berry Street, CA 93584</li>
+                        <li>Phone (123) 123-456</li>
+                        <li><a href="mailto:mail@example.com">mail@example.com</a></li>
+                    </ul>
+                </div>
+                <div id="single-job-map-container">
+                    <div id="singleListingMap" data-location="37.777842,-122.391805" data-map-icon="im im-icon-Hamburger"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="js">
+    // Initialize and add the map
+    function initMap() {
+        const location = $('#singleListingMap').attr('data-location');
+
+        const lat = location.split(',')[0];
+        const lng = location.split(',')[1];
+
+        const center = {lat: parseFloat(lat), lng: parseFloat(lng)};
+        const centerLatLng = new google.maps.LatLng(center);
+
+        const map = new google.maps.Map(document.getElementById('singleListingMap'), {
+            zoom: 14,
+            center: centerLatLng,
+            ...mapConfig,
+        });
+
+        initCustomerMarker(centerLatLng, map, {marker_id: '1'});
+    }
+</script>
+</body>
+</html>

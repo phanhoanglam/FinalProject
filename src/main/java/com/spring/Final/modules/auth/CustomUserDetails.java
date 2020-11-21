@@ -17,8 +17,4 @@ public class CustomUserDetails  extends User {
     public HashMap<String, Object> getInformation() {
         return information;
     }
-
-    public void setInformation(HashMap<String, Object> information) {
-        this.information = information;
-    }
 }

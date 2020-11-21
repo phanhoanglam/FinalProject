@@ -2,18 +2,15 @@ package com.spring.Final.modules.employer;
 
 import com.spring.Final.core.common.MapUtils;
 import com.spring.Final.core.exceptions.EntityExistException;
-import com.spring.Final.core.exceptions.InvalidEmailOrPasswordException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
-import com.spring.Final.modules.employee.EmployeeEntity;
 import com.spring.Final.modules.employer.projections.EmployerDetail;
 import com.spring.Final.modules.employer.projections.EmployerDetailData;
 import com.spring.Final.modules.employer.projections.EmployerList;
 import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.job_proposal.JobProposalService;
-import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
 import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.projections.JobManage;
@@ -131,36 +128,32 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         }
     }
 
-    public EmployerProfile profile(int id) {
+    public EmployerProfile getProfile(int id) {
         Optional<EmployerEntity> result = this.repository.findById(id);
-        if (result == null) {
-            throw new ResourceNotFoundException();
-        }
-        EmployerProfile profile = result.map(x -> this.modelMapper.map(x, EmployerProfile.class)).get();
 
-        return profile;
+        return result.map(x -> this.modelMapper.map(x, EmployerProfile.class)).get();
     }
 
-    public boolean profileSubmit(EmployerProfile dto) throws IOException {
-        this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        EmployerEntity employerEntity = this.repository.findByEmail(dto.getEmail());
-        employerEntity.setId(dto.getId());
-        employerEntity.setEmail(dto.getEmail());
-        employerEntity.setName(dto.getName());
-        employerEntity.setPhone(dto.getPhone());
-        employerEntity.setAvatar(dto.getAvatar());
-        employerEntity.setAddress(dto.getAddress());
-        employerEntity.setNationality(dto.getNationality());
-        employerEntity.setDescription(dto.getDescription());
+    public boolean submitProfile(EmployerProfile dto) throws IOException {
         dto.setAddressLocation(MapUtils.getCoordinateByText(dto.getAddress()));
-        employerEntity.setAddressLocation(CommonHelper.createGeometryPoint(dto.getAddressLocation()));
-        if(!dto.getPassword().isEmpty() && dto.getPassword() != null){
-            if (!this.passwordEncoder.matches(dto.getPassword(), employerEntity.getPassword())) {
+
+        EmployerEntity employer = this.repository.findById(dto.getId()).get();
+        employer.setName(dto.getName());
+        employer.setPhone(dto.getPhone());
+        employer.setAvatar(dto.getAvatar());
+        employer.setAddress(dto.getAddress());
+        employer.setNationality(dto.getNationality());
+        employer.setDescription(dto.getDescription());
+        employer.setAddressLocation(CommonHelper.createGeometryPoint(dto.getAddressLocation()));
+
+        if (!dto.getPassword().isEmpty() && dto.getPassword() != null) {
+            if (!this.passwordEncoder.matches(dto.getPassword(), employer.getPassword())) {
                 return false;
             }
-            employerEntity.setPassword(this.passwordEncoder.encode(dto.getNewPassword()));
+            employer.setPassword(this.passwordEncoder.encode(dto.getNewPassword()));
         }
-        employerEntity = this.repository.save(employerEntity);
+        this.repository.save(employer);
+
         return true;
     }
 }

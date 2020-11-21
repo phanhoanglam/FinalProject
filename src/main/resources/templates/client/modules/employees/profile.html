@@ -39,9 +39,7 @@
                             </div>
 
                             <div class="content with-padding padding-bottom-0">
-
                                 <div class="row">
-
                                     <div class="col-auto">
                                         <div class="avatar-wrapper" data-tippy-placement="bottom" title="Change Avatar">
                                             <img class="profile-pic" th:src="@{${detail.avatar}}"
@@ -58,7 +56,7 @@
                                             <div class="col-xl-6">
                                                 <div class="submit-field">
                                                     <h5>First Name</h5>
-                                                    <input th:field="*{firstName}" type="text"
+                                                    <input th:field="*{firstName}" type="text" required
                                                            class="with-border">
                                                 </div>
                                             </div>
@@ -66,7 +64,7 @@
                                             <div class="col-xl-6">
                                                 <div class="submit-field">
                                                     <h5>Last Name</h5>
-                                                    <input th:field="*{lastName}" type="text" class="with-border"
+                                                    <input th:field="*{lastName}" type="text" class="with-border" required
                                                            value="Smith">
                                                 </div>
                                             </div>
@@ -102,7 +100,7 @@
                                                     <h5>Email</h5>
                                                     <input type="text" class="with-border" th:field="*{email}"
                                                            style="background-color: #e0e0e0;"
-                                                           readonly>
+                                                           disabled>
                                                 </div>
                                             </div>
 
@@ -126,7 +124,7 @@
                                 <ul class="fields-ul">
                                     <li>
                                         <div class="row">
-                                            <div class="col-xl-4">
+                                            <div class="col-xl-6">
                                                 <div class="submit-field">
                                                     <div class="bidding-widget">
                                                         <!-- Headline -->
@@ -138,7 +136,7 @@
                                                         <input class="bidding-slider" type="text"
                                                                th:field="*{minHourlyRate}"
                                                                data-slider-handle="custom" data-slider-currency="$"
-                                                               data-slider-min="0" data-slider-max="300000"
+                                                               data-slider-min="0" data-slider-max="500"
                                                                th:attr="data-slider-value=${detail.minHourlyRate}"
                                                                data-slider-step="1"
                                                                data-slider-tooltip="hide"/>
@@ -146,65 +144,80 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xl-4">
-                                                <div class="submit-field">
-                                                    <h5>Skills <i class="help-icon" data-tippy-placement="right"
-                                                                  title="Add up to 10 skills"></i></h5>
-
-                                                    <!-- Skills List -->
-                                                    <div class="keywords-container">
-                                                        <select
-                                                                class="selectpicker default" multiple
-                                                                data-selected-text-format="count" data-size="7"
-                                                                title="All Categories" name="skillIds[]">
-                                                            <option
-                                                                    th:each="skill : ${skills}" th:value="${skill.id}"
-                                                                    th:text="${skill.name}"
-                                                                    name="skills"
-                                                                    th:selected="${detail.skillIds.contains(skill.id)}"></option>
-                                                        </select>
-                                                        <!--                                                    <div class="keyword-input-container">-->
-                                                        <!--                                                        <input type="text" class="keyword-input with-border" placeholder="e.g. Angular, Laravel"/>-->
-                                                        <!--                                                        <button class="keyword-input-button ripple-effect"><i class="icon-material-outline-add"></i></button>-->
-                                                        <!--                                                    </div>-->
-                                                        <!--                                                    <div class="keywords-list">-->
-                                                        <!--                                                        <span class="keyword"><span class="keyword-remove"></span><span class="keyword-text">Angular</span></span>-->
-                                                        <!--                                                        <span class="keyword"><span class="keyword-remove"></span><span class="keyword-text">Vue JS</span></span>-->
-                                                        <!--                                                        <span class="keyword"><span class="keyword-remove"></span><span class="keyword-text">iOS</span></span>-->
-                                                        <!--                                                        <span class="keyword"><span class="keyword-remove"></span><span class="keyword-text">Android</span></span>-->
-                                                        <!--                                                        <span class="keyword"><span class="keyword-remove"></span><span class="keyword-text">Laravel</span></span>-->
-                                                        <!--                                                    </div>-->
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-xl-4">
+                                            <div class="col-xl-6">
                                                 <div class="submit-field">
                                                     <h5>Attachments</h5>
 
                                                     <!-- Attachments -->
                                                     <div class="attachments-container margin-top-0 margin-bottom-0">
-                                                        <div class="attachment-box ripple-effect">
-                                                            <span>Cover Letter</span>
-                                                            <button class="remove-attachment" data-tippy-placement="top"
+
+                                                        <div class="attachment-box ripple-effect"
+                                                             th:each="attachment, iter : ${detail.attachmentsDecoded}">
+                                                            <span>[[${attachment.name}]]</span>
+                                                            <button type="button"
+                                                                    class="remove-attachment"
+                                                                    data-tippy-placement="top"
                                                                     title="Remove"></button>
-                                                        </div>
-                                                        <div class="attachment-box ripple-effect">
-                                                            <span>Contract</span>
-                                                            <button class="remove-attachment" data-tippy-placement="top"
-                                                                    title="Remove"></button>
+                                                            <input type="hidden"
+                                                                   th:name="${'attachmentsDecoded[' + iter.index + '].name'}"
+                                                                   th:value="${attachment.name}">
+                                                            <input type="hidden"
+                                                                   th:name="${'attachmentsDecoded[' + iter.index + '].url'}"
+                                                                   th:value="${attachment.url}">
                                                         </div>
                                                     </div>
+
                                                     <div class="clearfix"></div>
 
                                                     <!-- Upload Button -->
                                                     <div class="uploadButton margin-top-0">
-                                                        <input class="uploadButton-input" type="file"
+                                                        <input class="uploadButton-input" type="file" name="attachmentFiles"
                                                                accept="image/*, application/pdf" id="upload" multiple/>
                                                         <label class="uploadButton-button ripple-effect" for="upload">Upload
                                                             Files</label>
-                                                        <span class="uploadButton-file-name">Maximum file size: 10 MB</span>
+<!--                                                        <span class="uploadButton-file-name">Maximum file size: 10 MB</span>-->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xl-6">
+                                                <div class="submit-field">
+                                                    <h5>Job Category</h5>
+                                                    <select class="selectpicker with-border"
+                                                            multiple
+                                                            data-size="7"
+                                                            title="Select Category"
+                                                            th:field="*{jobCategoryIds}"
+                                                            onchange="changeJobCategory()"
+                                                            required>
+                                                        <option th:each="jobCategory : ${jobCategories}"
+                                                                th:value="${jobCategory.id}"
+                                                                th:selected="${detail.jobCategoryIds.contains(jobCategory.id)}">
+                                                            [[${jobCategory.name}]]
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xl-6">
+                                                <div class="submit-field">
+                                                    <h5>Skills</h5>
+
+                                                    <div class="tags-container" id="tags-element">
+                                                        <div class="tag" th:each="skill : ${skills}">
+                                                            <input type="checkbox"
+                                                                   name="skills"
+                                                                   onclick="changeSkills()"
+                                                                   th:checked="${detail.skillIds.contains(skill.id)}"
+                                                                   th:id="${'tag' + skill.id}"
+                                                                   th:value="${skill.id}"/>
+                                                            <label th:for="${'tag' + skill.id}" th:text="${skill.name}"></label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="skills-group">
+                                                        <input th:each="skill : ${detail.skillIds}" th:value="${skill}"
+                                                               type="hidden" name="skillIds[]">
                                                     </div>
                                                 </div>
                                             </div>
@@ -215,13 +228,13 @@
                                             <div class="col-xl-6">
                                                 <div class="submit-field">
                                                     <h5>Phone</h5>
-                                                    <input type="text" th:field="*{phone}" class="with-border">
+                                                    <input type="text" th:field="*{phone}" class="with-border" required>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6">
                                                 <div class="submit-field">
                                                     <h5>Address</h5>
-                                                    <input type="text" th:field="*{address}" class="with-border">
+                                                    <input type="text" th:field="*{address}" class="with-border" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -239,7 +252,7 @@
                                                     <h5>Nationality</h5>
                                                     <select th:field="*{nationality}" th:value="${detail.nationality}"
                                                             class="selectpicker with-border" data-size="7"
-                                                            title="Select Job Type" data-live-search="true">
+                                                            title="Select Nationality" data-live-search="true">
                                                         <option value="AR">Argentina</option>
                                                         <option value="AM">Armenia</option>
                                                         <option value="AW">Aruba</option>
@@ -339,15 +352,6 @@
                                                               class="with-border"></textarea>
                                                 </div>
                                             </div>
-
-                                            <div class="col-xl-12">
-                                                <div class="submit-field">
-                                                    <h5>Social Profile</h5>
-                                                    <textarea th:field="*{socialProfiles}" cols="30" rows="5"
-                                                              class="with-border"></textarea>
-                                                </div>
-                                            </div>
-
                                         </div>
                                     </li>
                                 </ul>
@@ -366,34 +370,21 @@
 
                             <div class="content with-padding">
                                 <div class="row">
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-6">
                                         <div class="submit-field">
                                             <h5>Current Password</h5>
                                             <input th:field="*{password}" type="password" class="with-border">
+
+                                            <p th:text="${errorMessage}" class="color-red"></p>
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-6">
                                         <div class="submit-field">
                                             <h5>New Password</h5>
-                                            <input type="password" class="with-border">
+                                            <input th:field="*{newPassword}" type="password" class="with-border">
                                         </div>
                                     </div>
-
-                                    <div class="col-xl-4">
-                                        <div class="submit-field">
-                                            <h5>Repeat New Password</h5>
-                                            <input type="password" class="with-border">
-                                        </div>
-                                    </div>
-
-                                    <!--                                    <div class="col-xl-12">-->
-                                    <!--                                        <div class="checkbox">-->
-                                    <!--                                            <input type="checkbox" id="two-step" checked>-->
-                                    <!--                                            <label for="two-step"><span class="checkbox-icon"></span> Enable Two-Step-->
-                                    <!--                                                Verification via Email</label>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -418,29 +409,146 @@
     <!-- Dashboard Content / End -->
 </div>
 <script layout:fragment="js">
-    $('.file-upload').on('change', function () {
-        var fileUpload = $('.file-upload')[0].files;
-        var fd = new FormData();
-        if (fileUpload.length > 0) {
-            fd.append("file", fileUpload[0]);
+    let skillIds = [];
+
+    function changeJobCategory() {
+        const change = $('[name="jobCategoryIds"]').val();
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '/api/skills',
+            data: {
+                page: 1,
+                size: 100,
+                jobCategories: change.join(',')
+            },
+            success: function (res) {
+                document.getElementById("tags-element").innerHTML = "";
+                $('.skills-group').html('');
+
+                const allSkillIds = res.data.content.map(e => e.id);
+                skillIds = skillIds.filter(value => allSkillIds.includes(value));
+
+                $.each(res.data.content, function (index, value) {
+                    if (res.data.content !== []) {
+                        const isAlive = skillIds.indexOf(value.id) >= 0;
+
+                        if (isAlive) {
+                            $('.skills-group').append(`
+                                <input value="${value.id}" type="hidden" name="skillIds[]">
+                           `);
+                        }
+                        document.getElementById("tags-element").innerHTML += `
+                            <div class="tag">
+                                <input type="checkbox"
+                                       name="skills"
+                                       id="tag${index}"
+                                       ${isAlive ? 'checked' : ''}
+                                       value="${value.id}"
+                                       onclick="changeSkills()"/>
+                                <label for="tag${index}">${value.name}</label>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        })
+    }
+
+    function changeSkills() {
+        $('.skills-group').html('');
+        skillIds = [];
+
+        $('[name="skills"]:checked').each((index, element) => {
+            skillIds.push(parseInt($(element).val(), 10));
+
+            $('.skills-group').append(`
+                <input value="${$(element).val()}" type="hidden" name="skillIds[]">
+           `);
+        });
+    }
+
+    $(document).ready(function () {
+        $('[name="skillIds[]"]').each((index, element) => {
+            skillIds.push(parseInt($(element).val(), 10));
+        });
+
+        $('.remove-attachment').on('click', function () {
+            $(this).parent().closest('.attachment-box').remove();
+        });
+
+        $('[name="attachmentFiles"]').on('change', function () {
+            const fd = new FormData();
+
+            $.each($(this)[0].files, function(i, file) {
+                fd.append('files', file);
+            });
+
             $.ajax({
                 type: 'POST',
                 data: fd,
                 contentType: false,
                 processData: false,
-                url: '/api/job-proposals/resume',
+                url: '/api/job-proposals/resumes',
                 headers: {
                     [$('[name="_csrf_header"]').attr('content')]: $('[name="_csrf"]').attr('content')
                 },
                 enctype: 'multipart/form-data',
                 success: function (res) {
-                    $('#imghidden').val(res.data.path);
+                    const { length } = $('.attachments-container').children();
+
+                    res.data.forEach((e, index) => {
+                        const name = e.name.substr(0, e.name.lastIndexOf('.'));
+
+                        $('.attachments-container').append(`
+                            <div class="attachment-box ripple-effect">
+                                <span>${name}</span>
+                                <button type="button"
+                                        class="remove-attachment"
+                                        data-tippy-placement="top"
+                                        title="Remove"></button>
+                                <input type="hidden" value="${e.url}">
+                                <input type="hidden"
+                                       name="attachmentsDecoded[${length + index}].name"
+                                       value="${name}">
+                                <input type="hidden"
+                                       name="attachmentsDecoded[${length + index}].url"
+                                       value="${e.path}">
+                            </div>
+                        `);
+                    });
                 }, error: function (error) {
                     console.log('error ', error)
                 }
             });
-        }
-    })
+        });
+
+        $('.file-upload').on('change', function () {
+            var fileUpload = $(this)[0].files;
+            var fd = new FormData();
+
+            if (fileUpload.length > 0) {
+                fd.append('file', fileUpload[0]);
+                $.ajax({
+                    type: 'POST',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    url: '/api/job-proposals/resume',
+                    headers: {
+                        [$('[name="_csrf_header"]').attr('content')]: $('[name="_csrf"]').attr('content')
+                    },
+                    enctype: 'multipart/form-data',
+                    success: function (res) {
+                        $('#imghidden').val(res.data.path);
+                    }, error: function (error) {
+                        console.log('error ', error)
+                    }
+                });
+            }
+        });
+    });
 </script>
 </body>
 </html>

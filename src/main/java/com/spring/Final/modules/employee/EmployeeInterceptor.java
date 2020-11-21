@@ -1,9 +1,11 @@
 package com.spring.Final.modules.employee;
 
-import com.spring.Final.core.common.ApiUtils;
-import com.spring.Final.core.common.JwtHelper;
 import com.spring.Final.core.exceptions.UnauthorizedException;
 import com.spring.Final.core.helpers.PermissionHelper;
+import com.spring.Final.modules.auth.CustomUserDetails;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,15 +17,18 @@ import java.util.Map;
 @Component
 public class EmployeeInterceptor implements HandlerInterceptor {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = ApiUtils.getRequestToken(request);
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (token != null) {
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Map<String, String[]> validPaths = new HashMap<>();
             validPaths.put("/api/job-proposals", new String[]{"POST"});
             validPaths.put("/api/job-proposals/resume", new String[]{"POST"});
+            validPaths.put("/api/reviews/employers", new String[]{"POST"});
+            validPaths.put("/dashboard/employee/profile", new String[]{"GET", "POST"});
 
-            String subject = (String) JwtHelper.validateToken(token).get("subject");
+            CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+            String subject = (String) user.getInformation().get("role");
             String path = request.getRequestURI();
             String method = request.getMethod();
 
