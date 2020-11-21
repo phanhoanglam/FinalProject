@@ -183,6 +183,10 @@
     </a>
 </div>
 
+<div layout:fragment="footer">
+    <div th:replace="client/fragments/footer1.html :: div#footer"></div>
+</div>
+
 <script layout:fragment="libraries" src="https://js.stripe.com/v3/"></script>
 <script layout:fragment="js">
     let clientSecret;

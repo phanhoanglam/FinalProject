@@ -4,7 +4,9 @@
     <title>Title</title>
 </head>
 <body>
-<div class="single-page-header freelancer-header" data-background-image="http://www.vasterad.com/themes/hireo/images/single-freelancer.jpg" layout:fragment="titlebar">
+<div class="single-page-header freelancer-header"
+	 data-background-image="http://www.vasterad.com/themes/hireo/images/single-freelancer.jpg"
+	 layout:fragment="titlebar">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
@@ -219,6 +221,10 @@
 		</div>
 
 	</div>
+</div>
+
+<div layout:fragment="footer">
+	<div th:replace="client/fragments/footer1.html :: div#footer"></div>
 </div>
 </body>
 </html>
