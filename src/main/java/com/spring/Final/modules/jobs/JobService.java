@@ -203,6 +203,10 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         return new ManageCandidatesData(jobManage, this.jobProposalService.listByJob(data));
     }
 
+    public long countByEmployer(int employerId) {
+        return this.repository.countByEmployer(employerId);
+    }
+
     private JobEntity convertToEntity(JobDTO data) throws IOException {
         this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
         JobEntity job = this.modelMapper.map(data, JobEntity.class);
