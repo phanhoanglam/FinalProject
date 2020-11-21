@@ -62,6 +62,10 @@
 												<h4>
 													<a th:href="${'/employers/' + proposal.employee.slug}">
 														[[${proposal.employee.firstName + ' ' + proposal.employee.lastName}]]
+														<img th:if="${proposal.employee.nationality != null}"
+															 class="flag"
+															 th:src="${'/client/images/flags/' + proposal.employee.nationality.toLowerCase() + '.svg'}"
+															 alt="" th:title="${countries.get(proposal.employee.nationality)}" data-tippy-placement="top">
 														<!--<img class="flag" src="images/flags/au.svg" alt="" title="Australia" data-tippy-placement="top">-->
 													</a>
 													<th:inline th:switch="${proposal.status.toString()}">

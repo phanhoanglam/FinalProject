@@ -8,6 +8,7 @@ import com.spring.Final.modules.job_proposal.projections.JobProposalList;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
 import com.spring.Final.modules.jobs.dtos.SearchJobDTO;
 import com.spring.Final.modules.jobs.projections.*;
+import com.spring.Final.modules.shared.data.Countries;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -84,6 +85,7 @@ public class JobClientController {
         modelView.addAttribute("detail", data.getJobDetails());
         modelView.addAttribute("proposal", data.getProposal());
         modelView.addAttribute("listSimilar", data.getJobLists());
+        modelView.addAttribute("countries", Countries.getCountries());
 
         return "client/modules/jobs/detail";
     }
@@ -175,6 +177,7 @@ public class JobClientController {
         ManageCandidatesData data = service.listProposals(slug);
         modelView.addAttribute("list", data.getList());
         modelView.addAttribute("job", data.getJob());
+        modelView.addAttribute("countries", Countries.getCountries());
 
         return "client/modules/jobs/manage-candidates";
     }

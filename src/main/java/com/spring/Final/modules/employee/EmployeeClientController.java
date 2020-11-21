@@ -8,6 +8,7 @@ import com.spring.Final.modules.employee.projections.ProfilePageData;
 import com.spring.Final.modules.employee.dtos.SearchEmployeeDTO;
 import com.spring.Final.modules.employee.projections.EmployeeDetailData;
 import com.spring.Final.modules.employee.projections.ListEmployeesData;
+import com.spring.Final.modules.shared.data.Countries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -48,6 +49,7 @@ public class EmployeeClientController {
         modelView.addAttribute("list", data.getList());
         modelView.addAttribute("skills", data.getSkills());
         modelView.addAttribute("searchJobDTO", dto);
+        modelView.addAttribute("countries", Countries.getCountries());
         String url = General.ConvertURL(dto);
         modelView.addAttribute("url", url);
 
@@ -61,6 +63,7 @@ public class EmployeeClientController {
         modelView.addAttribute("detail", data.getEmployeeDetail());
         modelView.addAttribute("history", data.getEmploymentHistory());
         modelView.addAttribute("reviews", data.getReviewList());
+        modelView.addAttribute("countries", Countries.getCountries());
 
         return "client/modules/employees/detail";
     }
@@ -73,6 +76,7 @@ public class EmployeeClientController {
         ProfilePageData data = employeeService.getProfile(id);
         modelView.addAttribute("skills", data.getSkills());
         modelView.addAttribute("jobCategories", data.getJobCategories());
+        modelView.addAttribute("countries", Countries.getCountries());
 
         if (!modelView.containsAttribute("detail")) {
             modelView.addAttribute("detail", data.getEmployeeProfile());
