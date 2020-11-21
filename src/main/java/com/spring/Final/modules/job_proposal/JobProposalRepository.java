@@ -1,6 +1,7 @@
 package com.spring.Final.modules.job_proposal;
 
 import com.spring.Final.modules.job_proposal.projections.EmploymentHistory;
+import com.spring.Final.modules.job_proposal.projections.JobProposalEmployee;
 import com.spring.Final.modules.jobs.JobEntity;
 import com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,9 @@ public interface JobProposalRepository extends JpaRepository<JobProposalEntity, 
             "com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.FAILED," +
             "com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.SUCCEEDED)")
     List<EmploymentHistory> findEmploymentHistory(int employeeId);
+
+    @Query(value = "select jp from JobProposal jp where jp.employee.id = ?1")
+    Page<JobProposalEntity> findJobProposalByEmployeeId(Pageable pageable, int employeeId);
 
     @Query("select count(jp) from JobProposal jp where jp.job.id = ?1 and jp.status <> com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus.REJECTED")
     long countByJob(int jobId);
