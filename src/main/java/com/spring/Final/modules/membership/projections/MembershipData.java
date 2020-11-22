@@ -12,9 +12,12 @@ public class MembershipData {
 
     private float VATRate;
 
-    public MembershipData(List<MembershipDetail> listMonthly, List<MembershipDetail> listYearly, float VATRate) {
+    private boolean alreadyRegistered;
+
+    public MembershipData(List<MembershipDetail> listMonthly, List<MembershipDetail> listYearly, float VATRate, boolean alreadyRegistered) {
         this.listMonthly = listMonthly;
         this.listYearly = listYearly;
         this.VATRate = VATRate;
+        this.alreadyRegistered = alreadyRegistered;
     }
 }
