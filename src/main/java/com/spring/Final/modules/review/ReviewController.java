@@ -28,12 +28,7 @@ public class ReviewController extends ApiController {
     }
 
     @PostMapping("/employers")
-    public ResponseEntity<ApiResult> reviewEmployer(@Valid @RequestBody ReviewEmployerDTO model, Authentication authentication) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        model.setEmployeeId((int) user.getInformation().get("id"));
-        System.out.println(model);
-        System.out.println("=======================================================================================================================");
-
+    public ResponseEntity<ApiResult> reviewEmployer(@Valid @RequestBody ReviewEmployerDTO model) {
         ReviewList review = this.service.reviewEmployer(model);
 
         return buildResponse(review);

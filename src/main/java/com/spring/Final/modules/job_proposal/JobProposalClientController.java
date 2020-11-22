@@ -2,6 +2,7 @@ package com.spring.Final.modules.job_proposal;
 
 import com.spring.Final.modules.auth.CustomUserDetails;
 import com.spring.Final.modules.job_proposal.projections.JobProposalEmployee;
+import com.spring.Final.modules.shared.data.Countries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Controller
 @CrossOrigin
-@RequestMapping("dashboard/job-proposals")
+@RequestMapping("/dashboard")
 public class JobProposalClientController {
     @Autowired
     private JobProposalService service;
@@ -24,16 +25,19 @@ public class JobProposalClientController {
     public String listByEmployee(Model modelView,
                                  Authentication authentication,
                                  @RequestParam(defaultValue = "1") int page,
-                                 @RequestParam(defaultValue = "12") int size
+                                 @RequestParam(defaultValue = "8") int size
     ) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         int id = (int) user.getInformation().get("id");
+
         Page<JobProposalEmployee> list = service.listJobByEmployee(page, size, id);
         modelView.addAttribute("list", list);
+        modelView.addAttribute("countries", Countries.getCountries());
+
         return "client/modules/jobs/manage-proposals";
     }
 
-    @GetMapping("/accept/{id}")
+    @GetMapping("/job-proposals/accept/{id}")
     public String accept(
             @PathVariable(value = "id") int id,
             HttpServletRequest request
@@ -43,7 +47,7 @@ public class JobProposalClientController {
         return "redirect:" + request.getHeader("Referer");
     }
 
-    @GetMapping("/reject/{id}")
+    @GetMapping("/job-proposals/reject/{id}")
     public String reject(
             @PathVariable(value = "id") int id,
             HttpServletRequest request
@@ -53,7 +57,7 @@ public class JobProposalClientController {
         return "redirect:" + request.getHeader("Referer");
     }
 
-    @GetMapping("/fail/{id}")
+    @GetMapping("/job-proposals/fail/{id}")
     public String setFailed(
             @PathVariable(value = "id") int id,
             HttpServletRequest request

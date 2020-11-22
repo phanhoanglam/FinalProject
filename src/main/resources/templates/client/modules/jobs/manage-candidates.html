@@ -54,7 +54,10 @@
 											<!-- Avatar -->
 											<div class="freelancer-avatar">
 												<div class="verified-badge"></div>
-												<a th:href="${'/employers' + proposal.employee.slug}"><img th:src="${proposal.employee.avatar}" alt=""></a>
+
+												<a th:href="${'/employers' + proposal.employee.slug}">
+													<img th:src="${proposal.employee.avatar}" alt="">
+												</a>
 											</div>
 
 											<!-- Name -->
@@ -65,8 +68,7 @@
 														<img th:if="${proposal.employee.nationality != null}"
 															 class="flag"
 															 th:src="${'/client/images/flags/' + proposal.employee.nationality.toLowerCase() + '.svg'}"
-															 alt="" th:title="${countries.get(proposal.employee.nationality)}" data-tippy-placement="top">
-														<!--<img class="flag" src="images/flags/au.svg" alt="" title="Australia" data-tippy-placement="top">-->
+															 th:title="${countries.get(proposal.employee.nationality)}" data-tippy-placement="top">
 													</a>
 													<th:inline th:switch="${proposal.status.toString()}">
                                                         <span th:case="'PENDING'" class="dashboard-status-button yellow">[[${proposal.status}]]</span>
@@ -171,7 +173,7 @@
                     <!-- Welcome Text -->
                     <div class="welcome-text">
                         <h3>Leave a Review</h3>
-                        <span>Rate <a href="#" class="review--employee-info"></a> for the job <a th:href="${'/dashboard/manage-jobs/' + job.slug}" target="_blank">[[${job.name}]]</a></span>
+                        <span>Rate <a href="#" class="review--employee-info" target="_blank"></a> for the job <a th:href="${'/dashboard/manage-jobs/' + job.slug}" target="_blank">[[${job.name}]]</a></span>
                     </div>
 
                     <!-- Form -->
@@ -207,28 +209,27 @@
                         <div class="feedback-yes-no">
                             <strong>Your Rating</strong>
                             <div class="leave-rating">
-                                <input type="radio" name="rating" id="rating-radio-1" value="1" required>
-                                <label for="rating-radio-1" class="icon-material-outline-star"></label>
-                                <input type="radio" name="rating" id="rating-radio-2" value="2" required>
-                                <label for="rating-radio-2" class="icon-material-outline-star"></label>
-                                <input type="radio" name="rating" id="rating-radio-3" value="3" required>
-                                <label for="rating-radio-3" class="icon-material-outline-star"></label>
-                                <input type="radio" name="rating" id="rating-radio-4" value="4" required>
-                                <label for="rating-radio-4" class="icon-material-outline-star"></label>
-                                <input type="radio" name="rating" id="rating-radio-5" value="5" required>
-                                <label for="rating-radio-5" class="icon-material-outline-star"></label>
+								<input type="radio" name="rating" id="rating-5" value="5" required>
+								<label for="rating-5" class="icon-material-outline-star"></label>
+
+								<input type="radio" name="rating" id="rating-4" value="4" required>
+								<label for="rating-4" class="icon-material-outline-star"></label>
+
+								<input type="radio" name="rating" id="rating-3" value="3" required>
+								<label for="rating-3" class="icon-material-outline-star"></label>
+
+								<input type="radio" name="rating" id="rating-2" value="2" required>
+								<label for="rating-2" class="icon-material-outline-star"></label>
+
+								<input type="radio" name="rating" id="rating-1" value="1" required>
+								<label for="rating-1" class="icon-material-outline-star"></label>
                             </div>
 							<div class="clearfix"></div>
                         </div>
 
                         <textarea class="with-border" placeholder="Comment" name="message" id="message" cols="7" required></textarea>
 
-						<div class="error-message">
-<!--							<div class="notification error closeable margin-top-15">-->
-<!--								<p>Please fill in all the fields required</p>-->
-<!--								<a class="close"></a>-->
-<!--							</div>-->
-						</div>
+						<div class="error-message"></div>
 
 						<button class="button full-width button-sliding-icon ripple-effect"
 								type="submit"
@@ -278,6 +279,7 @@
 					window.location.reload();
 				},
 				error: function (a, b, c) {
+					alert('An error has occurred!');
 					console.log(a, b, c);
 				},
 			});
