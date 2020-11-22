@@ -81,10 +81,17 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         );
     }
 
-    public HomepageData listMaps(int pageNumber, int size, SearchJobDTO model, int uid) {
-        EmployeeProfile employee = employeeService.getById(uid);
-        model.setLocation(employee.getAddress());
-
+    public JobMapsData listMaps(int pageNumber, int size, SearchJobDTO model, int uid, String role) {
+        String currentLocation = "";
+        if (role.contains("employer")) {
+            EmployerProfile employer = employerService.getById(uid);
+            model.setLocation(employer.getAddress());
+            currentLocation = employer.getAddressLocation().getX() + "," + employer.getAddressLocation().getY();
+        }else{
+            EmployeeProfile employee = employeeService.getById(uid);
+            model.setLocation(employee.getAddress());
+            currentLocation = employee.getAddressLocation().getX() + "," + employee.getAddressLocation().getY();
+        }
         JobSpecification search = new JobSpecification(model);
 
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -93,11 +100,12 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
                 .map(e -> this.modelMapper.map(e, JobList.class))
                 .collect(Collectors.toList());
 
-        return new HomepageData(
+        return new JobMapsData(
                 jobCategoryService.findAllAsNameOnly(),
                 jobTypeService.findAllAsNameOnly(),
                 skillService.findAllAsNameOnly(1, 100, model.getJobCategories().stream().mapToInt(i -> i).toArray()),
-                new PageImpl<>(resultList, results.getPageable(), results.getTotalElements())
+                new PageImpl<>(resultList, results.getPageable(), results.getTotalElements()),
+                currentLocation
         );
     }
 

@@ -1,5 +1,7 @@
 package com.spring.Final.modules.jobs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.spring.Final.core.common.General;
 import com.spring.Final.core.exceptions.InvalidAddressException;
 import com.spring.Final.core.infrastructure.ApiResult;
@@ -65,13 +67,16 @@ public class JobClientController {
                            SearchJobDTO dto
     ) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        String role = (String) user.getInformation().get("role");
         int id = (int) user.getInformation().get("id");
-        HomepageData data = service.listMaps(page, size, dto, id);
+
+        JobMapsData data = service.listMaps(page, size, dto, id, role);
         modelView.addAttribute("jobCategories", data.getJobCategories());
         modelView.addAttribute("jobTypes", data.getJobTypes());
         modelView.addAttribute("list", data.getList());
         modelView.addAttribute("skills", data.getSkills());
         modelView.addAttribute("searchJobDTO", dto);
+        modelView.addAttribute("currentLocation", data.getCurrentLocation());
         String url = General.ConvertURL(dto);
         modelView.addAttribute("url", url);
 

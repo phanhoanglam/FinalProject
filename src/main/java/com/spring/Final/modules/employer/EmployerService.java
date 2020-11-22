@@ -6,6 +6,8 @@ import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
+import com.spring.Final.modules.employee.EmployeeEntity;
+import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employer.projections.EmployerDetail;
 import com.spring.Final.modules.employer.projections.EmployerDetailData;
 import com.spring.Final.modules.employer.projections.EmployerList;
@@ -155,5 +157,11 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         this.repository.save(employer);
 
         return true;
+    }
+
+    public EmployerProfile getById(int id) {
+        EmployerEntity employer = this.repository.findById(id).get();
+
+        return this.modelMapper.map(employer, EmployerProfile.class);
     }
 }

@@ -16,6 +16,7 @@ public class JobList {
     private BigDecimal salaryFrom;
     private BigDecimal salaryTo;
     private HashMap<String, Double> addressLocation;
+    private String location;
     private Date createdAt;
 
     private JobType jobType;
@@ -26,7 +27,12 @@ public class JobList {
             this.addressLocation = new HashMap<>();
             this.addressLocation.put("x", point.getX());
             this.addressLocation.put("y", point.getY());
+            this.location = point.getX() + "," + point.getY();
         }
+    }
+
+    public String getAddressLocation() {
+        return addressLocation.get("x") + "," + addressLocation.get("y");
     }
 }
 
