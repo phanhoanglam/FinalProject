@@ -222,7 +222,7 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         return this.repository.save(employee);
     }
 
-    public EmployeeProfile getById(int id) {
+    public EmployeeProfile getOnlyProfile(int id) {
         EmployeeEntity employee = this.repository.findById(id).get();
 
         return this.modelMapper.map(employee, EmployeeProfile.class);

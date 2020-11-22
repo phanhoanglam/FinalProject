@@ -144,7 +144,7 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
                     ReviewList reviewList = this.modelMapper.map(e, ReviewList.class);
 
                     if (e.getUserType() == UserType.EMPLOYEE) {
-                        EmployeeProfile employee = this.employeeService.getById(e.getUserId());
+                        EmployeeProfile employee = this.employeeService.getOnlyProfile(e.getUserId());
 
                         User user = this.modelMapper.map(employee, User.class);
                         user.setName(employee.getFirstName() + " " + employee.getLastName());
@@ -152,7 +152,7 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
 
                         reviewList.setFromUser(user);
                     } else {
-                        EmployerProfile employer = this.employerService.getProfile(e.getUserId());
+                        EmployerProfile employer = this.employerService.getOnlyProfile(e.getUserId());
 
                         User user = this.modelMapper.map(employer, User.class);
                         user.setType(UserType.EMPLOYEE);
