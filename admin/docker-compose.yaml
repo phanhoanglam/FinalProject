@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  # container for API
+  server:
+#    image: kun391/phpup:3.0
+    build: .
+    ports:
+      - 9000:80
+      - 6001:6001
+    volumes:
+      - ./docker-config/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - .:/var/www/app

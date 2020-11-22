@@ -63,7 +63,7 @@
 									<div class="detail-item"><a th:href="${'/employers/' + item.employerSlug}"><i class="icon-material-outline-business"></i> [[${item.employerName}]]</a></div>
 									<div class="detail-item">
 										<i class="icon-material-outline-date-range"></i>
-										[[${#dates.format(item.startedAt, 'MMMM yyyy')}]] - [[${item.endedAt != null ? #dates.format(review.endedAt, 'MMMM yyyy') : 'Now'}]]
+										[[${#dates.format(item.startedAt, 'MMMM yyyy')}]] - [[${item.endedAt != null ? #dates.format(item.endedAt, 'MMMM yyyy') : 'Now'}]]
 									</div>
 								</div>
 <!--								<div class="item-description">-->
