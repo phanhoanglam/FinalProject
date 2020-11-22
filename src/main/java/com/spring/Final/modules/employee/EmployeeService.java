@@ -145,6 +145,10 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         data.setJobDoneOnTime(this.reviewService.countJobDoneOnTime(data.getId()));
         data.setJobDoneOnBudget(this.reviewService.countJobDoneOnBudget(data.getId()));
 
+        if (employee.getAttachments() != null) {
+            data.setAttachmentsDecoded((ArrayList<File>) CommonHelper.parseJSON(employee.getAttachments(), new ArrayList<>()));
+        }
+
         return new EmployeeDetailData(
                 data,
                 this.jobProposalService.getEmploymentHistory(data.getId()),

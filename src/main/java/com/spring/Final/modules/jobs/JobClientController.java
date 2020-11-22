@@ -86,7 +86,6 @@ public class JobClientController {
         modelView.addAttribute("proposal", data.getProposal());
         modelView.addAttribute("listSimilar", data.getJobLists());
         modelView.addAttribute("countries", Countries.getCountries());
-        modelView.addAttribute("jobStatus", data.getJobDetails().getStatus());
 
         return "client/modules/jobs/detail";
     }
