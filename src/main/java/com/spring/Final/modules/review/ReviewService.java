@@ -7,8 +7,6 @@ import com.spring.Final.modules.employee.EmployeeService;
 import com.spring.Final.modules.employer.EmployerService;
 import com.spring.Final.modules.job_proposal.JobProposalEntity;
 import com.spring.Final.modules.job_proposal.JobProposalService;
-import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
-import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
 import com.spring.Final.modules.notification.NotificationService;
 import com.spring.Final.modules.review.dtos.ReviewEmployeeDTO;
 import com.spring.Final.modules.review.dtos.ReviewEmployerDTO;
@@ -87,23 +85,24 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
 
     @Transactional
     public ReviewList reviewEmployer(ReviewEmployerDTO data) {
-        JobProposalDetailExistence2 jobProposal = this.jobProposalService.findByEmployerAndEmployee(data.getEmployerId(), data.getEmployeeId());
+        JobProposalEntity jobProposal = this.jobProposalService.getOne(data.getJobProposalId());
 
         if (jobProposal == null) {
             throw new ResourceNotFoundException();
+        } else if (jobProposal.getStatus() == JobProposalStatus.PENDING || jobProposal.getStatus() == JobProposalStatus.REJECTED) {
+            throw new BadRequestException("Status of job proposal is invalid");
         }
         int userId = jobProposal.getEmployee().getId();
         int toUserId = jobProposal.getJob().getEmployer().getId();
         UserType userType = UserType.EMPLOYEE;
         UserType toUserType = UserType.EMPLOYER;
 
+        if (this.repository.findTopByJobProposalAndUserIdAndUserType(jobProposal, userId, userType) != null) {
+            throw new ExistingReviewException();
+        }
         this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
         ReviewEntity review = this.modelMapper.map(data, ReviewEntity.class);
 
-        JobProposalEntity jp = new JobProposalEntity();
-        jp.setId(jobProposal.getId());
-
-        review.setJobProposal(jp);
         review.setUserId(userId);
         review.setUserType(userType);
         review.setToUserId(toUserId);
@@ -111,7 +110,7 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         review = this.repository.save(review);
 
         this.employerService.updateRating(
-                jobProposal.getEmployee().getId(),
+                jobProposal.getJob().getEmployer().getId(),
                 this.repository.recalculateRating(toUserId, toUserType)
         );
 
@@ -121,7 +120,7 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
     }
 
     public boolean roleHasReview(UserType userType, JobProposalEntity jobProposal) {
-        ReviewEntity review = this.repository.findByUserTypeAndJobProposal(userType, jobProposal);
+        ReviewEntity review = this.repository.findTopByUserTypeAndJobProposal(userType, jobProposal);
 
         return review != null;
     }

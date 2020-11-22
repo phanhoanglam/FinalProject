@@ -22,6 +22,18 @@
 <!--                        <li><a href="dashboard-reviews.html"><i class="icon-material-outline-rate-review"></i>Reviews</a></li>-->
                     </ul>
 
+                    <ul data-submenu-title="Organize and Manage" th:if="${role == 'employee'}">
+                        <li class="active-submenu">
+                            <a href="#">
+                                <i class="icon-material-outline-business-center"></i>
+                                Proposals
+                            </a>
+                            <ul>
+                                <li><a href="/dashboard/manage-proposals">Manage Proposals</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
                     <ul data-submenu-title="Organize and Manage" th:if="${role == 'employer'}">
                         <li class="active-submenu">
                             <a href="#">

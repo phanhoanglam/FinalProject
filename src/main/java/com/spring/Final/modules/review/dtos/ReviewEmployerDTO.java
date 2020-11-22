@@ -10,11 +10,11 @@ import java.io.Serializable;
 
 @Data
 public class ReviewEmployerDTO implements Serializable {
-    @Positive
-    @NotNull(message = "Job is required")
-	private int employerId;
+    private int employerId;
 
-	private int employeeId;
+    @Positive
+    @NotNull(message = "Job proposal is required")
+    private int jobProposalId;
 
     @Min(1)
     @Max(5)
