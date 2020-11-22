@@ -41,7 +41,7 @@
 			<!-- Page Content -->
 			<div class="single-page-section">
 				<h3 class="margin-bottom-25">About Me</h3>
-				<div th:utext="${detail.description}"></div>
+				<div th:utext="${detail.description ?: 'This man keeps a mystery about himself.'}"></div>
 			</div>
 
 			<div class="boxed-list margin-bottom-60">
@@ -49,6 +49,10 @@
 					<h3><i class="icon-material-outline-business"></i> Employment History</h3>
 				</div>
 				<ul class="boxed-list-ul">
+					<li th:if="${history.size() == 0}">
+						No history available
+					</li>
+
 					<li th:each="item : ${history}">
 						<div class="boxed-list-item">
 							<!-- Avatar -->
@@ -63,7 +67,7 @@
 									<div class="detail-item"><a th:href="${'/employers/' + item.employerSlug}"><i class="icon-material-outline-business"></i> [[${item.employerName}]]</a></div>
 									<div class="detail-item">
 										<i class="icon-material-outline-date-range"></i>
-										[[${#dates.format(item.startedAt, 'MMMM yyyy')}]] - [[${item.endedAt != null ? #dates.format(review.endedAt, 'MMMM yyyy') : 'Now'}]]
+										[[${#dates.format(item.startedAt, 'MMMM yyyy')}]] - [[${item.endedAt != null ? #dates.format(item.endedAt, 'MMMM yyyy') : 'Now'}]]
 									</div>
 								</div>
 <!--								<div class="item-description">-->
@@ -76,11 +80,15 @@
 			</div>
 
 			<!-- Boxed List -->
-			<div class="boxed-list margin-bottom-60" th:if="${reviews.size() > 0}">
+			<div class="boxed-list margin-bottom-60">
 				<div class="boxed-list-headline">
 					<h3><i class="icon-material-outline-thumb-up"></i> Work History and Feedback</h3>
 				</div>
 				<ul class="boxed-list-ul">
+					<li th:if="${reviews.size() == 0}">
+						No reviews available
+					</li>
+
 					<li th:each="review : ${reviews}">
 						<div class="boxed-list-item">
 							<!-- Content -->
@@ -103,7 +111,6 @@
 
 			</div>
 			<!-- Boxed List / End -->
-
 		</div>
 
 
@@ -113,13 +120,20 @@
 
 				<!-- Profile Overview -->
 				<div class="profile-overview">
-					<div class="overview-item" th:if="${detail.minHourlyRate > 0}"><strong>$[[${detail.minHourlyRate}]]</strong><span>Hourly Rate</span></div>
-					<div class="overview-item"><strong>[[${detail.jobDoneCount}]]</strong><span>Jobs Done</span></div>
+					<div class="overview-item">
+						<strong>$[[${detail.minHourlyRate}]]</strong>
+						<span>Hourly Rate</span>
+					</div>
+
+					<div class="overview-item">
+						<strong>[[${detail.jobDoneCount}]]</strong>
+						<span>Jobs Done</span>
+					</div>
 <!--					<div class="overview-item"><strong>22</strong><span>Rehired</span></div>-->
 				</div>
 
 				<!-- Freelancer Indicators -->
-				<div class="sidebar-widget" th:if="${detail.jobHiredCount > 0}">
+				<div class="sidebar-widget">
 					<div class="freelancer-indicators">
 
 						<!-- Indicator -->
@@ -154,19 +168,6 @@
 				</div>
 
 				<!-- Widget -->
-<!--				<div class="sidebar-widget">-->
-<!--					<h3>Social Profiles</h3>-->
-<!--					<div class="freelancer-socials margin-top-25">-->
-<!--						<ul>-->
-<!--							<li><a href="#" title="Dribbble" data-tippy-placement="top"><i class="icon-brand-dribbble"></i></a></li>-->
-<!--							<li><a href="#" title="Twitter" data-tippy-placement="top"><i class="icon-brand-twitter"></i></a></li>-->
-<!--							<li><a href="#" title="Behance" data-tippy-placement="top"><i class="icon-brand-behance"></i></a></li>-->
-<!--							<li><a href="#" title="GitHub" data-tippy-placement="top"><i class="icon-brand-github"></i></a></li>-->
-<!--						</ul>-->
-<!--					</div>-->
-<!--				</div>-->
-
-				<!-- Widget -->
 				<div class="sidebar-widget" th:if="${detail.skills.size() > 0}">
 					<h3>Skills</h3>
 					<div class="task-tags">
@@ -177,24 +178,21 @@
 				</div>
 
 				<!-- Widget -->
-<!--				<div class="sidebar-widget">-->
-<!--					<h3>Attachments</h3>-->
-<!--					<div class="attachments-container">-->
-<!--						<a href="#" class="attachment-box ripple-effect"><span>Cover Letter</span><i>PDF</i></a>-->
-<!--						<a href="#" class="attachment-box ripple-effect"><span>Contract</span><i>DOCX</i></a>-->
-<!--					</div>-->
-<!--				</div>-->
+				<div class="sidebar-widget" th:if="${detail.attachmentsDecoded.size() > 0}">
+					<h3>Attachments</h3>
+					<div class="attachments-container">
+						<a th:each="attachment : ${detail.attachmentsDecoded}"
+						   th:href="${attachment.url}"
+						   target="_blank"
+						   class="attachment-box ripple-effect">
+							<span>[[${attachment.name}]]</span>
+						</a>
+					</div>
+				</div>
 
 				<!-- Sidebar Widget -->
 				<div class="sidebar-widget">
 					<h3>Share</h3>
-
-<!--					&lt;!&ndash; Bookmark Button &ndash;&gt;-->
-<!--					<button class="bookmark-button margin-bottom-25">-->
-<!--						<span class="bookmark-icon"></span>-->
-<!--						<span class="bookmark-text">Bookmark</span>-->
-<!--						<span class="bookmarked-text">Bookmarked</span>-->
-<!--					</button>-->
 
 					<!-- Copy URL -->
 					<div class="copy-url">

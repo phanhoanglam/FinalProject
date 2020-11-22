@@ -1,6 +1,7 @@
 package com.spring.Final.modules.employee.projections;
 
 import com.spring.Final.modules.job_proposal.projections.EmploymentHistory;
+import com.spring.Final.modules.shared.specifications.File;
 import com.spring.Final.modules.skill.SkillEntity;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class EmployeeDetail {
     private String nationality;
     private String description;
     private String socialProfiles;
+    private ArrayList<File> attachmentsDecoded = new ArrayList<>();
     private String attachments;
     private float rating;
     private int minHourlyRate;
