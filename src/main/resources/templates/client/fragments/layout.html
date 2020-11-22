@@ -37,6 +37,8 @@
 <script th:src="@{/client/js/magnific-popup.min.js}"></script>
 <script th:src="@{/client/js/slick.min.js}"></script>
 <script th:src="@{/client/js/custom.js}"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1T5A0ce0dJVYavhzTWH4w-yJ243KuTTI&callback=initMap&libraries=&v=weekly" defer></script>
 <script>
     function initMap() {
@@ -59,7 +61,7 @@
     };
 
     const mapConfig = {
-        scrollwheel: false,
+        scrollwheel: true,
         zoomControl: false,
         mapTypeControl: false,
         scaleControl: false,

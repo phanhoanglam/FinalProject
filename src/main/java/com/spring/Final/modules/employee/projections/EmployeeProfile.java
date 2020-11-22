@@ -2,6 +2,7 @@ package com.spring.Final.modules.employee.projections;
 
 import com.spring.Final.modules.shared.specifications.File;
 import lombok.Data;
+import org.locationtech.jts.geom.Point;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class EmployeeProfile implements Serializable {
     private String phone;
     private String avatar;
     private String address;
+    private Point addressLocation;
     private String nationality;
     private String jobTitle;
     private String description;

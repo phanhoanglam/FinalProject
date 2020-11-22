@@ -28,7 +28,8 @@
                     <!-- Category -->
                     <div class="sidebar-widget">
                         <h3>Category</h3>
-                        <select onchange="changeJobCategory()" id="category" class="selectpicker default" multiple name="jobCategories"
+                        <select onchange="changeJobCategory()" id="category" class="selectpicker default" multiple
+                                name="jobCategories"
                                 data-selected-text-format="count" data-size="5" title="All Categories">
                             <option th:each="jobCategory : ${jobCategories}" th:value="${jobCategory.id}"
                                     th:selected="${searchJobDTO.jobCategories.contains(jobCategory.id)}"
@@ -108,7 +109,8 @@
                 <div class="listings-container grid-layout margin-top-35">
 
                     <!-- Job Listing -->
-                    <a th:each="item : ${list}" th:href="${'/job-' + item.slug}" class="job-listing">
+                    <a th:each="item : ${list}" th:href="${'/job-' + item.slug}"
+                       th:attr="data-location=${item.addressLocation}" class="job-listing">
 
                         <!-- Job Listing Details -->
                         <div class="job-listing-details">
@@ -160,7 +162,8 @@
                         <ul>
                             <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
                                 <a th:href="@{'?page=' + ${(list.getPageable().getPageNumber() + 1) - 1} + ${url}}"
-                                   class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+                                   class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a>
+                            </li>
                             <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
                                     th:href="@{'?page=' + ${i} + ${url}}"
                                     th:utext="${i}"
@@ -168,7 +171,8 @@
                             </li>
                             <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
                                 <a th:href="@{'?page=' + ${(list.getPageable().getPageNumber() + 1) + 1} + ${url}}"
-                                   class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+                                   class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
@@ -176,34 +180,7 @@
                 <!-- Pagination / End -->
 
                 <!-- Footer -->
-                <div class="small-footer margin-top-15">
-                    <div class="small-footer-copyrights">
-                        © 2019 <strong>Hireo</strong>. All Rights Reserved.
-                    </div>
-                    <ul class="footer-social-links">
-                        <li>
-                            <a href="#" title="Facebook" data-tippy-placement="top">
-                                <i class="icon-brand-facebook-f"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" title="Twitter" data-tippy-placement="top">
-                                <i class="icon-brand-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" title="Google Plus" data-tippy-placement="top">
-                                <i class="icon-brand-google-plus-g"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" title="LinkedIn" data-tippy-placement="top">
-                                <i class="icon-brand-linkedin-in"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                </div>
+                <div th:replace="client/fragments/footer2.html :: div"></div>
                 <!-- Footer / End -->
 
             </div>
@@ -234,7 +211,7 @@
 </body>
 <script layout:fragment="js">
     function changeJobCategory() {
-        var change = $("#category").val();
+        const change = $("#category").val();
 
         $.ajax({
             type: 'GET',
@@ -260,5 +237,29 @@
             }
         })
     }
+
+    function initMap() {
+        $('.job-listing').each(function () {
+            var attr = $(this).data();
+            const latLng = {lat: parseFloat(attr.location.split(',')[0]), lng: parseFloat(attr.location.split(',')[1])};
+            locations.push(latLng);
+        });
+
+        const currentLocaltion = '[[${currentLocation}]]';
+        const currentLat = currentLocaltion.split(',')[0];
+        const currentLng = currentLocaltion.split(',')[1];
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: { lat: parseFloat(currentLat), lng: parseFloat(currentLng) },
+            ...mapConfig,
+        });
+        for (let i = 0; i < locations.length; i++) {
+            const latLng = new google.maps.LatLng(parseFloat(locations[i].lat), parseFloat(locations[i].lng));
+            initCustomerMarker(latLng, map, {marker_id: '1'});
+        }
+    }
+
+    const locations = [];
 </script>
 </html>

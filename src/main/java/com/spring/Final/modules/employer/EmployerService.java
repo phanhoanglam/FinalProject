@@ -147,6 +147,12 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         return true;
     }
 
+    public EmployerProfile getById(int id) {
+        EmployerEntity employer = this.repository.findById(id).get();
+
+        return this.modelMapper.map(employer, EmployerProfile.class);
+    }
+
     public EmployerMembership getMembership(int employerId) {
         EmployerEntity employer = this.repository.findById(employerId).get();
 

@@ -12403,7 +12403,7 @@ body .pac-container {
 }
 
 /* Cluster styles */
-.cluster img { display:none }
+/*.cluster img { display:none }*/
 
 .cluster-visible {
 	text-align: center;
