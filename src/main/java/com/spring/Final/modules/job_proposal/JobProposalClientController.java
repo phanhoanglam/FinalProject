@@ -66,4 +66,14 @@ public class JobProposalClientController {
 
         return "redirect:" + request.getHeader("Referer");
     }
+
+    @GetMapping("/job-proposals/succeed/{id}")
+    public String setSucceeded(
+            @PathVariable(value = "id") int id,
+            HttpServletRequest request
+    ) {
+        this.service.setSucceeded(id);
+
+        return "redirect:" + request.getHeader("Referer");
+    }
 }

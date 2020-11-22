@@ -19,11 +19,21 @@
 
                     <ul data-submenu-title="Start">
                         <li><a href="/dashboard"><i class="icon-material-outline-dashboard"></i> Dashboard</a></li>
-<!--                        <li><a href="dashboard-reviews.html"><i class="icon-material-outline-rate-review"></i>Reviews</a></li>-->
                     </ul>
 
-                    <ul data-submenu-title="Organize and Manage" th:if="${role == 'employee'}">
-                        <li class="active-submenu">
+                    <ul data-submenu-title="Organize and Manage">
+                        <li th:if="${role == 'employer'}">
+                            <a href="#">
+                                <i class="icon-material-outline-business-center"></i>
+                                Jobs
+                            </a>
+                            <ul>
+                                <li><a href="/dashboard/manage-jobs">Manage Jobs</a></li>
+                                <li><a href="/dashboard/post-job">Post a Job</a></li>
+                            </ul>
+                        </li>
+
+                        <li th:if="${role == 'employee'}">
                             <a href="#">
                                 <i class="icon-material-outline-business-center"></i>
                                 Proposals
@@ -32,17 +42,15 @@
                                 <li><a href="/dashboard/manage-proposals">Manage Proposals</a></li>
                             </ul>
                         </li>
-                    </ul>
 
-                    <ul data-submenu-title="Organize and Manage" th:if="${role == 'employer'}">
-                        <li class="active-submenu">
+                        <li>
                             <a href="#">
                                 <i class="icon-material-outline-business-center"></i>
-                                Jobs
+                                Reviews
                             </a>
                             <ul>
-                                <li><a href="/dashboard/manage-jobs">Manage Jobs</a></li>
-                                <li><a href="/dashboard/post-job">Post a Job</a></li>
+                                <li><a href="/dashboard/reviews">From Others</a></li>
+                                <li><a href="/dashboard/my-reviews">My Reviews</a></li>
                             </ul>
                         </li>
                     </ul>
