@@ -7,7 +7,6 @@ import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.CustomUserDetails;
-import com.spring.Final.modules.employee.EmployeeEntity;
 import com.spring.Final.modules.employee.EmployeeService;
 import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employer.EmployerEntity;
@@ -16,7 +15,6 @@ import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.job_category.JobCategoryService;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.job_proposal.dtos.SearchProposalDTO;
-import com.spring.Final.modules.job_proposal.projections.Employee;
 import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence;
 import com.spring.Final.modules.job_type.JobTypeService;
 import com.spring.Final.modules.jobs.dtos.JobDTO;
@@ -88,7 +86,7 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
             model.setLocation(employer.getAddress());
             currentLocation = employer.getAddressLocation().getX() + "," + employer.getAddressLocation().getY();
         }else{
-            EmployeeProfile employee = employeeService.getById(uid);
+            EmployeeProfile employee = employeeService.getOnlyProfile(uid);
             model.setLocation(employee.getAddress());
             currentLocation = employee.getAddressLocation().getX() + "," + employee.getAddressLocation().getY();
         }
@@ -277,5 +275,15 @@ public class JobService extends ApiService<JobEntity, JobRepository> {
         }
 
         return job;
+    }
+
+    public JobDetail getById(int id) {
+        JobEntity job = this.repository.findById(id).orElse(null);
+
+        if (job == null) {
+            return null;
+        }
+
+        return this.modelMapper.map(job, JobDetail.class);
     }
 }

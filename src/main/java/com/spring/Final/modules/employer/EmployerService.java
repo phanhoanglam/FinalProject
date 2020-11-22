@@ -118,7 +118,7 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         }
     }
 
-    public EmployerProfile getProfile(int id) {
+    public EmployerProfile getOnlyProfile(int id) {
         Optional<EmployerEntity> result = this.repository.findById(id);
 
         return result.map(x -> this.modelMapper.map(x, EmployerProfile.class)).get();

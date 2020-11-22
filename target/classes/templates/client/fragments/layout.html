@@ -211,18 +211,46 @@
 
         new CustomMarker(latlng, map, args);
     }
-</script>
 
-<script>
-    $('#snackbar-user-status label').click(function () {
-        Snackbar.show({
-            text: 'Your status has been changed!',
-            pos: 'bottom-center',
-            showAction: false,
-            actionText: "Dismiss",
-            duration: 3000,
-            textColor: '#fff',
-            backgroundColor: '#383838'
+    function markAsRead(ids, callbackFunc) {
+        $.ajax({
+            type: 'POST',
+            dataType: 'JSON',
+            url: '/api/notifications',
+            contentType: 'application/json',
+            headers: {
+                [$('[name="_csrf_header"]').attr('content')]: $('[name="_csrf"]').attr('content'),
+            },
+            data: JSON.stringify({ ids }),
+            success: function (res) {
+                callbackFunc(res);
+            },
+        });
+    }
+
+    $(document).ready(function () {
+        $('.notifications-not-read a').on('click', function (e) {
+            e.preventDefault();
+            const href = $(this).attr('href');
+            const id = $(this).data('id');
+
+            markAsRead([id], function () {
+                window.location.href = href;
+            });
+        });
+
+        $('.mark-as-read').on('click', function (e) {
+            const ids = [];
+
+            $('.notifications-not-read a').each((index, e) => {
+                ids.push($(e).data('id'));
+            });
+
+            if (ids.length === 0) return;
+
+            markAsRead(ids, function () {
+                $('.header-notifications-scroll ul').html('');
+            });
         });
     });
 </script>
