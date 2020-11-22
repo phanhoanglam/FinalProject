@@ -122,8 +122,17 @@
 														<i class="icon-feather-trash-2"></i>
 													</a>
 
+													<a th:href="${'/dashboard/job-proposals/succeed/' + proposal.id}"
+													   onclick="if (!confirm('Are you sure?')) return false"
+													   class="button gray ripple-effect ico"
+													   title="Set Succeeded"
+													   th:if="${proposal.status.toString() == 'ACCEPTED'}"
+													   data-tippy-placement="top">
+														<i class="icon-feather-check"></i>
+													</a>
+
 													<a th:href="${'/dashboard/job-proposals/fail/' + proposal.id}"
-													   onclick="if (!confirm('Are you sure this employee did not satisfy your requirement?')) return false"
+													   onclick="if (!confirm('Are you sure to remove this employee from your work?')) return false"
 													   class="button gray ripple-effect ico"
 													   title="Set Failed"
 													   th:if="${proposal.status.toString() == 'ACCEPTED'}"

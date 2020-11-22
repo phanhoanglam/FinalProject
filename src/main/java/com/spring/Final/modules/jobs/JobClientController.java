@@ -145,6 +145,9 @@ public class JobClientController {
         if (!modelView.containsAttribute("addressMessage")) {
             modelView.addAttribute("addressMessage", "");
         }
+        if (!modelView.containsAttribute("isFailed")) {
+            modelView.addAttribute("isFailed", false);
+        }
         return "client/modules/jobs/edit-job";
     }
 
@@ -163,6 +166,7 @@ public class JobClientController {
         } catch (InvalidAddressException e) {
             redirectAttributes.addFlashAttribute("addressMessage", "Invalid address");
             redirectAttributes.addFlashAttribute("jobDTO", dto);
+            redirectAttributes.addFlashAttribute("isFailed", true);
 
             return "redirect:" + request.getHeader("Referer");
         }

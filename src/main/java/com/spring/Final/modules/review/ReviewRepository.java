@@ -14,6 +14,8 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
+    Page<ReviewEntity> findAllByUserIdAndUserType(int userId, UserType userType, Pageable pageable);
+
     Page<ReviewEntity> findAllByToUserIdAndToUserType(int userId, UserType userType, Pageable pageable);
 
     List<ReviewEntity> findAllByToUserIdAndToUserType(int userId, UserType userType, Sort sortable);

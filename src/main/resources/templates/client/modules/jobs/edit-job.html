@@ -30,9 +30,11 @@
             <!-- Row -->
             <div class="row">
 
-                <form th:action="${'/dashboard/manage-jobs/' + jobDTO.id}" method="post" th:object="${jobDTO}"
+                <form method="post"
                       id="edit-job-form"
-                      th:data-status="${jobDTO.status}">
+                      th:action="${'/dashboard/manage-jobs/' + jobDTO.id}"
+                      th:object="${jobDTO}"
+                      th:data-status="${jobDTO.status.toString() == 'CLOSED' && isFailed == false}">
                     <!-- Dashboard Box -->
                     <div class="col-xl-12">
                         <div class="dashboard-box margin-top-0">
@@ -238,8 +240,8 @@
     }
 
     $(document).ready(function () {
-        const $form = $('#edit-job-form')
-        const isClosed = $form.data('status') === 'CLOSED';
+        const $form = $('#edit-job-form');
+        const isClosed = $form.data('status') === true;
 
         if (isClosed) {
             $form.find('input').prop('disabled', true);
