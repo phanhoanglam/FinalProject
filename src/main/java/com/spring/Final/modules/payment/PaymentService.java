@@ -12,6 +12,7 @@ import com.spring.Final.modules.payment.exceptions.PaymentFailedException;
 import com.spring.Final.modules.payment.exceptions.SerializeFailedException;
 import com.spring.Final.modules.payment.exceptions.UnhandledEventTypeException;
 import com.spring.Final.modules.payment.projections.CreatedPayment;
+import com.spring.Final.modules.payment.projections.PaymentData;
 import com.spring.Final.modules.shared.enums.payment_status.PaymentStatus;
 import com.spring.Final.modules.shared.enums.payment_status.PaymentStatusAttributeConverter;
 import com.stripe.Stripe;
@@ -51,24 +52,27 @@ public class PaymentService extends ApiService<PaymentEntity, PaymentRepository>
         if (membership == null) {
             throw new ResourceNotFoundException();
         }
+        BigDecimal vatAmount = membership.getPrice().multiply(new BigDecimal(Float.toString(MembershipService.VAT_RATE / 100)));
+        BigDecimal amount = membership.getPrice().add(vatAmount);
+
         try {
             List<Object> paymentMethodTypes = new ArrayList<>();
             paymentMethodTypes.add("card");
 
             Map<String, Object> params = new HashMap<>();
-            params.put("amount", membership.getPrice().multiply(BigDecimal.valueOf(100)));
+            params.put("amount", amount.multiply(BigDecimal.valueOf(100)).toBigInteger());
             params.put("currency", "usd");
             params.put("payment_method_types", paymentMethodTypes);
 
             paymentIntent = PaymentIntent.create(params);
         } catch (StripeException e) {
-            throw new PaymentFailedException();
+            throw new PaymentFailedException(e.getMessage());
         }
         PaymentEntity payment = new PaymentEntity();
         payment.setEmployer(this.employerService.getOne(data.getEmployerId()));
         payment.setMembership(membership);
         payment.setStripeId(paymentIntent.getId());
-        payment.setAmount(membership.getPrice());
+        payment.setAmount(amount);
         payment.setStatus(PaymentStatusAttributeConverter.convertFromStripeStatus(paymentIntent.getStatus()));
         payment.setCreatedAt(CommonHelper.getCurrentTime());
         payment.setUpdatedAt(CommonHelper.getCurrentTime());
@@ -115,5 +119,15 @@ public class PaymentService extends ApiService<PaymentEntity, PaymentRepository>
         result.put("success", true);
 
         return result;
+    }
+
+    public PaymentData getPaymentData(int id) {
+        PaymentEntity payment = this.repository.findById(id).orElse(null);
+
+        if (payment == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        return this.modelMapper.map(payment, PaymentData.class);
     }
 }

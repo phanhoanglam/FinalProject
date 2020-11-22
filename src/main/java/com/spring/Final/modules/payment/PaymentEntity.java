@@ -4,6 +4,7 @@ import com.spring.Final.core.BaseEntity;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.modules.employer.EmployerEntity;
 import com.spring.Final.modules.membership.MembershipEntity;
+import com.spring.Final.modules.membership.MembershipService;
 import com.spring.Final.modules.shared.enums.payment_status.PaymentStatus;
 import com.spring.Final.modules.shared.enums.payment_status.PaymentStatusAttributeConverter;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,9 @@ public class PaymentEntity extends BaseEntity implements Serializable {
 
     @Column(name = "stripe_id", nullable = false)
     private String stripeId;
+
+    @Column(name = "vat_rate", nullable = false)
+    private float VATRate = MembershipService.VAT_RATE;
 
     @Column(name = "amount", columnDefinition = "decimal", scale = 2)
     private BigDecimal amount;

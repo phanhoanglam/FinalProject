@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Hireo Invoice</title>
+    <link rel="stylesheet" th:href="@{/client/css/invoice.css}">
+</head>
+
+<body>
+
+<!-- Print Button -->
+<div class="print-button-container">
+    <a href="javascript:window.print()" class="print-button">Print this invoice</a>
+</div>
+
+<!-- Invoice -->
+<div id="invoice">
+
+    <!-- Header -->
+    <div class="row">
+        <div class="col-xl-6">
+            <div id="logo"><img th:src="@{/client/images/logo.png}" alt=""></div>
+        </div>
+
+        <div class="col-xl-6">
+
+            <p id="details">
+                <strong>Order:</strong> #[[${detail.getOrderId()}]] <br>
+                <strong>Issued:</strong> [[${#dates.format(detail.createdAt, 'dd/MM/yyyy')}]] <br>
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Client & Supplier -->
+    <div class="row">
+        <div class="col-xl-12">
+            <h2>Invoice</h2>
+        </div>
+
+        <div class="col-xl-6">
+            <strong class="margin-bottom-5">Supplier</strong>
+            <p>
+                Hireo Ltd. <br>
+                425 Berry Street, CA 93584, US
+            </p>
+        </div>
+
+        <div class="col-xl-6">
+            <strong class="margin-bottom-5">Customer</strong>
+            <p>
+                [[${detail.employer.name}]] <br>
+                [[${detail.employer.address}]]
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Invoice -->
+    <div class="row">
+        <div class="col-xl-12">
+            <table class="margin-top-20">
+                <tr>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>VAT ([[${detail.VARRateToString()}]]%)</th>
+                    <th>Total</th>
+                </tr>
+
+                <tr>
+                    <td>Standard Plan</td>
+                    <td>$[[${detail.getOriginalAmount().toPlainString()}]]</td>
+                    <td>$[[${detail.getVATAmount().toPlainString()}]]</td>
+                    <td>$[[${detail.amount.toPlainString()}]]</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-xl-4 col-xl-offset-8">
+            <table id="totals">
+                <tr>
+                    <th>Total Due</th>
+                    <th><span>$[[${detail.amount}]]</span></th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <div class="row">
+        <div class="col-xl-12">
+            <ul id="footer">
+                <li><span>www.hireo.com</span></li>
+                <li>service@hireo.com</li>
+                <li>(123) 123-456</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+
+<!-- Mirrored from www.vasterad.com/themes/hireo/pages-invoice-template.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 08 Oct 2020 01:55:12 GMT -->
+</html>
