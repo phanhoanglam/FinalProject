@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div layout:fragment="titlebar">
+    <div id="titlebar" class="gradient">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h2>Error</h2>
+
+                    <!-- Breadcrumbs -->
+                    <nav id="breadcrumbs" class="dark">
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li>400 Bad Request</li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div layout:fragment="body">
+    <!-- Page Content
+    ================================================== -->
+    <!-- Container -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-xl-12">
+
+                <section id="not-found" class="center margin-top-50 margin-bottom-25">
+                    <h2>400 <i class="icon-line-awesome-question-circle"></i></h2>
+                    <p>We're sorry, but information you requested is invalid</p>
+                </section>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- Container / End -->
+
+
+    <!-- Spacer -->
+    <div class="margin-top-70"></div>
+    <!-- Spacer / End-->
+</div>
+
+<div layout:fragment="footer">
+    <div th:replace="client/fragments/footer1.html :: div#footer"></div>
+</div>
+<!--<div th:replace="client/fragments/footer1.html :: div"></div>-->
+</body>
+</html>
