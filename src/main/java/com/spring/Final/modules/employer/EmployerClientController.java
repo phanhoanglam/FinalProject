@@ -33,20 +33,12 @@ public class EmployerClientController {
     }
 
     @GetMapping("/employers/{slug}")
-    public String getDetail(Model modelView, @PathVariable String slug, Authentication authentication) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        int userId = (int) user.getInformation().get("id");
-        String role = (String) user.getInformation().get("role");
-
-        if (role.equals("employer")) {
-            userId = 0;
-        }
-        EmployerDetailData data = this.service.getDetail(slug, userId);
+    public String getDetail(Model modelView, @PathVariable String slug) {
+        EmployerDetailData data = this.service.getDetail(slug);
 
         modelView.addAttribute("detail", data.getEmployerDetail());
         modelView.addAttribute("jobList", data.getJobList());
         modelView.addAttribute("reviewList", data.getReviewList());
-        modelView.addAttribute("allowReview", data.isAllowReview());
         modelView.addAttribute("countries", Countries.getCountries());
 
         return "client/modules/employers/detail";

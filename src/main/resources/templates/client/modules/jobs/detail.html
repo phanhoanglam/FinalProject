@@ -152,12 +152,14 @@
             <div class="col-xl-4 col-lg-4">
                 <div class="sidebar-container">
 
-                    <a th:if="jobStatus == 'OPEN'"
+                    <a th:if="${detail.getStatus().toString() == 'OPEN'}"
                        id="applynow" href="#small-dialog"
                        th:class="${proposal == null ? 'apply-now-button popup-with-zoom-anim' : 'applied'}"
                        th:text="${proposal == null ? 'Apply Now' : 'Applied'}"><i
                             class="icon-material-outline-arrow-right-alt"></i></a>
-                    <a th:if="jobStatus != 'OPEN'" class="applied">CLOSED</a>
+
+                    <a th:if="${detail.getStatus().toString() != 'OPEN'}" class="applied">CLOSED</a>
+
                     <!-- Sidebar Widget -->
                     <div class="sidebar-widget">
                         <div class="job-overview">

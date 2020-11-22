@@ -6,14 +6,7 @@ import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.auth.dtos.RegisterDTO;
-import com.spring.Final.modules.employee.EmployeeEntity;
-import com.spring.Final.modules.employee.projections.EmployeeProfile;
-import com.spring.Final.modules.employer.projections.EmployerDetail;
-import com.spring.Final.modules.employer.projections.EmployerDetailData;
-import com.spring.Final.modules.employer.projections.EmployerList;
-import com.spring.Final.modules.employer.projections.EmployerProfile;
-import com.spring.Final.modules.job_proposal.JobProposalService;
-import com.spring.Final.modules.job_proposal.projections.JobProposalDetailExistence2;
+import com.spring.Final.modules.employer.projections.*;
 import com.spring.Final.modules.jobs.JobService;
 import com.spring.Final.modules.jobs.projections.JobManage;
 import com.spring.Final.modules.membership.MembershipEntity;
@@ -41,9 +34,6 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
     @Autowired
     private ReviewService reviewService;
 
-    @Autowired
-    private JobProposalService jobProposalService;
-
     public EmployerService(
             EmployerRepository repository,
             BCryptPasswordEncoder passwordEncoder
@@ -63,19 +53,17 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
     }
 
-    public EmployerDetailData getDetail(String slug, int employeeId) {
+    public EmployerDetailData getDetail(String slug) {
         EmployerEntity employer = this.repository.findBySlug(slug);
 
         if (employer == null) {
             throw new ResourceNotFoundException();
         }
-        JobProposalDetailExistence2 jobProposal = this.jobProposalService.findByEmployerAndEmployee(employer.getId(), employeeId);
 
         return new EmployerDetailData(
                 this.modelMapper.map(employer, EmployerDetail.class),
                 this.jobService.listByEmployer(employer),
-                this.reviewService.listByUser(employer.getId(), UserType.EMPLOYER),
-                jobProposal != null
+                this.reviewService.listByUser(employer.getId(), UserType.EMPLOYER)
         );
     }
 
@@ -163,5 +151,11 @@ public class EmployerService extends ApiService<EmployerEntity, EmployerReposito
         EmployerEntity employer = this.repository.findById(id).get();
 
         return this.modelMapper.map(employer, EmployerProfile.class);
+    }
+
+    public EmployerMembership getMembership(int employerId) {
+        EmployerEntity employer = this.repository.findById(employerId).get();
+
+        return this.modelMapper.map(employer, EmployerMembership.class);
     }
 }

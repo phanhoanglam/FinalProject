@@ -110,7 +110,9 @@
                     </div>
                     <!-- Payment Methods Accordion yearly / End -->
 
-                    <button class="button big ripple-effect margin-top-40 margin-bottom-65">
+                    <button class="button big ripple-effect margin-top-40 margin-bottom-65"
+                            th:disabled="${alreadyRegistered}"
+                            th:text="${alreadyRegistered ? 'You registered already' : 'Proceed Payment'}">
                         Proceed Payment
                     </button>
                 </form>
@@ -190,6 +192,7 @@
 <script layout:fragment="libraries" src="https://js.stripe.com/v3/"></script>
 <script layout:fragment="js">
     let clientSecret;
+    let paymentId;
     const stripe = Stripe('pk_test_51Hj4WbF55X8hSDUqpK952ybJoEoLBcXzkvndlsNmB1nEDqtC6bhwyz9lDX2uciMm5Uhy4tLdlRvZnBzKTmTzfEVr00Z6gIsOwu');
     const elements = stripe.elements();
     const style = {
@@ -237,6 +240,7 @@
                             <a class="close"></a>
                         </div>
                     `);
+                    window.open(`/payments/${paymentId}`);
                 }
             }
         });
@@ -287,6 +291,7 @@
                 }),
                 success: function (res) {
                     clientSecret = res.data.secret;
+                    paymentId = res.data.id;
                     $('[href="#small-dialog-2"]').trigger('click');
                 },
             })

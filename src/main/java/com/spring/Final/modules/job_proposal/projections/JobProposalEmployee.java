@@ -19,5 +19,5 @@ public class JobProposalEmployee {
     private Date startedAt;
     private Date endedAt;
     private Date createdAt;
-
+    private boolean hasReview;
 }

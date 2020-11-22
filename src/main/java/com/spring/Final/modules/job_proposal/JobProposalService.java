@@ -76,10 +76,17 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
 
     public PageImpl<JobProposalEmployee> listJobByEmployee(int pageNumber, int size, int uid) {
         Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
         Page<JobProposalEntity> result = this.repository.findJobProposalByEmployeeId(page, uid);
         List<JobProposalEmployee> resultList = result.stream()
-                .map(x -> this.modelMapper.map(x, JobProposalEmployee.class))
+                .map(e -> {
+                    JobProposalEmployee jp = this.modelMapper.map(e, JobProposalEmployee.class);
+                    jp.setHasReview(this.reviewService.roleHasReview(UserType.EMPLOYEE, e));
+
+                    return jp;
+                })
                 .collect(Collectors.toList());
+
         return new PageImpl<>(resultList, result.getPageable(), result.getTotalElements());
     }
 
@@ -213,15 +220,5 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
                 JobProposalStatus.SUCCEEDED,
                 CommonHelper.getCurrentTime()
         );
-    }
-
-    public JobProposalDetailExistence2 findByEmployerAndEmployee(int employerId, int employeeId) {
-        JobProposalEntity data = this.repository.findByEmployerAndEmployee(employerId, employeeId);
-
-        if (data == null) {
-            return null;
-        }
-
-        return this.modelMapper.map(data, JobProposalDetailExistence2.class);
     }
 }
