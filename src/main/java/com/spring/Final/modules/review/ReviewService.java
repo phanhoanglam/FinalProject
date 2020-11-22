@@ -4,7 +4,9 @@ import com.spring.Final.core.exceptions.BadRequestException;
 import com.spring.Final.core.exceptions.ResourceNotFoundException;
 import com.spring.Final.core.infrastructure.ApiService;
 import com.spring.Final.modules.employee.EmployeeService;
+import com.spring.Final.modules.employee.projections.EmployeeProfile;
 import com.spring.Final.modules.employer.EmployerService;
+import com.spring.Final.modules.employer.projections.EmployerProfile;
 import com.spring.Final.modules.job_proposal.JobProposalEntity;
 import com.spring.Final.modules.job_proposal.JobProposalService;
 import com.spring.Final.modules.notification.NotificationService;
@@ -12,6 +14,7 @@ import com.spring.Final.modules.review.dtos.ReviewEmployeeDTO;
 import com.spring.Final.modules.review.dtos.ReviewEmployerDTO;
 import com.spring.Final.modules.review.exceptions.ExistingReviewException;
 import com.spring.Final.modules.review.projections.ReviewList;
+import com.spring.Final.modules.review.projections.User;
 import com.spring.Final.modules.shared.enums.job_proposal_status.JobProposalStatus;
 import com.spring.Final.modules.shared.enums.notification_reference_type.ReferenceType;
 import com.spring.Final.modules.shared.enums.user_type.UserType;
@@ -117,6 +120,51 @@ public class ReviewService extends ApiService<ReviewEntity, ReviewRepository> {
         this.createNotification(review, jobProposal.getJob().getName());
 
         return this.modelMapper.map(review, ReviewList.class);
+    }
+
+    public PageImpl<ReviewList> listMyReviews(int userId, UserType userType, int pageNumber, int size) {
+        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<ReviewEntity> results = this.repository.findAllByUserIdAndUserType(userId, userType, page);
+        List<ReviewList> resultList = results.stream()
+                .map(e -> this.modelMapper.map(e, ReviewList.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
+    }
+
+    public PageImpl<ReviewList> listOtherReviews(int userId, UserType userType, int pageNumber, int size) {
+        this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
+        Pageable page = PageRequest.of(this.getPage(pageNumber), size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<ReviewEntity> results = this.repository.findAllByToUserIdAndToUserType(userId, userType, page);
+
+        List<ReviewList> resultList = results.stream()
+                .map(e -> {
+                    ReviewList reviewList = this.modelMapper.map(e, ReviewList.class);
+
+                    if (e.getUserType() == UserType.EMPLOYEE) {
+                        EmployeeProfile employee = this.employeeService.getOnlyProfile(e.getUserId());
+
+                        User user = this.modelMapper.map(employee, User.class);
+                        user.setName(employee.getFirstName() + " " + employee.getLastName());
+                        user.setType(UserType.EMPLOYEE);
+
+                        reviewList.setFromUser(user);
+                    } else {
+                        EmployerProfile employer = this.employerService.getOnlyProfile(e.getUserId());
+
+                        User user = this.modelMapper.map(employer, User.class);
+                        user.setType(UserType.EMPLOYEE);
+
+                        reviewList.setFromUser(user);
+                    }
+
+                    return reviewList;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(resultList, results.getPageable(), results.getTotalElements());
     }
 
     public boolean roleHasReview(UserType userType, JobProposalEntity jobProposal) {

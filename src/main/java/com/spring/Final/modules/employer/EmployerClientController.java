@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -26,7 +25,7 @@ public class EmployerClientController {
     @GetMapping("/employers")
     public String list(Model modelView,
                        @RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "9") int size) {
+                       @RequestParam(defaultValue = "6") int size) {
         modelView.addAttribute("list", this.service.list(page, size));
 
         return "client/modules/employers/list";
@@ -64,7 +63,7 @@ public class EmployerClientController {
     public String profile(Authentication authentication, Model modelView) {
         if (!modelView.containsAttribute("profile")) {
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-            EmployerProfile profile = service.getProfile((int) user.getInformation().get("id"));
+            EmployerProfile profile = service.getOnlyProfile((int) user.getInformation().get("id"));
 
             modelView.addAttribute("profile", profile);
         }

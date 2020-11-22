@@ -21,7 +21,7 @@ public class ReviewEmployerDTO implements Serializable {
     @NotNull(message = "Rating is required")
     private float rating;
 
-    @NotNull(message = "Title is required")
+//    @NotNull(message = "Title is required")
     private String title;
 
     @NotNull(message = "Message is required")

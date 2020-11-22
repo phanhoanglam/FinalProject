@@ -183,6 +183,28 @@ public class JobProposalService extends ApiService<JobProposalEntity, JobProposa
         return this.modelMapper.map(jobProposal, JobProposalList.class);
     }
 
+    @Transactional
+    public JobProposalList setSucceeded(int id) {
+        JobProposalEntity jobProposal = this.repository.getOne(id);
+
+        if (jobProposal.getStatus() != JobProposalStatus.ACCEPTED) {
+            throw new BadRequestException("Invalid status");
+        }
+        jobProposal.setStatus(JobProposalStatus.SUCCEEDED);
+        jobProposal.setEndedAt(CommonHelper.getCurrentTime());
+        jobProposal = this.repository.save(jobProposal);
+
+        this.notificationService.create(
+                jobProposal.getEmployee().getId(),
+                UserType.EMPLOYEE,
+                jobProposal.getId(),
+                ReferenceType.JOB_PROPOSAL,
+                "Your " + jobProposal.getJob().getName() + " has been succeeded"
+        );
+
+        return this.modelMapper.map(jobProposal, JobProposalList.class);
+    }
+
     public List<EmploymentHistory> getEmploymentHistory(int employeeId) {
         return this.repository.findEmploymentHistory(employeeId);
     }

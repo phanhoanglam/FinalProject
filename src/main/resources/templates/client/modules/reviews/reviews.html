@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="dashboard-container" layout:fragment="body">
+    <div th:replace="client/fragments/dashboard-sidebar.html :: div"></div>
+
+    <!-- Dashboard Content
+    ================================================== -->
+    <div class="dashboard-content-container" data-simplebar>
+        <div class="dashboard-content-inner" >
+
+            <!-- Dashboard Headline -->
+            <div class="dashboard-headline">
+                <h3>Reviews</h3>
+
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li>Reviews</li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Dashboard Box -->
+            <div class="dashboard-box margin-top-0">
+
+                <!-- Headline -->
+                <div class="headline">
+                    <h3><i class="icon-material-outline-business"></i> Rate Employers</h3>
+                </div>
+
+                <div class="content">
+                    <ul class="dashboard-box-list">
+                        <li th:each="item : ${list}">
+                            <!-- Overview -->
+                            <div class="freelancer-overview manage-candidates">
+                                <div class="freelancer-overview-inner">
+
+                                    <!-- Avatar -->
+                                    <div class="freelancer-avatar">
+                                        <a th:href="${'/' + item.fromUser.getType.toString() + 's/' + item.fromUser.slug}">
+                                            <img th:src="${item.fromUser.avatar}" alt="">
+                                        </a>
+                                    </div>
+
+                                    <!-- Name -->
+                                    <div class="freelancer-name">
+                                        <h4>
+                                            <a th:href="${'/job-' + item.jobProposal.job.slug}">[[${item.jobProposal.job.name}]]</a>
+                                            -
+                                            <a href="#" style="font-size: 14px">
+                                                [[${item.fromUser.name}]]
+                                                <img th:if="${item.fromUser.nationality != null}"
+                                                     class="flag"
+                                                     th:src="${'/client/images/flags/' + item.fromUser.nationality.toLowerCase() + '.svg'}"
+                                                     th:title="${countries.get(item.fromUser.nationality)}" data-tippy-placement="top">
+                                            </a>
+                                        </h4>
+
+                                        <div class="freelancer-rating">
+                                            <div class="star-rating" th:data-rating="${item.rating}"></div>
+                                        </div>
+
+                                        <div class="item-description" style="margin-top: 15px">
+                                            <p>[[${item.message}]]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="clearfix"></div>
+            <div th:if="${list.getTotalPages() > 1}" class="pagination-container margin-top-20 margin-bottom-20">
+                <nav class="pagination">
+                    <ul>
+                        <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                            <a th:href="@{/dashboard/reviews(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
+                               class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+                        <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
+                                th:href="@{/dashboard/reviews(page=${i})}" th:utext="${i}"
+                                th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
+                        </li>
+                        <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                            <a th:href="@{/dashboard/reviews(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
+                               class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="clearfix"></div>
+
+            <!-- Footer -->
+            <div class="dashboard-footer-spacer"></div>
+
+            <div th:replace="client/fragments/footer2.html :: div"></div>
+            <!-- Footer / End -->
+
+        </div>
+    </div>
+    <!-- Dashboard Content / End -->
+
+</div>
+</body>
+</html>

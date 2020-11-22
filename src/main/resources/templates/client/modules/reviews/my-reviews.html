@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{client/fragments/layout.html}">
+<head>
+    <title>Hireo</title>
+</head>
+<body>
+<div class="dashboard-container" layout:fragment="body">
+    <div th:replace="client/fragments/dashboard-sidebar.html :: div"></div>
+
+    <!-- Dashboard Content
+    ================================================== -->
+    <div class="dashboard-content-container" data-simplebar>
+        <div class="dashboard-content-inner" >
+
+            <!-- Dashboard Headline -->
+            <div class="dashboard-headline">
+                <h3>Reviews</h3>
+
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li>My Reviews</li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Dashboard Box -->
+            <div class="dashboard-box margin-top-0">
+
+                <!-- Headline -->
+                <div class="headline">
+                    <h3><i class="icon-material-outline-business"></i> Rate Employers</h3>
+                </div>
+
+                <div class="content">
+                    <ul class="dashboard-box-list">
+                        <li th:each="item : ${list}">
+                            <div class="boxed-list-item">
+                                <!-- Content -->
+                                <div class="item-content">
+                                    <h4><a th:href="${'/job-' + item.jobProposal.job.slug}">[[${item.jobProposal.job.name}]]</a></h4>
+                                    <div class="item-details margin-top-10">
+                                        <div class="star-rating" th:data-rating="${item.rating}"></div>
+
+                                        <div class="detail-item">
+                                            <i class="icon-material-outline-date-range"></i>
+                                            [[${#dates.format(item.createdAt, 'MMMM yyyy')}]]
+                                        </div>
+                                    </div>
+                                    <div class="item-description">
+                                        <p>[[${item.message}]]</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="clearfix"></div>
+            <div th:if="${list.getTotalPages() > 1}" class="pagination-container margin-top-20 margin-bottom-20">
+                <nav class="pagination">
+                    <ul>
+                        <li th:class="${list.getPageable().getPageNumber() == 0 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                            <a th:href="@{/dashboard/my-reviews(page=${(list.getPageable().getPageNumber() + 1) - 1})}"
+                               class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+                        <li th:each="i : ${#numbers.sequence(1, list.getTotalPages())}"><a
+                                th:href="@{/dashboard/my-reviews(page=${i})}" th:utext="${i}"
+                                th:class="${list.getPageable().getPageNumber() + 1 == i} ? 'ripple-effect current-page' : 'ripple-effect'"></a>
+                        </li>
+                        <li th:class="${list.getPageable().getPageNumber() == list.getTotalPages() - 1 ? 'pagination-arrow disabled' : 'pagination-arrow'}">
+                            <a th:href="@{/dashboard/my-reviews(page=${(list.getPageable().getPageNumber() + 1) + 1})}"
+                               class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="clearfix"></div>
+
+            <!-- Footer -->
+            <div class="dashboard-footer-spacer"></div>
+
+            <div th:replace="client/fragments/footer2.html :: div"></div>
+            <!-- Footer / End -->
+
+        </div>
+    </div>
+    <!-- Dashboard Content / End -->
+
+</div>
+</body>
+</html>

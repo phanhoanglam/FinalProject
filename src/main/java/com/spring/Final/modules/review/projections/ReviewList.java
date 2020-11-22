@@ -8,6 +8,7 @@ import java.util.Date;
 public class ReviewList {
     private int id;
     private JobProposal jobProposal;
+    private User fromUser;
     private String title;
     private String message;
     private Boolean deliveredOnBudget;
@@ -27,4 +28,5 @@ class JobProposal {
 class Job {
     private int id;
     private String name;
+    private String slug;
 }
