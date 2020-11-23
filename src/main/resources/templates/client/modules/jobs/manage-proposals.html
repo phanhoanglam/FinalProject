@@ -84,7 +84,7 @@
                                                 <!-- Rating -->
                                                 <div class="freelancer-rating">
                                                     <div class="star-rating"
-                                                         th:attr="data-rating=${item.job.employer.rating}"></div>
+                                                         th:attr="data-rating=${T(java.lang.String).format('%.1f', item.job.employer.rating)}"></div>
                                                 </div>
 
                                                 <!-- Rating -->

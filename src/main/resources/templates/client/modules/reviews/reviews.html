@@ -63,7 +63,7 @@
                                         </h4>
 
                                         <div class="freelancer-rating">
-                                            <div class="star-rating" th:data-rating="${item.rating}"></div>
+                                            <div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', item.rating)}"></div>
                                         </div>
 
                                         <div class="item-description" style="margin-top: 15px">
