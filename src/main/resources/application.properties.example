@@ -9,7 +9,6 @@ spring.jpa.properties.hibernate.format_sql=true
 ## Hibernate Properties
 # The SQL dialect makes Hibernate generate better SQL for the chosen database
 spring.jpa.properties.hibernate.dialect = org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect
-#spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.SQLServer2012Dialect
 spring.jpa.generate-ddl=true
 
 # Hibernate ddl auto (create, create-drop, validate, update)
