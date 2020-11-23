@@ -56,13 +56,6 @@ public class JobClientController {
         String url = General.ConvertURL(dto);
         modelView.addAttribute("url", url);
 
-        int current = data.getList().getNumber() + 1;
-        int begin = Math.max(1, current - 2);
-        int end = Math.min(begin + 3, data.getList().getTotalPages());
-
-        modelView.addAttribute("beginIndex", begin);
-        modelView.addAttribute("endIndex", end);
-
         return "client/modules/jobs/list";
     }
 
