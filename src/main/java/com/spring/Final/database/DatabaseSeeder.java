@@ -32,6 +32,8 @@ import com.spring.Final.modules.shared.enums.membership_type.MembershipType;
 import com.spring.Final.modules.shared.enums.user_type.UserType;
 import com.spring.Final.modules.skill.SkillEntity;
 import com.spring.Final.modules.skill.SkillRepository;
+import lombok.Data;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -40,6 +42,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -94,8 +97,9 @@ public class DatabaseSeeder {
         this.jobSkillRepository = jobSkillRepository;
     }
 
-//    @EventListener
+    @EventListener
     public void seed(ContextRefreshedEvent event) throws ParseException {
+        this.seedCity();
         this.fakeEmployees();
         this.fakeJobTypes();
         this.fakeJobCategories();
@@ -110,9 +114,67 @@ public class DatabaseSeeder {
         this.fakeJobCategoryEmployee();
     }
 
+    public ArrayList<City> cities = new ArrayList<>();
+
+    public void seedCity() {
+        cities.add(new City("12 E Ogden Ave, Las Vegas, NV 89101, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("36.17326"),
+                Double.parseDouble("-115.14503")
+        )));
+        cities.add(new City("124 S 6th St #100, Las Vegas, NV 89101, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("36.16817"),
+                Double.parseDouble("-115.14039")
+        )));
+        cities.add(new City("713 S Las Vegas Blvd, Las Vegas, NV 89101, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("36.16187"),
+                Double.parseDouble("-115.14528")
+        )));
+        cities.add(new City("New York, NY 10004, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.70751"),
+                Double.parseDouble("-74.01135")
+        )));
+        cities.add(new City("2 High St, Huntington, NY 11743, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.86802"),
+                Double.parseDouble("-73.42603")
+        )));
+        cities.add(new City("25 Stony Hollow Rd, Centerport, NY 11721, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.88513"),
+                Double.parseDouble("-73.35986")
+        )));
+        cities.add(new City("619 Park Ave, Huntington, NY 11743, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8607482"),
+                Double.parseDouble("-73.3989275")
+        )));
+        cities.add(new City("478 Bloomfield Ave, Caldwell, NJ 07006, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8387257"),
+                Double.parseDouble("-74.2871147")
+        )));
+        cities.add(new City("785 New York Ave, Huntington, NY 11743, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474196"),
+                Double.parseDouble("-73.4187881")
+        )));
+        cities.add(new City("120 Bloomfield Ave, Caldwell, NJ 07006, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.83579"),
+                Double.parseDouble("-74.26979")
+        )));
+        cities.add(new City("1540 US-46 W, Parsippany-Troy Hills, NJ 07054, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474321"),
+                Double.parseDouble("-74.4040851")
+        )));
+        cities.add(new City("7 N Beverwyck Rd, Lake Hiawatha, NJ 07034, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474321"),
+                Double.parseDouble("-74.4040851")
+        )));
+        cities.add(new City("1 Hook Mountain Rd, Pine Brook, NJ 07058, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474321"),
+                Double.parseDouble("-74.4040851")
+        )));
+    }
+
     public void fakeEmployees() throws ParseException {
         List<EmployeeEntity> employees = new ArrayList<>();
-
+        Random random = new Random();
+//        City cityDefault = cities.get(random.nextInt(cities.size()));
         // add default employees
         EmployeeEntity defaultEmployee = new EmployeeEntity();
         defaultEmployee.setFirstName("Rowan");
@@ -122,16 +184,16 @@ public class DatabaseSeeder {
         defaultEmployee.setPassword(this.passwordEncoder.encode("123"));
         defaultEmployee.setVerified(true);
         defaultEmployee.setSlug(CommonHelper.toSlug("employee@yopmail.com"));
-        defaultEmployee.setAddressLocation(
-                CommonHelper.createGeometryPoint(
-                        Double.parseDouble(faker.address().latitude()),
-                        Double.parseDouble(faker.address().longitude())
-                )
-        );
+        defaultEmployee.setAddress(cities.get(2).getAddress());
+        defaultEmployee.setAddressLocation(cities.get(2).getLocationAddress());
         defaultEmployee.setDescription(getString(20));
+        defaultEmployee.setNationality("USA");
         employees.add(defaultEmployee);
 
         for (int i = 0; i < 20; i++) {
+            Random rand = new Random();
+            City city = cities.get(rand.nextInt(cities.size()));
+
             String email = faker.internet().emailAddress();
 
             EmployeeEntity employee = new EmployeeEntity();
@@ -141,10 +203,10 @@ public class DatabaseSeeder {
             employee.setEmail(email);
             employee.setPassword(this.passwordEncoder.encode("123"));
             employee.setSlug(CommonHelper.toSlug(email));
-            defaultEmployee.setDescription(getString(20));
-            employee.setAddressLocation(
-                    CommonHelper.createGeometryPoint(Double.parseDouble(faker.address().latitude()), Double.parseDouble(faker.address().longitude()))
-            );
+            employee.setDescription(getString(20));
+            employee.setAddress(city.getAddress());
+            employee.setAddressLocation(city.getLocationAddress());
+            employee.setNationality("USA");
             employees.add(employee);
         }
 
@@ -191,6 +253,9 @@ public class DatabaseSeeder {
                 "http://www.vasterad.com/themes/hireo/images/company-logo-05.png",
                 "http://www.vasterad.com/themes/hireo/images/company-logo-06.png",
         };
+        Random random = new Random();
+        City cityDefault = cities.get(random.nextInt(cities.size()));
+
         List<EmployerEntity> employers = new ArrayList<>();
 
         // add default employees
@@ -203,9 +268,14 @@ public class DatabaseSeeder {
         defaultEmployer.setVerified(true);
         defaultEmployer.setDescription(getString(20));
         defaultEmployer.setSlug(CommonHelper.toSlug("employer@yopmail.com"));
+        defaultEmployer.setAddress(cityDefault.getAddress());
+        defaultEmployer.setAddressLocation(cityDefault.getLocationAddress());
         employers.add(defaultEmployer);
 
         for (int i = 1; i < 7; i++) {
+            Random rand = new Random();
+            City city = cities.get(random.nextInt(cities.size()));
+
             String email = faker.internet().emailAddress();
 
             EmployerEntity employer = new EmployerEntity();
@@ -217,19 +287,60 @@ public class DatabaseSeeder {
             employer.setVerified(true);
             defaultEmployer.setDescription(getString(20));
             employer.setSlug(CommonHelper.toSlug(email));
+            employer.setAddress(city.getAddress());
+            employer.setAddressLocation(city.getLocationAddress());
             employers.add(employer);
         }
 
         this.employerRepository.saveAll(employers);
     }
 
+    String[] list = {"50 Hagiwara Tea Garden Dr, San Francisco, CA 94118, United States",
+            "586 Cherry Ave, San Bruno, CA 94066, United States",
+            "Scotts Valley, CA 95066, United States",
+            "17860 Monterey Rd, Morgan Hill, CA 95037, United States",
+            "2129 Louis Holstrom Dr, Morgan Hill, CA 95037, United States",
+            "3620 Lincoln Rd, Las Vegas, NV 89115, United States",
+            "2730 Airport Dr, North Las Vegas, NV 89032, United States",
+            "9198 W Arby Ave, Las Vegas, NV 89148, United States",
+            "Las Vegas, NV 89119, United States",
+            "7663 W Lake Mead Blvd, Las Vegas, NV 89128, United States",
+            "600 E Meadow Dr, Palo Alto, CA 94306, United States",
+            "340 University Ave, Palo Alto, CA 94301, United States",
+            "91 Links Rd, Stanford, CA 94305, United States",
+            "2300 Middlefield Rd, Redwood City, CA 94063, United States",
+            "225 Shoreway Rd, San Carlos, CA 94070, United States",
+            "100 Los Vientos Way, San Carlos, CA 94070, United States",
+            "3674 Sand Hill Rd, Redwood City, CA 94062, United States",
+            "Burlingame, California 94010, United States",
+            "San Francisco, CA 94128, United States",
+            "1700 Hillside Blvd, Colma, CA 94014, United States",
+            "65 Colma Blvd, Colma, CA 94014, United States",
+            "133 Serramonte Center, Daly City, CA 94015, United States",
+            "1600 El Camino Real, South San Francisco, CA 94080, United States",
+            "285 Fulton St, New York, NY 10007, United States",
+            "21-64 Utopia Pkwy, Whitestone, NY 11357, United States",
+            "29-01 216th St, Bayside, NY 11360, United States",
+            "Washington Square, New York, NY 10012, United States",
+            "567 Union Ave, Brooklyn, NY 11211, United States",
+            "Brooklyn, NY 11231, United States",
+            "778 Enright Rd, New York, NY 10004, United States",
+            "302 Morris Pesin Dr, Jersey City, NJ 07305, United States",
+            "Chapel Ave, Jersey City, NJ 07305, United States",
+            "823 West Side Ave, Jersey City, NJ 07306, United States",
+            "780-782 Newark Ave, Jersey City, NJ 07306, United States",
+            "30-35 Hackensack Ave, Kearny, NJ 07032, United States",
+            "299 Roanoke Ave, Newark, NJ 07105, United States",
+            "500 Avenue P, Newark, NJ 07105, United States",};
+
     public void fakeJobs() {
+        Faker fk = new Faker(new Locale("en-US"));
         List<JobEntity> jobs = new ArrayList<>();
         List<EmployerEntity> employers = this.employerRepository.findAll();
         List<JobTypeEntity> jobTypes = this.jobTypeRepository.findAll();
         List<JobCategoryEntity> jobCategories = this.jobCategoryRepository.findAll();
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 200; i++) {
             String name = getString(3);
 
             JobEntity job = new JobEntity();
@@ -238,19 +349,38 @@ public class DatabaseSeeder {
             job.setJobType((JobTypeEntity) randomElement(jobTypes));
             job.setName(name);
 
-            if (faker.random().nextBoolean()) {
-                int salaryFrom = faker.random().nextInt(0, 10) * 1000;
-                job.setSalaryFrom(BigDecimal.valueOf(salaryFrom));
-                job.setSalaryTo(BigDecimal.valueOf(salaryFrom * 10));
+//            if (fk.random().nextBoolean()) {
+            int salaryFrom = fk.random().nextInt(1, 10) * 1000;
+            job.setSalaryFrom(BigDecimal.valueOf(salaryFrom));
+            job.setSalaryTo(BigDecimal.valueOf(salaryFrom * 10));
+//            }
+            job.setDescription(String.join("\n", fk.lorem().paragraphs(10)));
+            Random rd = new Random();
+            String address = list[rd.nextInt(list.length)];
+            job.setAddress(address);
+
+            DecimalFormat df2 = new DecimalFormat("#.#####");
+            int latVal = rd.nextInt((10000000 - 5000000) + 1) + 5000000;
+            int lngVal = rd.nextInt((20000000 - 10000000) + 1) + 10000000;
+            if(i < 30){
+                Double lat = cities.get(2).getLocationAddress().getX() + Double.parseDouble("0.00" + latVal);
+                Double lng = cities.get(2).getLocationAddress().getY() + Double.parseDouble("0.00" + lngVal);
+                job.setAddressLocation(
+                        CommonHelper.createGeometryPoint(lat, lng)
+                );
+            }else{
+                City city = cities.get(rd.nextInt(cities.size()));
+                Double lat = city.getLocationAddress().getX() + Double.parseDouble("0.00" + latVal);
+                Double lng = city.getLocationAddress().getY() + Double.parseDouble("0.00" + lngVal);
+                job.setAddressLocation(
+                        CommonHelper.createGeometryPoint(lat, lng)
+                );
             }
-            job.setDescription(String.join("\n", faker.lorem().paragraphs(5)));
-            job.setAddress(faker.address().fullAddress());
-            job.setAddressLocation(
-                    CommonHelper.createGeometryPoint(38.8976805, -77.0387238)
-            );
+
+
             job.setStatus((JobStatus) randomElement(Arrays.asList(JobStatus.values())));
             job.setExpiredAt(
-                    faker.date().between(
+                    fk.date().between(
                             Date.from(LocalDate.parse("2020-12-01").atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                             Date.from(LocalDate.parse("2021-06-01").atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                     )
@@ -262,6 +392,7 @@ public class DatabaseSeeder {
 
         this.jobRepository.saveAll(jobs);
     }
+
 
     public void fakeSkills() {
         List<JobCategoryEntity> categories = this.jobCategoryRepository.findAll();
@@ -716,5 +847,16 @@ public class DatabaseSeeder {
 
     private String getString(int charNumber) {
         return String.join(" ", faker.lorem().words(charNumber));
+    }
+}
+
+@Data
+class City {
+    private String address;
+    private Point locationAddress;
+
+    public City(String address, Point locationAddress) {
+        this.address = address;
+        this.locationAddress = locationAddress;
     }
 }
