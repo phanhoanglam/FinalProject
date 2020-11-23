@@ -12,7 +12,7 @@
 					<div class="company-inner-alignment">
 						<span class="company-logo"><img th:src="${item.avatar}" alt=""></span>
 						<h4>[[${item.name}]]</h4>
-						<div class="star-rating" th:data-rating="${item.rating}"></div>
+						<div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', item.rating)}"></div>
 					</div>
 				</a>
 			</div>

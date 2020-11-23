@@ -16,7 +16,7 @@
                             <h3>[[${detail.name}]]</h3>
                             <ul>
                                 <li>
-                                    <div class="star-rating" th:data-rating="${detail.rating}"></div>
+                                    <div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', detail.rating)}"></div>
                                 </li>
                                 <li th:if="${detail.nationality != null}">
                                     <img class="flag"
@@ -107,7 +107,7 @@
                             <div class="item-content">
                                 <h4>[[${item.title}]]</h4>
                                 <div class="item-details margin-top-10">
-                                    <div class="star-rating" th:data-rating="${item.rating}"></div>
+                                    <div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', item.rating)}"></div>
                                     <div class="detail-item"><i class="icon-material-outline-date-range"></i>
                                         [[${#dates.format(item.createdAt, 'MMMM yyyy')}]]
                                     </div>

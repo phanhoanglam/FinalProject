@@ -16,7 +16,7 @@
 						<div class="header-details">
 							<h3>[[${detail.firstName + ' ' + detail.lastName}]] <span>[[${detail.jobTitle}]]</span></h3>
 							<ul>
-								<li><div class="star-rating" th:data-rating="${detail.rating}"></div></li>
+								<li><div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', detail.rating)}"></div></li>
 								<li th:if="${detail.nationality != null}">
 									<img class="flag"
 										 th:src="${'/client/images/flags/' + detail.nationality.toLowerCase() + '.svg'}" alt="">
@@ -95,7 +95,7 @@
 							<div class="item-content">
 								<h4>[[${review.jobProposal.job.name}]]</h4>
 								<div class="item-details margin-top-10">
-									<div class="star-rating" th:data-rating="${review.rating}"></div>
+									<div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', review.rating)}"></div>
 									<div class="detail-item"><i class="icon-material-outline-date-range"></i> [[${#dates.format(review.createdAt, 'MMMM yyyy')}]]</div>
 								</div>
 								<div class="item-description">

@@ -64,8 +64,8 @@ public class EntitySpecification<T> implements Specification<T> {
         }
         GeometricShapeFactory shapeFactory = new GeometricShapeFactory(new GeometryFactory(new PrecisionModel(), 4326));
         shapeFactory.setCentre(coordinate);
-        shapeFactory.setHeight(0.1);  // TODO: Set temporarily, refactor later
-        shapeFactory.setWidth(0.1);
+        shapeFactory.setHeight(0.5);  // TODO: Set temporarily, refactor later
+        shapeFactory.setWidth(0.5);
 
         return SpatialPredicates.within(cb, root.get("addressLocation"), shapeFactory.createRectangle());
     }

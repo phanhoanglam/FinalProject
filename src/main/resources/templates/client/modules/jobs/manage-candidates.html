@@ -93,7 +93,7 @@
 
 												<!-- Rating -->
 												<div class="freelancer-rating">
-													<div class="star-rating" th:data-rating="${proposal.employee.rating}"></div>
+													<div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', proposal.employee.rating)}"></div>
 												</div>
 
 												<!-- Buttons -->

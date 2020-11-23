@@ -42,7 +42,7 @@
                                 <div class="item-content">
                                     <h4><a th:href="${'/job-' + item.jobProposal.job.slug}">[[${item.jobProposal.job.name}]]</a></h4>
                                     <div class="item-details margin-top-10">
-                                        <div class="star-rating" th:data-rating="${item.rating}"></div>
+                                        <div class="star-rating" th:data-rating="${T(java.lang.String).format('%.1f', item.rating)}"></div>
 
                                         <div class="detail-item">
                                             <i class="icon-material-outline-date-range"></i>

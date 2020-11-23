@@ -56,39 +56,6 @@ public class EmployeeService extends ApiService<EmployeeEntity, EmployeeReposito
         this.passwordEncoder = passwordEncoder;
     }
 
-    public HashMap<String, Object> login(String email, String password) {
-        EmployeeEntity employee = this.repository.findByEmail(email);
-
-        if (employee == null || !this.passwordEncoder.matches(password, employee.getPassword())) {
-            throw new InvalidEmailOrPasswordException();
-        }
-        if (employee.isBlocked()) {
-            throw new AccountBlockedException();
-        }
-        if (!employee.isVerified()) {
-            throw new AccountUnverifiedException();
-        }
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("id", employee.getId());
-        data.put("email", employee.getEmail());
-        data.put("firstName", employee.getFirstName());
-        data.put("lastName", employee.getLastName());
-        data.put("phone", employee.getPhone());
-        data.put("avatar", employee.getAvatar());
-        data.put("address", employee.getAddress());
-        data.put("token", JwtHelper.generateBearerToken(employee.getId(), "employee"));
-        data.put("slug", employee.getSlug());
-
-        if (employee.getAddressLocation() != null) {
-            HashMap<String, Double> coordinate = new HashMap<>();
-            coordinate.put("x", employee.getAddressLocation().getX());
-            coordinate.put("y", employee.getAddressLocation().getY());
-            data.put("addressLocation", coordinate);
-        }
-
-        return data;
-    }
-
     public EmployeeEntity register(RegisterDTO data) {
         EmployeeEntity newEmployee = this.modelMapper.map(data, EmployeeEntity.class);
         EmployeeEntity employee = this.repository.findByEmail(newEmployee.getEmail());

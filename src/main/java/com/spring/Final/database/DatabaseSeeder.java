@@ -4,10 +4,12 @@ import com.github.javafaker.Faker;
 import com.spring.Final.core.helpers.CommonHelper;
 import com.spring.Final.modules.employee.EmployeeEntity;
 import com.spring.Final.modules.employee.EmployeeRepository;
+import com.spring.Final.modules.employee.EmployeeService;
 import com.spring.Final.modules.employee_skill.EmployeeSkillEntity;
 import com.spring.Final.modules.employee_skill.EmployeeSkillRepository;
 import com.spring.Final.modules.employer.EmployerEntity;
 import com.spring.Final.modules.employer.EmployerRepository;
+import com.spring.Final.modules.employer.EmployerService;
 import com.spring.Final.modules.job_category.JobCategoryEntity;
 import com.spring.Final.modules.job_category.JobCategoryRepository;
 import com.spring.Final.modules.job_category_employee.JobCategoryEmployeeEntity;
@@ -32,6 +34,8 @@ import com.spring.Final.modules.shared.enums.membership_type.MembershipType;
 import com.spring.Final.modules.shared.enums.user_type.UserType;
 import com.spring.Final.modules.skill.SkillEntity;
 import com.spring.Final.modules.skill.SkillRepository;
+import lombok.Data;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -40,6 +44,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -61,6 +66,12 @@ public class DatabaseSeeder {
     private final EmployeeSkillRepository employeeSkillRepository;
     private final JobCategoryEmployeeRepository jobCategoryEmployeeRepository;
     private final JobSkillRepository jobSkillRepository;
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private EmployerService employerService;
 
     @Autowired
     public DatabaseSeeder(
@@ -96,6 +107,7 @@ public class DatabaseSeeder {
 
 //    @EventListener
     public void seed(ContextRefreshedEvent event) throws ParseException {
+        this.seedCity();
         this.fakeEmployees();
         this.fakeJobTypes();
         this.fakeJobCategories();
@@ -110,8 +122,86 @@ public class DatabaseSeeder {
         this.fakeJobCategoryEmployee();
     }
 
+    public ArrayList<City> cities = new ArrayList<>();
+
+    public void seedCity() {
+        cities.add(new City("Las Vegas, NV, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("36.17326"),
+                Double.parseDouble("-115.14503")
+        )));
+        cities.add(new City("Las Vegas, NV, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("36.16817"),
+                Double.parseDouble("-115.14039")
+        )));
+        cities.add(new City("Las Vegas, NV, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("36.16187"),
+                Double.parseDouble("-115.14528")
+        )));
+        cities.add(new City("New York, NY, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.70751"),
+                Double.parseDouble("-74.01135")
+        )));
+        cities.add(new City("Huntington, NY, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.86802"),
+                Double.parseDouble("-73.42603")
+        )));
+        cities.add(new City("Centerport, NY, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.88513"),
+                Double.parseDouble("-73.35986")
+        )));
+        cities.add(new City("Huntington, NY, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8607482"),
+                Double.parseDouble("-73.3989275")
+        )));
+        cities.add(new City("Caldwell, NJ, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8387257"),
+                Double.parseDouble("-74.2871147")
+        )));
+        cities.add(new City("Huntington, NY, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474196"),
+                Double.parseDouble("-73.4187881")
+        )));
+        cities.add(new City("Caldwell, NJ, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.83579"),
+                Double.parseDouble("-74.26979")
+        )));
+        cities.add(new City("Parsippany-Troy Hills, NJ, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474321"),
+                Double.parseDouble("-74.4040851")
+        )));
+        cities.add(new City("Lake Hiawatha, NJ, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474321"),
+                Double.parseDouble("-74.4040851")
+        )));
+        cities.add(new City("Pine Brook, NJ, United States", CommonHelper.createGeometryPoint(
+                Double.parseDouble("40.8474321"),
+                Double.parseDouble("-74.4040851")
+        )));
+    }
+
     public void fakeEmployees() throws ParseException {
         List<EmployeeEntity> employees = new ArrayList<>();
+        String[] avatars = new String[]{
+                "https://ospreycorporate.com/wp-content/uploads/Jake-Heggelke-2.png",
+                "https://www.workplacetoday.co.uk/wp-content/uploads/2020/06/Image-from-iOS-2-300x300.jpg",
+                "https://s3-us-west-2.amazonaws.com/prosky/talkingtalent/uploads/attachments/000/002/492/original/ROBERT-COMMANDEUR-BW-1920px.jpg?1583759626",
+                "https://www.iso.org/files/live/sites/isoorg/files/news/News_archive/2020/04/Ref2504/Ref2505.jpg/thumbnails/300x300",
+                "https://www.zenefits.com/wp-content/uploads/2019/12/image2-300x300.jpeg",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSrTPdGUmr6Sj36OQnq-5YTVtribZ-x9NjHw&usqp=CAU",
+                "https://hirehive.com/wp-content/uploads/2015/07/Dave-e1436194079922-300x300.jpg",
+                "https://simply-communicate.com/wp-content/uploads/2020/05/lisa-pantelli-bw-300x300.jpg",
+                "https://www.zavodnicklaw.com/wp-content/uploads/2020/04/ryan-1-300x300.jpg",
+                "https://www.quickbase.com/blog/wp-content/uploads/2013/12/How-Social-Media-Can-Help-You-Become-a-Successful-Employee.jpeg",
+                "https://fitsmallbusiness.com/wp-content/uploads/2018/09/word-image-154-e1536828299816-300x300.jpeg",
+                "https://philanthropynewsdigest.org/var/ezflow_site/storage/images/site_pnd/news/study-highlights-barriers-black-women-face-in-corporate-america/23401198-1-eng-US/study-highlights-barriers-black-women-face-in-corporate-america_full_image.jpg",
+                "https://www.halunenlaw.com/wp-content/uploads/2019/09/BlaineB-headshot-300x300.jpg",
+                "https://uclic.ucl.ac.uk/thumbs/people/youngjun-cho/youngjun_300x300-300x300-q100.jpg",
+                "https://www.earthday.org/wp-content/uploads/2019/11/BrandonP1-300x300-c-center.jpg",
+                "https://i.pinimg.com/474x/a1/fe/a0/a1fea01a4393ce1dc6ec404bc01dbe1f.jpg",
+                "https://i.pinimg.com/originals/79/86/f4/7986f40cef4faf0a43e69ed9f920b1e9.png",
+                "https://i.pinimg.com/474x/c8/25/b5/c825b581e57ee6054410dd3ca1418c0d.jpg",
+                "https://papers.co/wp-content/uploads/papers.co-aa09-al-pacino-young-boy-face-film-art-1-wallpaper-300x300.jpg"
+        };
 
         // add default employees
         EmployeeEntity defaultEmployee = new EmployeeEntity();
@@ -122,16 +212,17 @@ public class DatabaseSeeder {
         defaultEmployee.setPassword(this.passwordEncoder.encode("123"));
         defaultEmployee.setVerified(true);
         defaultEmployee.setSlug(CommonHelper.toSlug("employee@yopmail.com"));
-        defaultEmployee.setAddressLocation(
-                CommonHelper.createGeometryPoint(
-                        Double.parseDouble(faker.address().latitude()),
-                        Double.parseDouble(faker.address().longitude())
-                )
-        );
-        defaultEmployee.setDescription(getString(20));
+        defaultEmployee.setAddress(cities.get(2).getAddress());
+        defaultEmployee.setAddressLocation(cities.get(2).getLocationAddress());
+        defaultEmployee.setDescription(getParagraphs(7));
+        defaultEmployee.setNationality("US");
+        defaultEmployee.setAvatar(avatars[0]);
+        defaultEmployee.setJobTitle(faker.job().title());
         employees.add(defaultEmployee);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 1; i < avatars.length; i++) {
+            Random rand = new Random();
+            City city = cities.get(rand.nextInt(cities.size()));
             String email = faker.internet().emailAddress();
 
             EmployeeEntity employee = new EmployeeEntity();
@@ -141,10 +232,12 @@ public class DatabaseSeeder {
             employee.setEmail(email);
             employee.setPassword(this.passwordEncoder.encode("123"));
             employee.setSlug(CommonHelper.toSlug(email));
-            defaultEmployee.setDescription(getString(20));
-            employee.setAddressLocation(
-                    CommonHelper.createGeometryPoint(Double.parseDouble(faker.address().latitude()), Double.parseDouble(faker.address().longitude()))
-            );
+            employee.setDescription(getParagraphs(7));
+            employee.setAddress(city.getAddress());
+            employee.setAddressLocation(city.getLocationAddress());
+            employee.setNationality("US");
+            employee.setAvatar(avatars[i]);
+            employee.setJobTitle(faker.job().title());
             employees.add(employee);
         }
 
@@ -191,6 +284,9 @@ public class DatabaseSeeder {
                 "http://www.vasterad.com/themes/hireo/images/company-logo-05.png",
                 "http://www.vasterad.com/themes/hireo/images/company-logo-06.png",
         };
+        Random random = new Random();
+        City cityDefault = cities.get(random.nextInt(cities.size()));
+
         List<EmployerEntity> employers = new ArrayList<>();
 
         // add default employees
@@ -201,11 +297,15 @@ public class DatabaseSeeder {
         defaultEmployer.setPassword(this.passwordEncoder.encode("123"));
         defaultEmployer.setAvatar(images[0]);
         defaultEmployer.setVerified(true);
-        defaultEmployer.setDescription(getString(20));
+        defaultEmployer.setDescription(getParagraphs(7));
         defaultEmployer.setSlug(CommonHelper.toSlug("employer@yopmail.com"));
+        defaultEmployer.setAddress(cityDefault.getAddress());
+        defaultEmployer.setAddressLocation(cityDefault.getLocationAddress());
         employers.add(defaultEmployer);
 
         for (int i = 1; i < 7; i++) {
+            City city = cities.get(random.nextInt(cities.size()));
+
             String email = faker.internet().emailAddress();
 
             EmployerEntity employer = new EmployerEntity();
@@ -215,8 +315,10 @@ public class DatabaseSeeder {
             employer.setPassword(this.passwordEncoder.encode("123"));
             employer.setAvatar(images[i]);
             employer.setVerified(true);
-            defaultEmployer.setDescription(getString(20));
+            defaultEmployer.setDescription(getParagraphs(7));
             employer.setSlug(CommonHelper.toSlug(email));
+            employer.setAddress(city.getAddress());
+            employer.setAddressLocation(city.getLocationAddress());
             employers.add(employer);
         }
 
@@ -224,13 +326,53 @@ public class DatabaseSeeder {
     }
 
     public void fakeJobs() {
+        String[] list = {
+                "San Francisco, CA, United States",
+                "San Bruno, CA, United States",
+                "Scotts Valley, CA, United States",
+                "Morgan Hill, CA, United States",
+                "Morgan Hill, CA, United States",
+                "Las Vegas, NV, United States",
+                "North Las Vegas, NV, United States",
+                "Las Vegas, NV, United States",
+                "Las Vegas, NV, United States",
+                "Las Vegas, NV, United States",
+                "Palo Alto, CA, United States",
+                "Palo Alto, CA, United States",
+                "Stanford, CA, United States",
+                "Redwood City, CA, United States",
+                "San Carlos, CA, United States",
+                "San Carlos, CA, United States",
+                "Redwood City, CA, United States",
+                "Burlingame, CA, United States",
+                "San Francisco, CA, United States",
+                "Colma, CA, United States",
+                "Colma, CA, United States",
+                "Daly City, CA, United States",
+                "South San Francisco, CA, United States",
+                "New York, NY, United States",
+                "Whitestone, NY, United States",
+                "Bayside, NY, United States",
+                "Washington Square, New York, NY, United States",
+                "Brooklyn, NY, United States",
+                "Brooklyn, NY, United States",
+                "New York, NY, United States",
+                "Jersey City, NJ, United States",
+                "Jersey City, NJ, United States",
+                "Jersey City, NJ, United States",
+                "Jersey City, NJ, United States",
+                "Kearny, NJ, United States",
+                "Newark, NJ, United States",
+                "Newark, NJ, United States"};
+
+        Faker fk = new Faker(new Locale("en-US"));
         List<JobEntity> jobs = new ArrayList<>();
         List<EmployerEntity> employers = this.employerRepository.findAll();
         List<JobTypeEntity> jobTypes = this.jobTypeRepository.findAll();
         List<JobCategoryEntity> jobCategories = this.jobCategoryRepository.findAll();
 
-        for (int i = 0; i < 2; i++) {
-            String name = getString(3);
+        for (int i = 0; i < 200; i++) {
+            String name = faker.job().title();
 
             JobEntity job = new JobEntity();
             job.setEmployer((EmployerEntity) randomElement(employers));
@@ -238,30 +380,46 @@ public class DatabaseSeeder {
             job.setJobType((JobTypeEntity) randomElement(jobTypes));
             job.setName(name);
 
-            if (faker.random().nextBoolean()) {
-                int salaryFrom = faker.random().nextInt(0, 10) * 1000;
-                job.setSalaryFrom(BigDecimal.valueOf(salaryFrom));
-                job.setSalaryTo(BigDecimal.valueOf(salaryFrom * 10));
+            int salaryFrom = fk.random().nextInt(1, 25) * 1000;
+            job.setSalaryFrom(BigDecimal.valueOf(salaryFrom));
+            job.setSalaryTo(BigDecimal.valueOf(salaryFrom * 10));
+            job.setDescription(getParagraphs(7));
+            Random rd = new Random();
+            String address = list[rd.nextInt(list.length)];
+            job.setAddress(address);
+
+            int latVal = rd.nextInt((10000000 - 5000000) + 1) + 5000000;
+            int lngVal = rd.nextInt((20000000 - 10000000) + 1) + 10000000;
+            if (i < 30) {
+                double lat = cities.get(2).getLocationAddress().getX() + Double.parseDouble("0.00" + latVal);
+                double lng = cities.get(2).getLocationAddress().getY() + Double.parseDouble("0.00" + lngVal);
+                job.setAddressLocation(
+                        CommonHelper.createGeometryPoint(lat, lng)
+                );
+            } else {
+                City city = cities.get(rd.nextInt(cities.size()));
+                double lat = city.getLocationAddress().getX() + Double.parseDouble("0.00" + latVal);
+                double lng = city.getLocationAddress().getY() + Double.parseDouble("0.00" + lngVal);
+                job.setAddressLocation(
+                        CommonHelper.createGeometryPoint(lat, lng)
+                );
             }
-            job.setDescription(String.join("\n", faker.lorem().paragraphs(5)));
-            job.setAddress(faker.address().fullAddress());
-            job.setAddressLocation(
-                    CommonHelper.createGeometryPoint(38.8976805, -77.0387238)
-            );
+
             job.setStatus((JobStatus) randomElement(Arrays.asList(JobStatus.values())));
             job.setExpiredAt(
-                    faker.date().between(
+                    fk.date().between(
                             Date.from(LocalDate.parse("2020-12-01").atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                             Date.from(LocalDate.parse("2021-06-01").atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
                     )
             );
-            job.setSlug(CommonHelper.toSlug(name));
+            job.setSlug(CommonHelper.toSlug(name + "-" + CommonHelper.getAlphaNumericString(6)));
 
             jobs.add(job);
         }
 
         this.jobRepository.saveAll(jobs);
     }
+
 
     public void fakeSkills() {
         List<JobCategoryEntity> categories = this.jobCategoryRepository.findAll();
@@ -614,7 +772,13 @@ public class DatabaseSeeder {
                 proposal.setJob(job);
                 proposal.setEmployee(employee);
                 proposal.setType(JobProposalType.PROPOSAL);
-                proposal.setStatus((JobProposalStatus) randomElement(Arrays.asList(new JobProposalStatus[]{JobProposalStatus.PENDING, JobProposalStatus.REJECTED, JobProposalStatus.ACCEPTED})));
+                proposal.setStatus((JobProposalStatus) randomElement(
+                        Arrays.asList(JobProposalStatus.PENDING,
+                                JobProposalStatus.REJECTED,
+                                JobProposalStatus.ACCEPTED,
+                                JobProposalStatus.FAILED,
+                                JobProposalStatus.SUCCEEDED)
+                ));
                 proposal.setMessage(getString(10));
 
                 jobProposals.add(proposal);
@@ -626,10 +790,14 @@ public class DatabaseSeeder {
 
     public void fakeReviews() {
         List<ReviewEntity> reviews = new ArrayList<>();
-        List<JobProposalEntity> jobProposals = this.jobProposalRepository.findAll();
+        List<JobProposalEntity> jobProposals = this.jobProposalRepository.findAllByStatusIn(new JobProposalStatus[]{
+                JobProposalStatus.ACCEPTED,
+                JobProposalStatus.FAILED,
+                JobProposalStatus.SUCCEEDED
+        });
 
         for (JobProposalEntity jobProposal : jobProposals) {
-            String message = String.join(" ", faker.lorem().words(3));
+            String message = getString(20);
 
             ReviewEntity review = new ReviewEntity();
             review.setJobProposal(jobProposal);
@@ -638,15 +806,43 @@ public class DatabaseSeeder {
             review.setToUserId(jobProposal.getEmployee().getId());
             review.setToUserType(UserType.EMPLOYEE);
             review.setMessage(message);
-            review.setRating(faker.random().nextInt(1, 5));
+            review.setRating(faker.random().nextInt(3, 5));
             review.setDeliveredOnBudget(faker.random().nextBoolean());
             review.setDeliveredOnTime(faker.random().nextBoolean());
             review.setCreatedAt(CommonHelper.getCurrentTime());
 
-            reviews.add(review);
-        }
+            String message2 = getString(20);
 
-        this.reviewRepository.saveAll(reviews);
+            ReviewEntity review2 = new ReviewEntity();
+            review2.setJobProposal(jobProposal);
+            review2.setUserId(jobProposal.getEmployee().getId());
+            review2.setUserType(UserType.EMPLOYEE);
+            review2.setToUserId(jobProposal.getJob().getEmployer().getId());
+            review2.setToUserType(UserType.EMPLOYER);
+            review2.setMessage(message2);
+            review2.setRating(faker.random().nextInt(3, 5));
+            review2.setDeliveredOnBudget(faker.random().nextBoolean());
+            review2.setDeliveredOnTime(faker.random().nextBoolean());
+            review2.setCreatedAt(CommonHelper.getCurrentTime());
+
+            reviews.add(review);
+            reviews.add(review2);
+        }
+        reviews = this.reviewRepository.saveAll(reviews);
+
+        for (ReviewEntity review: reviews) {
+            if (review.getToUserType() == UserType.EMPLOYEE) {
+                this.employeeService.updateRating(
+                        review.getToUserId(),
+                        this.reviewRepository.recalculateRating(review.getToUserId(), review.getToUserType())
+                );
+            } else {
+                this.employerService.updateRating(
+                        review.getToUserId(),
+                        this.reviewRepository.recalculateRating(review.getToUserId(), review.getToUserType())
+                );
+            }
+        }
     }
 
     public void fakeJobSkill() {
@@ -714,7 +910,22 @@ public class DatabaseSeeder {
         return elements.get(randIndex);
     }
 
-    private String getString(int charNumber) {
-        return String.join(" ", faker.lorem().words(charNumber));
+    private String getString(int wordNumber) {
+        return String.join(" ", faker.lorem().words(wordNumber));
+    }
+
+    private String getParagraphs(int paragraphNumber) {
+        return String.join("\n", faker.lorem().paragraphs(paragraphNumber));
+    }
+}
+
+@Data
+class City {
+    private String address;
+    private Point locationAddress;
+
+    public City(String address, Point locationAddress) {
+        this.address = address;
+        this.locationAddress = locationAddress;
     }
 }
