@@ -25,7 +25,7 @@ app.use(session({
   secret: 'qwertyuiopasdfghklzxcvbnm1234567890',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 60000 }
+  cookie: { maxAge: 7200000 }
 }));
 app.use(logger('dev'));
 app.use(express.json());
