@@ -46,15 +46,19 @@ module.exports = {
     res.render('app/administrator/create');
   },
 
-  store: async (req, res, next) => {
+  store: async (req, res) => {
+    const { body: data } = req;
+    data.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
 
+    await repository.create(data);
+
+    return res.redirect('/administrators');
   },
 
-  edit: async (req, res) => {
-    res.render('app/administrator/create');
+  destroy: async (req, res) => {
+    const { id } = req.params;
+    await repository.delete({ id });
+
+    return res.redirect('/administrators');
   },
-
-  update: async (req, res, next) => {},
-
-  destroy: async (req, res, next) => {},
 };

@@ -27,6 +27,7 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Email</th>
                         <th class="">Created At</th>
                         <th>Options</th>
                     </tr>
@@ -38,11 +39,14 @@
                         <tr data-item="<%= JSON.stringify(item) %>">
                             <th scope="row"><%= defaultIndex + index %></th>
                             <td><%= item.name %></td>
+                            <td><%= item.email %></td>
                             <td class=""><%= moment(item.created_at).format('MM/DD/YYYY') %></td>
                             <td>
-                                <button class="btn btn-primary btn-sm edit-item"
-                                        data-toggle="modal"
-                                        data-target="#myModal2">Edit</button>
+                                <% if (currentUser.id !== item.id) { %>
+                                    <a class="btn btn-danger btn-sm"
+                                       href="/administrators/delete/<%= item.id %>"
+                                       onclick="return alert('Are you sure?')">Delete</a>
+                                <% } %>
                             </td>
                         </tr>
                     <% }) %>

@@ -1,6 +1,7 @@
 module.exports = function (req, res) {
   res.locals.flash = req.session.flash;
-  
+  res.locals.currentUser = req.session.user;
+
   res.redirectBack = () => {
     const backURL = req.header('Referer') || '/';
     return res.redirect(backURL);
