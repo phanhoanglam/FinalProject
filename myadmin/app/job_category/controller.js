@@ -1,12 +1,12 @@
 const BaseRepository = require('../core/base_repository');
 
-const repository = new BaseRepository('job_types');
+const repository = new BaseRepository('job_categories');
 
 module.exports = {
   list: async (req, res) => {
     const list = await repository.listBy();
 
-    res.render('app/job_type/index', {
+    res.render('app/job_category/index', {
       list,
       query: req.query,
     });

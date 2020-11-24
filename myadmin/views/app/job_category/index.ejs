@@ -2,10 +2,10 @@
 
 <%- contentFor('breadcrumb') %>
 <div class="col-sm-6">
-    <h4 class="page-title">Job Types Management</h4>
+    <h4 class="page-title">Job Categories Management</h4>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-        <li class="breadcrumb-item">Job Types</li>
+        <li class="breadcrumb-item">Job Categories</li>
     </ol>
 </div>
 
@@ -14,7 +14,7 @@
     <div class="col-lg-12">
         <div class="card px-4 py-2">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title">Manage Job Types</h5>
+                <h5 class="card-title">Manage Job Categories</h5>
 
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                     Create
@@ -60,7 +60,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title mt-0" id="myModalLabel">
-                    Create Job Type
+                    Create Job Category
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     ×
@@ -89,7 +89,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title mt-0" id="myModalLabel">
-                    Update Job Type
+                    Update Job Category
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     ×
@@ -125,7 +125,7 @@
         const data = $(this).serializeObject();
 
         $.ajax({
-          url: `/job-types/create`,
+          url: `/job-categories/create`,
           type: 'POST',
           dataType: 'json',
           contentType: 'application/json',
@@ -149,7 +149,7 @@
         const data = $(this).serializeObject();
 
         $.ajax({
-          url: `/job-types/update/${data.id}`,
+          url: `/job-categories/update/${data.id}`,
           type: 'POST',
           dataType: 'json',
           contentType: 'application/json',
