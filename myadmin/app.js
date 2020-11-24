@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
+const flash = require('connect-flash');
 
 require('./config/database');
 const useLocalModules = require('./config/local_modules');
@@ -18,6 +19,7 @@ const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('layout base', false);
 
 app.use(session({
   secret: 'qwertyuiopasdfghklzxcvbnm1234567890',
@@ -27,6 +29,7 @@ app.use(session({
 }));
 app.use(logger('dev'));
 app.use(express.json());
+app.use(flash());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/public', express.static(path.join(__dirname, 'public')));
