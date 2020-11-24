@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const authRoutes = require('./auth/routes');
+const authRoutes = require('./administrator/auth_routes');
 const pageRoutes = require('./page/routes');
 const jobTypeRoutes = require('./job_type/routes');
 const jobCategoryRoutes = require('./job_category/routes');
+const administratorRoutes = require('./administrator/routes');
 
 router.use('/auth', authRoutes);
 
@@ -18,5 +19,6 @@ router.use((req, res, next) => {
 router.use('/', pageRoutes);
 router.use('/job-types', jobTypeRoutes);
 router.use('/job-categories', jobCategoryRoutes);
+router.use('/administrators', administratorRoutes);
 
 module.exports = router;

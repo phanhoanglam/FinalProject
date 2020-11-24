@@ -32,4 +32,29 @@ module.exports = {
 
     return res.redirect('/');
   },
+
+  list: async (req, res) => {
+    const list = await repository.listBy();
+
+    res.render('app/administrator/index', {
+      list,
+      query: req.query,
+    });
+  },
+
+  create: async (req, res, next) => {
+    res.render('app/administrator/create');
+  },
+
+  store: async (req, res, next) => {
+
+  },
+
+  edit: async (req, res) => {
+    res.render('app/administrator/create');
+  },
+
+  update: async (req, res, next) => {},
+
+  destroy: async (req, res, next) => {},
 };
