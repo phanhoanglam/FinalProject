@@ -1,0 +1,36 @@
+<%- contentFor('HeaderCss') %>
+<link href="public/plugins/fullcalendar/css/fullcalendar.min.css" rel="stylesheet">
+
+<%- contentFor('breadcrumb') %>
+<div class="col-sm-6">
+     <h4 class="page-title">Calendar</h4>
+     <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="javascript:void(0);">Veltrix</a></li>
+         <li class="breadcrumb-item active">Calendar</li>
+     </ol>
+</div>
+
+<%- contentFor('body') %>
+<div class="row">
+     <div class="col-12">
+         <div class="card">
+             <div class="card-body">
+                 <div id='calendar'></div>
+                 <div style='clear:both'></div>
+             </div>
+         </div>
+     </div>
+ </div>
+
+<%- contentFor('FooterJs') %>
+<script src="public/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="public/plugins/moment/moment.js"></script>
+<script src='public/plugins/fullcalendar/js/fullcalendar.min.js'></script>
+<script src="public/assets/pages/calendar-init.js"></script>        
+
+ <%- contentFor('BottomJs') %>
+
+
+
+
+

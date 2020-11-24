@@ -1,0 +1,53 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+<div class="col-sm-6">
+    <h4 class="page-title">Job Types Management</h4>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item">Manage Job Types</li>
+    </ol>
+</div>
+
+<%- contentFor('body') %>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th class="">Created At</th>
+                        <th>Options</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% const defaultIndex = getPageIndex(query.page) %>
+
+                    <% list.results.forEach((item, index) => { %>
+                        <tr>
+                            <th scope="row"><%= defaultIndex + index %></th>
+                            <td><%= item.name %></td>
+                            <td class=""><%= moment(item.created_at).format('MM/DD/YYYY') %></td>
+                            <td>
+                                <a href="/job-types/<%= item.id %>" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="/job-types/delete/<%= item.id %>"
+                                   onclick="return confirm('Are you sure to delete this?')"
+                                   class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <%- include ../../components/pagination.ejs %>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>

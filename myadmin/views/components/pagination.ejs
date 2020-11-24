@@ -1,0 +1,33 @@
+<ul class="pagination pull-right">
+    <% if (list.totalPage > 1) { %>
+        <li class="page-item waves-effect <%= list.page <= 2 ? 'disabled' : '' %>">
+            <a class="page-link" href="?page=1" tabindex="-1"><i class="material-icons">chevron_left</i></a>
+        </li>
+        <% if (list.page > 2) { %>
+            <li class="page-item waves-effect">
+                <a class="page-link" href="?page=<%= list.page - 2 %>" tabindex="-1"><%= list.page - 2 %></a>
+            </li>
+        <% } %>
+        <% if (list.page > 1) { %>
+            <li class="page-item waves-effect">
+                <a class="page-link" href="?page=<%= list.page - 1 %>" tabindex="-1"><%= list.page - 1 %></a>
+            </li>
+        <% } %>
+
+        <li class="page-item waves-effect active disabled"><a class="page-link" href="#"><%= list.page %></a></li>
+
+        <% if (list.totalPage - list.page > 0) { %>
+            <li class="page-item waves-effect">
+                <a class="page-link" href="?page=<%= list.page + 1 %>"><%= list.page + 1 %></a>
+            </li>
+        <% } %>
+        <% if (list.totalPage - list.page > 1) { %>
+            <li class="page-item waves-effect">
+                <a class="page-link" href="?page=<%= list.page + 2 %>"><%= list.page + 2 %></a>
+            </li>
+        <% } %>
+        <li class="page-item waves-effect <%= list.totalPage - list.page <= 2 ? 'disabled' : '' %>">
+            <a class="page-link" href="?page=<%= list.totalPage %>" tabindex="-1"><i class="material-icons">chevron_right</i></a>
+        </li>
+    <% } %>
+</ul>
