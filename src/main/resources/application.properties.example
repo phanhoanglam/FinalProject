@@ -26,7 +26,7 @@ upload.static-directory=api/medias
 
 spring.servlet.multipart.max-file-size=15728640
 
-google-api-key=AIzaSyBYiHfMlwJdYaxFTkZQAk57bZaLPPW35TY
+google-api-key=
 
 spring.thymeleaf.cache=false
 spring.thymeleaf.enabled=true
