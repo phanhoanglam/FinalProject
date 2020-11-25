@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class MapUtils {
-    private static String API_KEY = "AIzaSyBYiHfMlwJdYaxFTkZQAk57bZaLPPW35TY";
+    private static String API_KEY = ""; // Google API
 
     private static final HttpRequestService httpRequestService = new HttpRequestService();
 
