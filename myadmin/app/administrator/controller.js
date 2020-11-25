@@ -36,5 +36,34 @@ module.exports = {
   logout(req, res) {
     delete req.session.user;
     return res.redirect('/auth/login');
-  }
+  },
+
+  list: async (req, res) => {
+    const list = await repository.listBy();
+
+    res.render('app/administrator/index', {
+      list,
+      query: req.query,
+    });
+  },
+
+  create: async (req, res, next) => {
+    res.render('app/administrator/create');
+  },
+
+  store: async (req, res) => {
+    const { body: data } = req;
+    data.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
+
+    await repository.create(data);
+
+    return res.redirect('/administrators');
+  },
+
+  destroy: async (req, res) => {
+    const { id } = req.params;
+    await repository.delete({ id });
+
+    return res.redirect('/administrators');
+  },
 };
