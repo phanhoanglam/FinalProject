@@ -1,0 +1,155 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+<div class="col-sm-6">
+    <h4 class="page-title">Jobs Management</h4>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item">Jobs</li>
+    </ol>
+</div>
+
+<%- contentFor('body') %>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card px-4 py-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title">Manage Jobs</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>company</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th class="">Created At</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% const defaultIndex = getPageIndex(query.page) %>
+
+                        <% list.results.forEach((item, index) => { %>
+                        <tr data-item="<%= JSON.stringify(item) %>">
+                            <th scope="row"><%= defaultIndex + index %></th>
+                            <td><%= item.name %></td>
+                            <td><%= item.employer %></td>
+                            <td><%= item.address %></td>
+                            <% if (item.status == 1) { %>
+                            <td>OPEN</td>
+                            <% } else if (item.status == 2) { %>
+                            <td>PROGRESSING</td>
+                            <% } else if (item.status == 3) { %>
+                            <td>CLOSED</td>
+                            <% } %>
+                            <td class=""><%= moment(item.created_at).format('MM/DD/YYYY') %></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm detail-item" data-toggle="modal"
+                                    data-target="#myModal">Detail</button>
+                                <button class="btn btn-danger btn-sm delete-item">Delete</button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <%- include ../../components/pagination.ejs %>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myModalLabel">
+                    Detail Job
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="on-detail">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label>Name</label>
+                            <input type="text" class="colorpicker-default form-control" name="name" readonly>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label>Address</label>
+                            <input type="text" class="colorpicker-default form-control" name="address" readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Salary From</label>
+                            <input type="text" class="colorpicker-default form-control" name="salary_from" readonly>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Salary To</label>
+                            <input type="text" class="colorpicker-default form-control" name="salary_to" readonly>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Status</label>
+                            <input type="text" class="colorpicker-default form-control" name="status" readonly>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>Number of apply</label>
+                            <input type="text" class="colorpicker-default form-control" name="apply_count" readonly>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label>Description</label>
+                            <textarea class="colorpicker-default form-control" id="myTextarea" name="description" readonly></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
+<script>
+    $(document).ready(function () {
+        $('.delete-item').on('click', function (e) {
+            e.preventDefault();
+            const $info = $(this).parent().closest('tr').data('item');
+            const id = $info.id;
+            var cf = confirm("Are sure wants to lock?");
+            if (cf == true) {
+                $.ajax({
+                    url: `/jobs/delete/${id}`,
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (res) {
+                        window.location.reload();
+                    },
+                });
+            }
+        });
+
+        $('.detail-item').on('click', function () {
+            const item = $(this).parent().closest('tr').data('item');
+
+            Object.keys(item).forEach((key) => {
+                $(`.on-detail input[name="status"]`).val(item[key] == 1 ? 'OPEN' : item[key] == 2 ? 'PROGRESSING' : 'CLOSED');
+                $(`.on-detail input[name="${key}"]`).val(item[key]);
+                document.getElementById("myTextarea").value = item[key];
+            });
+        });
+    });
+</script>

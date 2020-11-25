@@ -21,8 +21,7 @@ module.exports = {
     const { id } = req.params;
     const { body: data } = req;
     const attributes = {
-      is_blocked: false,
-      updated_at: Date
+      is_blocked: false
     };
     attributes.is_blocked = !data.is_blocked;
     delete data.id;
@@ -30,11 +29,9 @@ module.exports = {
 
     if(result.is_blocked == true){
       const attributeJobs = {
-        status: 3,
-        updated_at: Date
+        status: 3
       }
-      const employer_id = id;
-      await repositoryJobs.update({employer_id}, attributeJobs);
+      await repositoryJobs.update({employer_id:id}, attributeJobs);
     }
 
     res.json({

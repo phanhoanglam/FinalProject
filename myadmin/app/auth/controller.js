@@ -32,4 +32,9 @@ module.exports = {
 
     return res.redirect('/');
   },
+
+  logout(req, res) {
+    delete req.session.user;
+    return res.redirect('/auth/login');
+  }
 };
