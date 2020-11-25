@@ -1,0 +1,183 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+<div class="col-sm-6">
+    <h4 class="page-title">Skills Management</h4>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item">Skills</li>
+    </ol>
+</div>
+
+<%- contentFor('body') %>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card px-4 py-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title">Manage Skills</h5>
+
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    Create
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th class="">Created At</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% const defaultIndex = getPageIndex(query.page) %>
+
+                        <% list.results.forEach((item, index) => { %>
+                        <tr data-item="<%= JSON.stringify(item) %>">
+                            <th scope="row"><%= defaultIndex + index %></th>
+                            <td><%= item.name %></td>
+                            <td><%= item.category %></td>
+                            <td class=""><%= moment(item.created_at).format('MM/DD/YYYY') %></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm edit-item" data-toggle="modal"
+                                    data-target="#myModal2">Edit</button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <%- include ../../components/pagination.ejs %>
+        </div>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myModalLabel">
+                    Create Job Type
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="on-create">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" class="colorpicker-default form-control" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                            <select class="custom-select" name="job_category_id">
+                                <option selected>Choose category</option>
+                                <% categories.results.forEach((item, index) => { %>
+                                <option value="<%= item.id %>"><%= item.name %></option>
+                                <% }) %>
+                            </select>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <button class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div id="myModal2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myModalLabel">
+                    Update Job Type
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="on-edit">
+                    <input type="hidden" name="id">
+
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" class="colorpicker-default form-control" name="name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                            <select class="custom-select mySelect" name="job_category_id">
+                                <% categories.results.forEach((item, index) => { %>
+                                <option value="<%= item.id %>"><%= item.name %></option>
+                                <% }) %>
+                            </select>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <button class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
+<script>
+    $(document).ready(function () {
+        $('.on-create').on('submit', function (e) {
+            e.preventDefault();
+            const data = $(this).serializeObject();
+            $.ajax({
+                url: `/skills/create`,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (res) {
+                    window.location.reload();
+                },
+            });
+        });
+
+        $('.edit-item').on('click', function () {
+            const item = $(this).parent().closest('tr').data('item');
+
+            Object.keys(item).forEach((key) => {
+                console.log(item['job_category_id']);
+                $(`.on-edit input[name="${key}"]`).val(item[key]);
+                $(`.mySelect option[value="${item['job_category_id']}"]`).attr('selected', true);
+            });
+        });
+
+        $('.on-edit').on('submit', function (e) {
+            e.preventDefault();
+            const data = $(this).serializeObject();
+
+            $.ajax({
+                url: `/skills/update/${data.id}`,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (res) {
+                    window.location.reload();
+                },
+            });
+        });
+    });
+</script>

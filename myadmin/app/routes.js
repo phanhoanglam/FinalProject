@@ -8,6 +8,7 @@ const jobCategoryRoutes = require('./job_category/routes');
 const employerRoutes = require('./employer/routes');
 const jobRoutes = require('./job/routes');
 const administratorRoutes = require('./administrator/routes');
+const skillRoutes = require('./skill/routes');
 
 router.use('/auth', authRoutes);
 
@@ -24,5 +25,6 @@ router.use('/job-categories', jobCategoryRoutes);
 router.use('/employers', employerRoutes);
 router.use('/jobs', jobRoutes);
 router.use('/administrators', administratorRoutes);
+router.use('/skills', skillRoutes);
 
 module.exports = router;
