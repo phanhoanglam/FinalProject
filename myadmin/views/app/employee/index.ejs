@@ -1,0 +1,98 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+<div class="col-sm-6">
+    <h4 class="page-title">Employees Management</h4>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item">Employees</li>
+    </ol>
+</div>
+
+<%- contentFor('body') %>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card px-4 py-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title">Manage Employees</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Address</th>
+                        <th>Address Location</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th class="">Created At</th>
+                        <th>Options</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% const defaultIndex = getPageIndex(query.page) %>
+
+                    <% list.results.forEach((item, index) => { %>
+                        <tr data-item="<%= JSON.stringify(item) %>">
+                            <th scope="row"><%= defaultIndex + index %></th>
+                            <td><%= item.address %></td>
+                            <td><%= item.address_location %></td>
+                            <td><%= item.first_name %></td>
+                            <td class=""><%= item.last_name %></td>
+                            <td><%= item.email %></td>
+                            <td><%= item.phone %></td>
+                            <td><%= moment(item.created_at).format('MM/DD/YYYY') %></td>
+                            <td>
+                                                            <a class="btn btn-xs btn-delete block <%= item.is_blocked ? 'btn-danger' : 'btn-success' %>" style="cursor: pointer;">
+                                                                <i class="<%= item.is_blocked ? 'fas fa-lock' : 'fas fa-unlock-alt' %>"></i>
+                                                            </a>
+                                                        </td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <%- include ../../components/pagination.ejs %>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
+
+<script>
+    $(document).ready(function () {
+        $('.block').on('click', function (e) {
+            e.preventDefault();
+            const self = this;
+            const $info = $(this).parent().closest('tr').data('item');
+            const id = $info.id;
+            var cf = confirm("Are sure wants to lock?");
+            if (cf == true) {
+                $.ajax({
+                    url: `/employees/update/${id}`,
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify($info),
+                    success: function (res) {
+                        if(res.data.is_blocked == false){
+                            $(self).removeClass('btn-danger').addClass('btn-success');
+                            $(self).html('<i class="fas fa-unlock-alt"></i>');
+                            $(self).parent().closest('tr').data('item', res.data);
+                        }else{
+                            $(self).removeClass('btn-success').addClass('btn-danger');
+                            $(self).html('<i class="fas fa-lock"></i>');
+                            $(self).parent().closest('tr').data('item', res.data);
+                        }
+                    },
+                });
+            }
+        })
+    });
+</script>
