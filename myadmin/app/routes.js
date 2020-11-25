@@ -5,9 +5,11 @@ const authRoutes = require('./administrator/auth_routes');
 const pageRoutes = require('./page/routes');
 const jobTypeRoutes = require('./job_type/routes');
 const jobCategoryRoutes = require('./job_category/routes');
-const administratorRoutes = require('./administrator/routes');
-const employeeRoutes = require('./employee/routes');
 const employerRoutes = require('./employer/routes');
+const jobRoutes = require('./job/routes');
+const administratorRoutes = require('./administrator/routes');
+const skillRoutes = require('./skill/routes');
+const employeeRoutes = require('./employee/routes');
 
 router.use('/auth', authRoutes);
 
@@ -21,7 +23,10 @@ router.use((req, res, next) => {
 router.use('/', pageRoutes);
 router.use('/job-types', jobTypeRoutes);
 router.use('/job-categories', jobCategoryRoutes);
+router.use('/employers', employerRoutes);
+router.use('/jobs', jobRoutes);
 router.use('/administrators', administratorRoutes);
+router.use('/skills', skillRoutes);
 router.use('/employees', employeeRoutes);
 router.use('/employers', employerRoutes);
 

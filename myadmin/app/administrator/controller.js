@@ -33,6 +33,11 @@ module.exports = {
     return res.redirect('/');
   },
 
+  logout(req, res) {
+    delete req.session.user;
+    return res.redirect('/auth/login');
+  },
+
   list: async (req, res) => {
     const list = await repository.listBy();
 
